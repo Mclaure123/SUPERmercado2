@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Misión Supermercado v7.29 - Pre-Round Modal</title>
+    <style>
+        :root {
+            --color-bg: #1a1c1f;
+            --color-surface: #2c2f36;
+            --color-surface-light: #484c54;
+            --color-text: #EAEAEA;
+            --color-primary: #FFC107; /* Ámbar */
+            --color-primary-dark: #FFA000;
+            --color-error: #F44336;
+            --color-danger: #D32F2F;
+            --color-green: #4CAF50;
+            --color-blue: #2196F3;
+            --color-canje: #E0E0E0;
+            /* Colores Billetes (Bs.) */
+            --bill-10: #3498db; /* Azul */
+            --bill-20: #e67e22; /* Naranja */
+            --bill-50: #9b59b6; /* Violeta */
+            --bill-100: #e74c3c; /* Rojo */
+            --bill-200: #f1c40f; /* Dorado */
+            
+            --font-main: "Share Tech Mono", "Noto Color Emoji", monospace;
+            --font-system: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Noto Color Emoji";
+            --border-radius-main: 12px;
+            --glow-main: 0 0 10px rgba(255, 193, 7, 0.2);
+            --glow-main-hover: 0 0 15px rgba(255, 193, 7, 0.4);
+            --transition-speed: 0.35s;
+            --transition-speed-fast: 0.2s;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100vw; height: 100vh; overflow: hidden; font-family: var(--font-system); color: var(--color-text); background-color: var(--color-bg); background-image: linear-gradient(rgba(255, 193, 7, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(255, 193, 7, 0.03) 1px, transparent 1px); background-size: 50px 50px; }
+        #app-container { position: relative; width: 100%; height: 100%; }
+        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.7); } 80% { opacity: 1; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes flash-confirm { 0% { box-shadow: 0 0 15px 5px rgba(255, 193, 7, 0.4); } 100% { box-shadow: none; } }
+        @keyframes power-on-glitch { 0%, 100% { opacity: 1; transform: none; } 5% { opacity: 0.8; transform: translate(-2px, 2px); } 10% { opacity: 0.9; transform: translate(2px, -2px); } }
+        @keyframes blink-red { 0%, 100% { color: var(--color-error); } 50% { color: var(--color-text); } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: var(--glow-main); } 50% { transform: scale(1.05); box-shadow: var(--glow-main-hover); } 100% { transform: scale(1); box-shadow: var(--glow-main); } }
+        @keyframes flash-error-bg { 0%, 100% { background-color: var(--color-surface); } 50% { background-color: var(--color-danger); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); } }
+        .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes item-fade-in { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        #scanline-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.5; }
+        #scanline-overlay::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to bottom, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0) 100%); animation: scanline-move-down 4s linear infinite; }
+        @keyframes scanline-move-down { 0% { transform: translateY(-10px); } 100% { transform: translateY(100vh); } }
+        .key-flash { animation: flash-confirm var(--transition-speed-fast) ease-out; }
+        .answer-error-flash { animation: flash-error-bg 0.4s ease-in-out; }
+        @keyframes feedback-pop-in { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes feedback-fade-out { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); } }
+        @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulse-payment { 0% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } 50% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 15px var(--color-primary); } 100% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } }
+        .pulse-payment-anim { animation: pulse-payment 0.8s ease-in-out 2; }
+        
+        .screen { display: none; flex-direction: column; width: 100%; height: 100%; align-items: center; justify-content: center; opacity: 0; transform: scale(0.98); transition: opacity var(--transition-speed) ease-in-out, transform var(--transition-speed) ease-in-out; }
+        .screen.active { display: flex; opacity: 1; transform: scale(1); }
+        .screen-content-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 800px; gap: 25px; padding: 20px; }
+        .title { font-family: var(--font-main); font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 700; text-align: center; color: var(--color-primary); text-shadow: 0 0 10px rgba(255, 193, 7, 0.3); min-height: 1.2em; }
+        .subtitle { font-size: clamp(1.2rem, 4vw, 1.8rem); text-align: center; color: #aaa; min-height: 1.2em; }
+        .btn { padding: 15px 30px; font-family: var(--font-main); font-size: clamp(1.1rem, 4vw, 1.5rem); text-transform: uppercase; font-weight: 700; color: var(--color-bg); background-color: var(--color-primary); border: 1px solid var(--color-primary-dark); cursor: pointer; transition: all var(--transition-speed-fast) ease-out; min-width: clamp(220px, 50vw, 300px); box-shadow: var(--glow-main); border-radius: 4px; }
+        .btn:hover { background-color: var(--color-primary-dark); box-shadow: var(--glow-main-hover); transform: translateY(-2px); }
+        .btn.disabled { background-color: var(--color-surface-light); color: #888; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn.btn-secondary { background-color: var(--color-surface); color: var(--color-primary); border: 1px solid var(--color-primary); box-shadow: none; font-size: clamp(1rem, 3.5vw, 1.3rem); min-width: 250px; }
+        .btn.btn-secondary:hover { background-color: var(--color-surface-light); color: var(--color-primary-dark); box-shadow: var(--glow-main); transform: translateY(-2px); }
+        #start-fullscreen-btn { animation: pulse 2s infinite ease-in-out; }
+        .display-panel { position: relative; background-color: var(--color-surface); border: 2px solid #1a1c1f; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); color: var(--color-text); padding: 20px; }
+        #screen-player-select { justify-content: flex-start; padding-top: 5vh; }
+        #player-list-container { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; max-height: 50vh; overflow-y: auto; padding: 10px; background-color: var(--color-bg); border-radius: var(--border-radius-main); }
+        .player-card { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 6px; font-family: var(--font-main); font-size: 1.4rem; cursor: pointer; transition: all var(--transition-speed-fast) ease-out; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .player-card:hover { background: linear-gradient(to bottom, #5a6069, #424851); transform: scale(1.02); }
+        .player-card.selected { background: linear-gradient(to bottom, #FFD54F, #FFC107); color: var(--color-bg); box-shadow: var(--glow-main-hover); }
+        .delete-player-btn { font-size: 1.5rem; color: var(--color-text); background: none; border: none; cursor: pointer; opacity: 0.5; transition: opacity var(--transition-speed-fast); }
+        .delete-player-btn:hover { opacity: 1; color: var(--color-error); }
+        .player-card.selected .delete-player-btn { color: var(--color-bg); opacity: 0.7; }
+        .player-select-actions { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
+        #screen-create-player { justify-content: center; }
+        #new-player-input { width: 100%; max-width: 450px; height: 55px; font-size: 2.2rem; font-weight: bold; letter-spacing: 5px; color: var(--color-primary); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px var(--color-primary-dark); font-family: var(--font-main); min-height: 55px; }
+        #virtual-keyboard-container { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 800px; }
+        .keyboard-row { display: flex; justify-content: center; gap: 8px; }
+        #virtual-keyboard-container .key { display: flex; justify-content: center; align-items: center; height: 45px; flex-grow: 1; flex-basis: 0; font-size: 1.2rem; font-weight: 700; background: linear-gradient(to bottom, #4F555E, #3A3F47); color: var(--color-text); border: 1px solid #2a2e33; border-radius: 6px; cursor: pointer; transition: all 0.1s ease-out; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); font-family: var(--font-main); }
+        #virtual-keyboard-container .key:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
+        #virtual-keyboard-container .key[data-key="DEL"] { min-width: 60px; flex-grow: 1.5; background-color: var(--color-surface-light); }
+        #virtual-keyboard-container .key[data-key="ENTER"] { min-width: 80px; flex-grow: 2; background-color: var(--color-primary); color: var(--color-bg); }
+        #screen-level-select .screen-content-wrapper { justify-content: center; gap: 20px; height: 100%; max-width: 900px; }
+        #level-select-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; max-height: 75vh; overflow-y: auto; padding: 15px; border: 1px solid var(--color-surface-light); border-radius: var(--border-radius-main); background: rgba(0,0,0,0.1); }
+        .level-btn { background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 8px; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); color: var(--color-text); font-family: var(--font-main); font-weight: 700; text-transform: uppercase; transition: all var(--transition-speed-fast) ease-out; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 8px; min-height: 160px; cursor: pointer; padding: 10px; position: relative; }
+        .level-number { position: absolute; top: 5px; left: 8px; font-size: 0.9rem; color: #aaa; opacity: 0.7; }
+        .level-icon { font-size: 2.5rem; line-height: 1; margin-top: 10px; display: flex; align-items: center; justify-content: center; }
+        .level-title { font-size: 1.1rem; text-align: center; }
+        .level-stars-container { display: flex; gap: 4px; font-size: 1.2rem; line-height: 1; margin-bottom: 5px; color: var(--color-primary); }
+        .level-stars-container .star-empty { color: var(--color-surface-light); opacity: 0.5; }
+        .level-btn:hover { background: linear-gradient(to bottom, #5a6069, #424851); transform: scale(1.05) translateY(-3px); box-shadow: 0 8px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1); z-index: 10; }
+        .level-btn:active { transform: scale(1.02) translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
+        .level-btn.locked { background: var(--color-surface); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); color: #666; cursor: not-allowed; opacity: 0.6; }
+        .level-btn.locked:hover { transform: none; box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
+        .level-btn.locked .level-icon { }
+        .level-btn.locked .level-title { opacity: 0.5; }
+        .level-btn.locked .level-number { opacity: 0.3; }
+        .level-btn.locked .level-stars-container { display: none; }
+        .level-icon svg { width: 2.5rem; height: 2.5rem; fill: currentColor; }
+
+        /* --- LAYOUT DE JUEGO --- */
+        #screen-game { flex-direction: column; padding: 10px; justify-content: flex-start; gap: 10px; position: relative; }
+        #game-hud { width: 100%; max-width: 1200px; z-index: 100; padding: 0 10px; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: stretch; gap: 15px; background: none; border: none; box-shadow: none; opacity: 0; animation: power-on-glitch 0.3s forwards; }
+        #hud-left { background-color: var(--color-surface); padding: 10px 15px; border-radius: 4px; border: 1px solid #1a1c1f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 15px; flex-grow: 1; justify-content: space-between; min-width: 0; }
+        .hud-player-info { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+        #hud-player-name { font-family: var(--font-main); font-size: 1rem; color: var(--color-primary); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        #hud-level-name { font-family: var(--font-main); font-size: 0.9rem; color: #aaa; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+        .hud-game-status { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
+        #hud-lives { color: var(--color-error); font-size: 2rem; transition: transform 0.2s; white-space: nowrap; }
+        #hud-lives .lost-life { filter: grayscale(100%); opacity: 0.6; }
+        #hud-wins-tracker { display: flex; gap: 8px; flex-wrap: nowrap; overflow: hidden; max-width: 300px; justify-content: flex-start; align-items: center; }
+        #hud-right { background-color: var(--color-surface); padding: 10px 20px; border-radius: 4px; border: 1px solid #1a1c1f; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; width: 350px; }
+        .win-dot { width: 18px; height: 18px; background-color: var(--color-surface-light); border: 1px solid var(--color-bg); border-radius: 4px; opacity: 0.4; transition: all 0.3s; }
+        .win-dot.correct { opacity: 1; background-color: var(--color-primary); border-color: var(--color-primary-dark); box-shadow: 0 0 5px rgba(255, 193, 7, 0.3); }
+        .win-dot.incorrect { opacity: 1; background-color: var(--color-error); border-color: var(--color-danger); }
+        .win-dot.current { opacity: 1; background-color: var(--color-primary); border-color: var(--color-primary-dark); animation: pulse-dot 1.5s infinite ease-in-out; }
+        #hud-timer { font-family: var(--font-main); font-size: 2rem; color: var(--color-text); min-width: 110px; text-align: right; }
+        #hud-timer.low-time { animation: blink-red 1s infinite; }
+        #hud-round-counter { display: none; font-family: var(--font-main); font-size: 1.2rem; color: var(--color-text); font-weight: 700; }
+        .game-content-wrapper { display: flex; flex-direction: row; width: 100%; max-width: 1200px; gap: 15px; flex-grow: 1; opacity: 0; animation: power-on-glitch 0.5s 0.2s forwards; padding: 0; height: calc(100vh - 90px); }
+        #problem-container { display: flex; flex-direction: column; flex-grow: 1; gap: 0; padding: 15px; position: relative; }
+        .problem-title { background-color: rgba(0,0,0,0.2); padding: 5px 10px; border-bottom: 1px solid var(--color-surface-light); display: inline-block; width: 100%; font-family: var(--font-main); text-transform: uppercase; margin: 0; }
+        .problem-item-list { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 12px; padding: 15px 0; flex-grow: 1; overflow-y: auto; }
+        #action-bar { width: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; flex-shrink: 0; padding: 15px; }
+        
+        @media (max-width: 768px), (max-height: 700px) {
+            .game-content-wrapper { flex-direction: column; max-width: 700px; height: calc(100vh - 80px); gap: 10px; }
+            #problem-container { padding: 10px; flex-grow: 1; min-height: 0; }
+            .problem-item-list { flex-grow: 1; }
+            #action-bar { width: 100%; justify-content: flex-end; padding: 0 10px 1vh 10px; gap: 5px; flex-grow: 0; flex-shrink: 1; }
+            #hud-right { width: auto; flex-grow: 1; justify-content: flex-end; }
+            #hud-left { flex-grow: 0; }
+            #hud-wins-tracker { display: none; }
+            #hud-round-counter { display: block; }
+            #hud-lives { font-size: 1.5rem; }
+            #hud-timer { font-size: 1.5rem; min-width: 90px; }
+            #hud-left, #hud-right { padding: 5px 10px; gap: 10px; }
+            #hud-player-name { font-size: 0.9rem; }
+            #hud-level-name { font-size: 0.8rem; }
+            #special-items-summary { display: none; }
+            #help-hud { display: none; }
+            .problem-item-list { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding: 10px 0; }
+            .product-card { width: 90px; height: 130px; flex-shrink: 0; }
+            .product-emoji-container { font-size: 2.8em; }
+            .product-price { font-size: 1.4em; }
+            .quantity-ribbon { width: 70px; height: 70px; top: -8px; right: -8px;}
+            .quantity-ribbon span { font-size: 1.2rem; transform: rotate(45deg) translateY(-15px); padding: 4px 0;}
+            #payment-display { height: 35px; min-height: 35px; padding: 5px 10px; font-size: 0.9rem; }
+            .bill { height: 20px; min-width: 30px; font-size: 0.8rem; }
+            #answer-prompt-label { font-size: 0.9rem; margin-bottom: -5px; }
+            #answer-display { height: 45px; font-size: 2.5rem; }
+            #numpad-grid { max-width: 350px; gap: 5px; }
+            #numpad-grid .key { height: 40px; font-size: 1.5rem; }
+        }
+
+        .product-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background-color: var(--color-bg); padding: 10px; border-radius: var(--border-radius-main); gap: 8px; transition: transform var(--transition-speed-fast) ease-out, box-shadow var(--transition-speed-fast) ease-out; width: 110px; height: 160px; overflow: hidden; opacity: 0; animation: item-fade-in 0.5s ease-out forwards; }
+        .product-card:hover { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 193, 7, 0.3); z-index: 10; }
+        .product-emoji-container { font-size: 3.2em; line-height: 1; display: flex; align-items: center; justify-content: center; font-family: var(--font-system); margin-top: 10px; width: 100%; height: 3.2em; }
+        .product-emoji-container svg { width: 1.2em; height: 1.2em; fill: currentColor; }
+        .product-price-line { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .product-price { font-weight: bold; white-space: nowrap; font-size: 1.6em; }
+        .product-card.canje .product-price { color: var(--color-canje); }
+        .product-state-tag { width: 100%; padding: 4px; text-align: center; font-family: var(--font-main); font-size: 1rem; font-weight: 700; border-radius: 4px; text-transform: uppercase; }
+        .tag-free { background-color: var(--color-error); color: var(--color-text); }
+        .tag-defective { background-color: var(--color-danger); color: var(--color-text); }
+        .tag-discount { background-color: var(--color-green); color: var(--color-text); }
+        .tag-taxed { background-color: var(--color-blue); color: var(--color-text); }
+        .tag-canje { background-color: var(--color-canje); color: var(--color-bg); }
+        .quantity-ribbon { position: absolute; top: -10px; right: -10px; width: 80px; height: 80px; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 5; }
+        .quantity-ribbon span { position: absolute; color: var(--color-bg); padding: 5px 0; width: 150%; text-align: center; font-size: 1.6rem; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.4); transform: rotate(45deg) translateY(-20px); }
+        .quantity-ribbon.quantity-x2 span { background-color: var(--color-primary); }
+        .quantity-ribbon.quantity-x3 span { background-color: var(--color-green); }
+        
+        #payment-display {
+            width: 100%;
+            max-width: 300px;
+            min-height: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: var(--font-main);
+            color: #aaa;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+            padding: 10px 15px;
+            gap: 10px;
+            transition: box-shadow 0.3s;
+        }
+        #payment-bills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-end;
+            flex-grow: 1;
+        }
+        .bill {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 25px;
+            min-width: 40px;
+            padding: 0 5px;
+            border-radius: 4px;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+        }
+        .bill-10 { background-color: var(--bill-10); }
+        .bill-20 { background-color: var(--bill-20); }
+        .bill-50 { background-color: var(--bill-50); }
+        .bill-100 { background-color: var(--bill-100); }
+        .bill-200 { background-color: var(--bill-200); color: var(--color-bg); }
+
+        #answer-prompt-label {
+            font-family: var(--font-main);
+            font-size: 1rem;
+            color: #aaa;
+            text-transform: uppercase;
+            margin-bottom: -10px;
+        }
+        
+        #answer-display { width: 100%; max-width: 300px; height: 70px; font-size: 4.2rem; font-weight: bold; letter-spacing: 5px; color: var(--color-primary); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px var(--color-primary-dark); }
+        #numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, auto); gap: 10px; width: 100%; max-width: 300px; }
+        #numpad-grid .key { height: 55px; font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--color-text); background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 6px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); transition: all 0.1s ease-out; cursor: pointer; }
+        #numpad-grid .key:active, #numpad-grid .key.active-keypress { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); background: var(--color-bg); }
+        .key[data-key="del"] { grid-column: 1 / 2; grid-row: 4 / 5; }
+        .key[data-key="0"] { grid-column: 2 / 3; grid-row: 4 / 5; }
+        #numpad-enter { grid-column: 3 / 4; grid-row: 4 / 5; background: linear-gradient(to bottom, #FFD54F, #FFC107) !important; color: #22252A !important; }
+        
+        /* --- MODALES --- */
+        .modal-overlay { /* **CAMBIO**: Clase genérica para overlays */
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none; /* Controlado por JS */
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            background-color: rgba(26, 28, 31, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .modal-content { /* **CAMBIO**: Clase genérica para contenido */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            background-color: var(--color-surface);
+            border: 2px solid var(--color-primary-dark);
+            border-radius: var(--border-radius-main);
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #modal-title { color: var(--color-primary); font-size: 2.5rem; margin: 0; }
+        #modal-title.fail { color: var(--color-danger); }
+        #modal-feedback { font-size: 1.2rem; text-align: center; color: var(--color-text); line-height: 1.6; width: 100%; }
+        .feedback-grid { display: grid; grid-template-columns: auto 1fr; gap: 10px 15px; margin-top: 20px; background-color: var(--color-bg); padding: 15px; border-radius: 8px; font-family: var(--font-main); }
+        .feedback-grid span { text-align: left; }
+        .feedback-grid span:nth-child(odd) { color: #aaa; justify-self: end;}
+        .feedback-grid .answer-value { font-size: 1.5rem; font-weight: 700; justify-self: start;}
+        .feedback-grid .payment-bills-modal { display: flex; flex-wrap: wrap; gap: 4px; justify-self: start; align-items: center; }
+        .feedback-grid .payment-bills-modal .bill { height: 22px; min-width: 35px; font-size: 0.9rem; }
+        .feedback-grid .user { color: var(--color-error); }
+        .feedback-grid .correct { color: var(--color-green); }
+        #modal-actions { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
+        .calculation-details { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-surface-light); font-size: 0.9rem; text-align: left; width: 100%; font-family: var(--font-main); max-height: 150px; overflow-y: auto; background-color: var(--color-bg); padding: 10px; border-radius: 4px; }
+        .calc-item { margin-bottom: 5px; overflow: hidden; }
+        .calc-item .emoji { display: inline-block; width: 1.5em; text-align: center; }
+        .calc-item .details { color: #bbb; }
+        .calc-item .price { font-weight: bold; float: right; }
+        .calc-item .mod { font-style: italic; margin-left: 5px; }
+        .calc-total { margin-top: 10px; font-weight: bold; font-size: 1.1rem; text-align: right; border-top: 1px solid var(--color-surface-light); padding-top: 5px; }
+        .calc-total span { color: var(--color-green); }
+        #special-items-summary { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 6px; margin-top: 10px; margin-bottom: 15px; font-family: var(--font-main); text-transform: uppercase; border: 1px solid var(--color-surface-light); }
+        .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; border-bottom: 1px dashed var(--color-surface-light); padding-bottom: 5px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; font-size: 1rem; }
+        .summary-item .label { color: #aaa; font-size: 0.9rem; white-space: nowrap; }
+        .summary-item .count { font-size: 1.3rem; font-weight: 700; }
+        .summary-item .count-free { color: var(--color-error); }
+        .summary-item .count-defective { color: var(--color-danger); }
+        .summary-item .count-canje { color: var(--color-canje); }
+        .summary-item .count-x2 { color: var(--color-primary); }
+        .summary-item .count-x3 { color: var(--color-green); }
+        
+        /* **CAMBIO**: Feedback de ronda ahora usa .modal-overlay */
+        #round-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 550px;
+            background-color: rgba(44, 47, 54, 0.95);
+            border: 2px solid;
+            border-radius: var(--border-radius-main);
+            padding: 25px;
+            text-align: center;
+            font-family: var(--font-main);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 500; /* Debajo de modales */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #round-feedback.correct { border-color: var(--color-green); }
+        #round-feedback.incorrect { border-color: var(--color-danger); }
+        #round-feedback.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; cursor: pointer; z-index: 10001; /* Encima de todo */ }
+        #round-feedback.hiding { animation: feedback-fade-out 0.3s forwards; }
+        #round-feedback h3 { font-size: 2.8rem; margin: 0 0 15px 0; text-transform: uppercase; }
+        #round-feedback h3.correct { color: var(--color-green); }
+        #round-feedback h3.incorrect { color: var(--color-error); }
+        .feedback-calc-summary { font-size: 1.1rem; text-align: left; margin-bottom: 12px; max-height: 150px; overflow-y: auto; background-color: var(--color-bg); padding: 10px; border-radius: 4px; }
+        .feedback-calc-item { margin-bottom: 4px; overflow: hidden; }
+        .feedback-calc-item .emoji { display: inline-block; width: 1.3em; text-align: center; }
+        .feedback-calc-item .details { color: #bbb; }
+        .feedback-calc-item .price { font-weight: bold; float: right; }
+        .feedback-correct-total { font-size: 1.6rem; font-weight: bold; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--color-surface-light); }
+        .feedback-correct-total span { color: var(--color-green); }
+        
+        #force-fullscreen-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26, 28, 31, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 30px; padding: 20px; text-align: center; }
+        #force-fullscreen-modal .title { color: var(--color-error); }
+        #force-fullscreen-modal p { font-size: 1.3rem; color: #ccc; }
+        #help-hud { width: 100%; background-color: rgba(0,0,0,0.15); padding: 10px 15px; border-radius: 6px; margin-top: 15px; font-family: var(--font-main); border: 1px solid var(--color-surface-light); display: block; width: 100%; max-width: 300px; }
+        #help-hud .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; }
+        #help-hud-content { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; font-size: 0.9rem; color: #ccc; }
+        #help-hud-content span { white-space: nowrap; }
+        @media (max-width: 768px), (max-height: 700px) {
+            #special-items-summary { display: none; }
+            #help-hud { display: none; }
+        }
+
+        /* **NUEVO**: Modal de Preparación */
+        #pre-round-modal {
+            z-index: 9000; /* Debajo del modal de juego, encima de todo lo demás */
+            cursor: pointer;
+        }
+        #pre-round-content {
+            text-align: left;
+            font-family: var(--font-main);
+        }
+        #pre-round-content h2 {
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #pre-round-content .alert-section {
+            margin-bottom: 15px;
+        }
+        #pre-round-content .alert-title {
+            font-size: 1.2rem;
+            color: #aaa;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--color-surface-light);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        #pre-round-content .alert-item {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-item .emoji { display: inline-block; width: 1.5em; text-align: center; font-size: 1.2rem; }
+        .alert-item .emoji svg { width: 1.2em; height: 1.2em; fill: currentColor; }
+        .alert-item .payment-bills { display: flex; flex-wrap: wrap; gap: 5px; }
+        .alert-item .bill { height: 22px; min-width: 35px; font-size: 0.9rem; }
+        
+        #pre-round-content .dismiss-prompt {
+            font-size: 1rem;
+            color: var(--color-primary);
+            text-align: center;
+            margin-top: 25px;
+            animation: pulse 1.5s infinite;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="scanline-overlay"></div>
+        <div id="screen-preloader" class="screen active"> <div class="screen-content-wrapper"> <h1 class="title">CARGANDO SISTEMA</h1> <p class="subtitle">Presione comenzar para calibrar la pantalla.</p> <button id="start-fullscreen-btn" class="btn">Comenzar</button> </div> </div>
+        <div id="screen-title" class="screen"> <div id="title-screen-wrapper" class="screen-content-wrapper" style="justify-content: space-between; padding-bottom: 10vh; height: 100%;"> <div> <h1 class="title">MISIÓN SUPERMERCADO</h1> <p class="subtitle">Calcula el total. Salva el mundo.</p> </div> <button id="start-game-btn" class="btn pop-in">Iniciar Simulación</button> </div> </div>
+        <div id="screen-player-select" class="screen"> <div class="screen-content-wrapper" style="max-width: 800px; justify-content: flex-start; gap: 15px; height: 100%; padding: 20px;"> <h2 class="title">SELECCIONAR JUGADOR</h2> <div id="player-list-container" class="display-panel" style="padding: 10px;"></div> <div class="player-select-actions"> <button id="confirm-player-btn" class="btn disabled">Seleccionar Misión</button> <button id="show-create-player-btn" class="btn btn-secondary">[+ Agregar Jugador]</button> </div> </div> </div>
+        <div id="screen-create-player" class="screen"> <div class="screen-content-wrapper" style="max-width: 800px; justify-content: center; gap: 15px; height: 100%; padding: 20px;"> <h2 class="title">CREAR NUEVO JUGADOR</h2> <div id="new-player-input" class="display-panel"></div> <div id="virtual-keyboard-container"></div> <button id="cancel-create-player-btn" class="btn btn-secondary" style="background-color: var(--color-danger); color: var(--color-text); border: none;">[ Volver ]</button> </div> </div>
+        <div id="screen-level-select" class="screen"> <div class="screen-content-wrapper" style="max-width: 900px;"> <h2 class="title">Seleccionar Misión</h2> <div id="level-select-grid"></div> </div> </div>
+        <div id="screen-game" class="screen">
+            <div id="game-hud">
+                <div id="hud-left">
+                    <div class="hud-player-info">
+                         <div id="hud-player-name">JUGADOR</div>
+                         <div id="hud-level-name">NIVEL</div>
+                    </div>
+                    <div class="hud-game-status">
+                         <div id="hud-lives"></div>
+                         <div id="hud-wins-tracker"></div>
+                         <div id="hud-round-counter">RONDA 1/10</div>
+                    </div>
+                </div>
+                 <div id="hud-right"> <div id="hud-timer">00:00.0</div> </div>
+             </div>
+            <div class="game-content-wrapper">
+                <div id="problem-container" class="display-panel">
+                    <h3 class="problem-title">TICKET DE COMPRA</h3>
+                    <div id="special-items-summary">
+                        <div class="summary-title">ESPECIALES</div>
+                        <div class="summary-grid">
+                            <div class="summary-item"> <div class="label">Gratis</div> <div class="count count-free" id="summary-count-free">0</div> </div>
+                            <div class="summary-item"> <div class="label">Defect.</div> <div class="count count-defective" id="summary-count-defective">0</div> </div>
+                            <div class="summary-item"> <div class="label">Canje</div> <div class="count count-canje" id="summary-count-canje">0</div> </div>
+                            <div class="summary-item"> <div class="label">x2</div> <div class="count count-x2" id="summary-count-x2">0</div> </div>
+                            <div class="summary-item"> <div class="label">x3</div> <div class="count count-x3" id="summary-count-x3">0</div> </div>
+                        </div>
+                    </div>
+                    <div id="round-feedback"></div>
+                    <div class="problem-item-list"></div>
+                </div>
+                <div id="action-bar">
+                    <div id="payment-display" class="display-panel">
+                        <span>PAGO:</span>
+                        <div id="payment-bills-container"></div>
+                    </div>
+                    <div id="answer-prompt-label">CALCULAR TOTAL:</div>
+                    <div id="answer-display" class="display-panel"></div>
+                    <div id="numpad-grid"> <button class="key" data-key="7">7</button> <button class="key" data-key="8">8</button> <button class="key" data-key="9">9</button> <button class="key" data-key="4">4</button> <button class="key" data-key="5">5</button> <button class="key" data-key="6">6</button> <button class="key" data-key="1">1</button> <button class="key" data-key="2">2</button> <button class="key" data-key="3">3</button> <button class="key" data-key="del">⌫</button> <button class="key" data-key="0">0</button> <button id="numpad-enter" class="key" data-key="enter">↵</button> </div>
+                    <div id="help-hud">
+                        <div class="summary-title">AYUDA</div>
+                        <div id="help-hud-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal-container" class="modal-overlay"> <div id="modal-content" class="pop-in"> <h2 id="modal-title" class="title"></h2> <div id="modal-feedback"></div> <div id="modal-actions"> <button id="retry-btn" class="btn">Reintentar Misión</button> <button id="back-to-menu-btn" class="btn btn-secondary">Volver al Menú</button> </div> </div> </div>
+        
+        <div id="pre-round-modal" class="modal-overlay">
+            <div id="pre-round-content" class="modal-content pop-in">
+                </div>
+        </div>
+
+        <div id="force-fullscreen-modal"> <h2 class="title">MODO PANTALLA COMPLETA REQUERIDO</h2> <p>Para una experiencia óptima, el juego debe ejecutarse en pantalla completa.</p> <button id="reenter-fullscreen-btn" class="btn">Reactivar Pantalla Completa</button> </div>
+    </div>
+
+<script>
+// Usaré ES5 estricto (var en lugar de let/const, function() en lugar de =>)
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM Cargado. Iniciando script...");
+
+    // --- 1. CONFIGURACIÓN Y ESTADO DEL JUEGO ---
+    var SVG_ICONS = { basicos: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.8 8.4L12 13.2L2.2 8.4L12 3.6L21.8 8.4ZM12 14.7L3 9.4V15.6C3 16.1 3.4 16.5 3.9 16.5H20.1C20.6 16.5 21 16.1 21 15.6V9.4L12 14.7Z M22.5 17.4V19.8C22.5 20.1 22.2 20.4 21.9 20.4H2.1C1.8 20.4 1.5 20.1 1.5 19.8V17.4C1.5 17.1 1.8 16.8 2.1 16.8H21.9C22.2 16.8 22.5 17.1 22.5 17.4Z"/></svg>', limpieza: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19.38 2.5H4.62C3.18 2.5 2 3.68 2 5.12V10.62C2 11.23 2.3 11.79 2.76 12.14L10.38 18.06V20.5H4.62C4.07 20.5 3.62 20.95 3.62 21.5C3.62 22.05 4.07 22.5 4.62 22.5H19.38C19.93 22.5 20.38 22.05 20.38 21.5C20.38 20.95 19.93 20.5 19.38 20.5V18.06L21.24 12.14C21.7 11.79 22 11.23 22 10.62V5.12C22 3.68 20.82 2.5 19.38 2.5ZM16.5 8.5H14.5V6.5H16.5V8.5Z"/></svg>', congelados: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C9.2 2 7 4.2 7 7V7.4C4.8 8.1 3.1 9.9 2.4 12C1.7 14.1 2.3 16.4 3.7 17.8L9.4 23.5C9.8 23.9 10.4 24 11 24H13C13.6 24 14.2 23.9 14.6 23.5L20.3 17.8C21.7 16.4 22.3 14.1 21.6 12C20.9 9.9 19.2 8.1 17 7.4V7C17 4.2 14.8 2 12 2ZM12 3.5C14 3.5 15.5 5 15.5 7V9.5H8.5V7C8.5 5 10 3.5 12 3.5ZM10.5 11H13.5V12.5H10.5V11ZM10.5 14H13.5V15.5H10.5V14ZM7.5 11H9V12.5H7.5V11ZM7.5 14H9V15.5H7.5V14ZM15 11H16.5V12.5H15V11ZM15 14H16.5V15.5H15V14Z"/></svg>', carnes: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M9.81 12.56C9.21 13.56 8.13 14.25 7 14.25C5.34 14.25 4 12.9 4 11.25S5.34 8.25 7 8.25C8.13 8.25 9.21 8.94 9.81 9.94C10.74 9.35 11.84 9 13 9C14.76 9 16.32 10.03 17.19 11.56C17.79 10.56 18.87 9.88 20 9.88C21.66 9.88 23 11.22 23 12.88S21.66 15.88 20 15.88C18.87 15.88 17.79 15.19 17.19 14.19C16.32 15.72 14.76 16.75 13 16.75C11.84 16.75 10.74 16.4 9.81 15.81C9.07 17.43 7.5 18.7 5.62 19.33L4.93 17.6C6.18 17.2 7.23 16.32 7.76 15.19C5.81 15.19 2 15.76 2 18.25V20C2 20.55 2.45 21 3 21H5C5.55 21 6 20.55 6 20V18.88C6 17.5 8.18 16.94 9.81 12.56Z"/></svg>', rapida: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M11 21H10V14.1L5.6 16.3L4.9 14.8L10.3 12H11V21M13 21V12H13.7L19.1 14.8L18.4 16.3L14 14.1V21H13M6.5 10.4L12 2L17.5 10.4L16 11.1L12 4.1L8 11.1L6.5 10.4Z"/></svg>' };
+    var EMOJI_POOLS = { basico: ['🍞', '🥛', '🍎', '🍌'], lacteos: ['🥛', '🧀', '🍓'], panaderia: ['🍞', '🍩', '🍪'], frutasVerduras: ['🍎', '🍌', '🍇', '🍓', '🥕', '🥦'], limpieza: [SVG_ICONS.limpieza, '🧻', '🧴'], congelados: [SVG_ICONS.congelados, '🍕', '🍗', '🍟'], bebidas: ['🍾', '🔄', '🥛'], carnes: ['🍗', SVG_ICONS.carnes, '🌭'], snacks: ['🍿', '🍩', '🍪', '🍫', '🍬', '🍭', '🍟', '🍕', '🍔', '🌭'], todos: ['🍎','🍌','🍞','🥛','🧀','🍗','🍇','🍓','🥕','🥦','🍕','🍔','🍟','🌭','🍿','🍩','🍪','🍫','🍬','🍭','🔄','🍾',SVG_ICONS.limpieza,'🧻','🧴',SVG_ICONS.congelados,SVG_ICONS.carnes] };
+    var SCREENS = { preloader: document.getElementById('screen-preloader'), playerSelect: document.getElementById('screen-player-select'), createPlayer: document.getElementById('screen-create-player'), levelSelect: document.getElementById('screen-level-select'), game: document.getElementById('screen-game'), };
+    var DOM = { hudLives: document.getElementById('hud-lives'), hudWinsTracker: document.getElementById('hud-wins-tracker'), hudRoundCounter: document.getElementById('hud-round-counter'), hudTimer: document.getElementById('hud-timer'), hudPlayerName: document.getElementById('hud-player-name'), hudLevelName: document.getElementById('hud-level-name'), problemList: document.querySelector('.problem-item-list'), answerDisplay: document.getElementById('answer-display'), paymentDisplay: document.getElementById('payment-display'), paymentBillsContainer: document.getElementById('payment-bills-container'), answerPromptLabel: document.getElementById('answer-prompt-label'), numpadGrid: document.getElementById('numpad-grid'), playerListContainer: document.getElementById('player-list-container'), confirmPlayerBtn: document.getElementById('confirm-player-btn'), showCreatePlayerBtn: document.getElementById('show-create-player-btn'), cancelCreatePlayerBtn: document.getElementById('cancel-create-player-btn'), newPlayerInput: document.getElementById('new-player-input'), virtualKeyboard: document.getElementById('virtual-keyboard-container'), levelSelectGrid: document.getElementById('level-select-grid'), modalContainer: document.getElementById('modal-container'), modalContent: document.getElementById('modal-content'), modalTitle: document.getElementById('modal-title'), modalFeedback: document.getElementById('modal-feedback'), retryBtn: document.getElementById('retry-btn'), backToMenuBtn: document.getElementById('back-to-menu-btn'), summaryCountFree: document.getElementById('summary-count-free'), summaryCountDefective: document.getElementById('summary-count-defective'), summaryCountCanje: document.getElementById('summary-count-canje'), summaryCountX2: document.getElementById('summary-count-x2'), summaryCountX3: document.getElementById('summary-count-x3'), roundFeedback: document.getElementById('round-feedback'), forceFullscreenModal: document.getElementById('force-fullscreen-modal'), reenterFullscreenBtn: document.getElementById('reenter-fullscreen-btn'), helpHudContent: document.getElementById('help-hud-content'), preRoundModal: document.getElementById('pre-round-modal'), /* **NUEVO** */ preRoundContent: document.getElementById('pre-round-content') /* **NUEVO** */ };
+    
+    var LEVEL_CONFIG = [
+        { name: "Básicos", icon: SVG_ICONS.basicos, items: 2, timePerRound: 45, rounds: 10, mods: {}, pool: 'basico', forceQuantityOne: true },
+        { name: "Panadería", icon: "🍞", items: 3, timePerRound: 45, rounds: 10, mods: {}, pool: 'panaderia' },
+        { name: "Lácteos", icon: "🥛", items: 3, timePerRound: 50, rounds: 10, mods: { free: 0.3 }, pool: 'lacteos' },
+        { name: "Frutería", icon: "🍓", items: 4, timePerRound: 50, rounds: 10, mods: { defective: 0.25 }, pool: 'frutasVerduras' },
+        { name: "Limpieza", icon: SVG_ICONS.limpieza, items: 4, timePerRound: 55, rounds: 10, mods: { discount: 3 }, pool: 'limpieza' },
+        { name: "Congelados", icon: SVG_ICONS.congelados, items: 5, timePerRound: 60, rounds: 10, mods: { taxed: 2 }, pool: 'congelados' },
+        { name: "Bebidas", icon: "🍾", items: 5, timePerRound: 60, rounds: 10, mods: { canje: 0.3 }, pool: 'bebidas' },
+        { name: "Carnicería", icon: "🥩", items: 5, timePerRound: 70, rounds: 10, mods: { taxed: 4, discount: 5 }, pool: 'carnes' },
+        { name: "Snacks", icon: "🍿", items: 6, timePerRound: 75, rounds: 10, mods: { free: 0.2, defective: 0.2, canje: 0.15 }, pool: 'snacks' },
+        { name: "Caja Rápida", icon: SVG_ICONS.rapida, items: 7, timePerRound: 90, rounds: 10, mods: { free: 0.15, defective: 0.15, discount: 5, taxed: 5, canje: 0.15 }, pool: 'todos' }
+    ];
+
+    var gameState = { players: {}, currentPlayerName: null, newPlayerName: "", currentLevelName: "", activeScreenId: 'preloader', specialCounts: { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 }, lastProblemItems: [], totalCost: 0, paymentAmount: 0, paymentStringHTML: "", isWaitingForFeedbackClick: false, isPausedForPreRound: false /* **NUEVO** */ };
+    var timerInterval;
+    var roundFeedbackTimeout;
+
+    // --- 2. GESTIÓN DE JUGADORES ---
+    function loadPlayers() { try { var savedPlayers = localStorage.getItem('supermercadoPlayers'); if (savedPlayers) { gameState.players = JSON.parse(savedPlayers); if (typeof gameState.players !== 'object' || gameState.players === null) throw new Error("Invalid player data format"); } else { throw new Error("No player data found"); } } catch (error) { console.warn("Error loading players or data corrupt:", error.message, ". Resetting to default."); gameState.players = { "INVITADO": { unlockedLevel: 0, stars: [] } }; savePlayers(); } }
+    function savePlayers() { try { localStorage.setItem('supermercadoPlayers', JSON.stringify(gameState.players)); } catch (error) { console.error("Error saving player data:", error); } }
+    function renderPlayerList() { DOM.playerListContainer.innerHTML = ''; Object.keys(gameState.players).forEach(function(name) { var card = document.createElement('button'); card.className = 'player-card'; if (name === gameState.currentPlayerName) card.classList.add('selected'); var nameSpan = document.createElement('span'); nameSpan.textContent = name; card.appendChild(nameSpan); if (name !== "INVITADO") { var deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-player-btn'; deleteBtn.textContent = '✖'; deleteBtn.onclick = function(e) { e.stopPropagation(); deletePlayer(name); }; card.appendChild(deleteBtn); } card.onclick = function() { selectPlayer(name); }; DOM.playerListContainer.appendChild(card); }); }
+    function selectPlayer(name) { gameState.currentPlayerName = name; DOM.confirmPlayerBtn.classList.remove('disabled'); renderPlayerList(); }
+    function deletePlayer(name) { if (name === "INVITADO" || !gameState.players[name]) return; if (confirm('¿Seguro que quieres eliminar al jugador "' + name + '"? Se perderá todo su progreso.')) { delete gameState.players[name]; if (gameState.currentPlayerName === name) { gameState.currentPlayerName = null; DOM.confirmPlayerBtn.classList.add('disabled'); } savePlayers(); renderPlayerList(); } }
+    function createVirtualKeyboard() { var keyLayout = ["1","2","3","4","5","6","7","8","9","0","Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M","DEL","ENTER"]; var rows = [ keyLayout.slice(0, 10), keyLayout.slice(10, 20), keyLayout.slice(20, 29), keyLayout.slice(29, 37), keyLayout.slice(37) ]; rows.forEach(function(row) { var rowDiv = document.createElement('div'); rowDiv.className = 'keyboard-row'; row.forEach(function(key) { var keyBtn = document.createElement('button'); keyBtn.className = 'key'; keyBtn.textContent = key === "DEL" ? "⌫" : (key === "ENTER" ? "↵" : key); keyBtn.dataset.key = key; rowDiv.appendChild(keyBtn); }); DOM.virtualKeyboard.appendChild(rowDiv); }); }
+    function handleKeyboardInput(key) { if (key === 'DEL') { gameState.newPlayerName = gameState.newPlayerName.slice(0, -1); } else if (key === 'ENTER') { addNewPlayer(); } else if (gameState.newPlayerName.length < 10) { gameState.newPlayerName += key; } updateNewPlayerInput(); }
+    function addNewPlayer() { var name = gameState.newPlayerName.trim().toUpperCase(); if (name.length === 0) { alert("El nombre no puede estar vacío."); return; } if (gameState.players[name]) { alert("Ese nombre de jugador ya existe."); return; } gameState.players[name] = { unlockedLevel: 0, stars: [] }; savePlayers(); selectPlayer(name); showScreen('playerSelect'); }
+    function updateNewPlayerInput() { DOM.newPlayerInput.textContent = gameState.newPlayerName || ""; }
+    function clearNewPlayerInput() { gameState.newPlayerName = ""; updateNewPlayerInput(); }
+
+    // --- 3. LÓGICA DE NAVEGACIÓN Y MENÚS ---
+    function showScreen(screenId) { console.log(`Intentando mostrar pantalla: ${screenId}`); var activeScreens = document.querySelectorAll('.screen.active'); activeScreens.forEach(function(s) { s.classList.remove('active'); }); if (SCREENS[screenId]) { SCREENS[screenId].classList.add('active'); gameState.activeScreenId = screenId; console.log(`Pantalla ${screenId} mostrada.`); } else { console.error(`Error: La pantalla con ID '${screenId}' no existe en SCREENS.`); return; } if (screenId === 'playerSelect') renderPlayerList(); if (screenId === 'levelSelect') populateLevelSelect(); if (screenId === 'createPlayer') clearNewPlayerInput(); }
+    function enterFullscreen() { console.log("Intentando entrar en pantalla completa..."); var elem = document.documentElement; try { if (elem.requestFullscreen) { elem.requestFullscreen(); } else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } else if (elem.mozRequestFullScreen) { elem.mozRequestFullScreen(); } else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); } console.log("Solicitud de pantalla completa enviada."); hideForceFullscreenModal(); } catch (err) { console.error("Error al intentar entrar en pantalla completa:", err.message); } }
+    function showForceFullscreenModal() { if (DOM.forceFullscreenModal) { console.log("Mostrando modal para forzar pantalla completa."); DOM.forceFullscreenModal.style.display = 'flex'; } else { console.error("Modal #force-fullscreen-modal no encontrado."); } }
+    function hideForceFullscreenModal() { if (DOM.forceFullscreenModal) { DOM.forceFullscreenModal.style.display = 'none'; } }
+    function checkFullscreen() { var isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement; if (!isFullscreen && DOM.forceFullscreenModal.style.display !== 'flex' && (gameState.activeScreenId === 'game' || gameState.activeScreenId === 'levelSelect' || gameState.activeScreenId === 'playerSelect' )) { console.log("Salida de pantalla completa detectada."); showForceFullscreenModal(); } else if (isFullscreen && DOM.forceFullscreenModal.style.display === 'flex') { hideForceFullscreenModal(); } }
+    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [] }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; } savePlayers(); } if (!playerData.stars) playerData.stars = []; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; } else { levelBtn.dataset.levelIndex = index; levelBtn.addEventListener('click', function() { console.log(`Iniciando nivel ${index}`); startGame(index); }); } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
+
+    // --- 4. LÓGICA PRINCIPAL DEL JUEGO ---
+    function startGame(levelIndex) { var config = LEVEL_CONFIG[levelIndex]; gameState.levelIndex = levelIndex; gameState.config = config; gameState.currentLevelName = config.name; gameState.lives = 3; gameState.wins = 0; gameState.currentAnswer = ''; gameState.correctAnswer = 0; gameState.roundResults = []; gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 }; gameState.lastProblemItems = []; gameState.totalCost = 0; gameState.paymentAmount = 0; gameState.paymentStringHTML = ""; console.log("Iniciando juego - Nivel:", levelIndex); showScreen('game'); updateGameHUDInfo(); updateHelpHUD(); nextRound(); }
+    // **CAMBIO**: nextRound ahora llama a preRoundModal
+    function nextRound() {
+        console.log("Iniciando nextRound...");
+        gameState.currentAnswer = '';
+        updateAnswerDisplay();
+        var problem = generateProblem();
+        gameState.correctAnswer = problem.total;
+        gameState.lastProblemItems = problem.items;
+        renderProblem(problem.items);
+        updateHUD();
+        updateSpecialItemsSummary();
+        
+        // **NUEVO**: En lugar de iniciar el timer, mostrar el modal de preparación
+        showPreRoundModal();
+    }
+    function startTimer() { clearInterval(timerInterval); gameState.timeLeft = gameState.config.timePerRound * 10; DOM.hudTimer.classList.remove('low-time'); updateTimerDisplay(); timerInterval = setInterval(function() { if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; /* **CAMBIO**: Pausar timer */ gameState.timeLeft--; updateTimerDisplay(); if (Math.floor(gameState.timeLeft / 10) <= 10) { DOM.hudTimer.classList.add('low-time'); } else { DOM.hudTimer.classList.remove('low-time'); } if (gameState.timeLeft <= 0) { console.log("Tiempo agotado!"); clearInterval(timerInterval); checkAnswer(); } }, 100); }
+    function updateTimerDisplay() { var totalTenths = Math.max(0, gameState.timeLeft); var totalSeconds = Math.floor(totalTenths / 10); var minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0'); var seconds = (totalSeconds % 60).toString().padStart(2, '0'); var tenths = (totalTenths % 10).toString(); DOM.hudTimer.textContent = minutes + ':' + seconds + '.' + tenths; }
+    function stopTimer() { console.log("Deteniendo temporizador"); clearInterval(timerInterval); }
+    function updateHUD() { var livesHTML = ''; var totalLives = 3; for (var i = 1; i <= totalLives; i++) { livesHTML += (i <= gameState.lives) ? '❤️' : '<span class="lost-life">❤️</span>'; } DOM.hudLives.innerHTML = livesHTML; if (DOM.hudRoundCounter) { DOM.hudRoundCounter.textContent = "RONDA: " + (gameState.roundResults.length + 1) + "/" + gameState.config.rounds; } DOM.hudWinsTracker.innerHTML = ''; for (var i = 0; i < gameState.config.rounds; i++) { var dot = document.createElement('div'); dot.className = 'win-dot'; if (i === gameState.roundResults.length) dot.classList.add('current'); if (gameState.roundResults[i] === true) dot.classList.add('correct'); else if (gameState.roundResults[i] === false) dot.classList.add('incorrect'); DOM.hudWinsTracker.appendChild(dot); } }
+    function updateGameHUDInfo() { if(DOM.hudPlayerName) DOM.hudPlayerName.textContent = gameState.currentPlayerName || 'INVITADO'; if(DOM.hudLevelName) DOM.hudLevelName.textContent = gameState.currentLevelName || 'NIVEL DESCONOCIDO'; }
+    function updateSpecialItemsSummary() { DOM.summaryCountFree.textContent = gameState.specialCounts.free; DOM.summaryCountDefective.textContent = gameState.specialCounts.defective; DOM.summaryCountCanje.textContent = gameState.specialCounts.canje; if (DOM.summaryCountX2) DOM.summaryCountX2.textContent = gameState.specialCounts.x2; if (DOM.summaryCountX3) DOM.summaryCountX3.textContent = gameState.specialCounts.x3; }
+    function updateHelpHUD() {
+        var helpHTML = '';
+        var unlockedLevel = 0;
+        if (gameState.players[gameState.currentPlayerName]) { unlockedLevel = gameState.players[gameState.currentPlayerName].unlockedLevel; }
+        if (unlockedLevel >= 2) { helpHTML += '<span>[GRATIS] = 0</span>'; }
+        if (unlockedLevel >= 3) { helpHTML += '<span>[DEFECT.] = 0</span>'; }
+        if (unlockedLevel >= 4) { helpHTML += '<span>[DESC. -N] = Restar N</span>'; }
+        if (unlockedLevel >= 5) { helpHTML += '<span>[IMP. +N] = Sumar N</span>'; }
+        if (unlockedLevel >= 6) { helpHTML += '<span>[CANJE] = Restar Valor</span>'; }
+        if (unlockedLevel >= 2) { helpHTML += '<span>[VUELTO] = Pago - Total</span>'; }
+        if (DOM.helpHudContent) { DOM.helpHudContent.innerHTML = helpHTML || '<span>¡Calcula el total!</span>'; }
+    }
+
+    // --- 5. GENERACIÓN DE PROBLEMAS Y CÁLCULOS ---
+    function generatePayment(totalCost, levelIndex) {
+        if (levelIndex < 2) {
+            DOM.paymentDisplay.style.display = 'none';
+            DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
+            return { amount: 0, html: "" };
+        }
+        var paymentAmount = 0;
+        var paymentHTML = "";
+        var bills = [10, 20, 50, 100, 200];
+        if (levelIndex >= 2 && levelIndex <= 4) {
+            if (Math.random() < 0.5) {
+                DOM.paymentDisplay.style.display = 'none';
+                DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
+                return { amount: 0, html: "" };
+            }
+            for (var i = 0; i < bills.length; i++) {
+                if (bills[i] > totalCost) {
+                    paymentAmount = bills[i];
+                    paymentHTML = '<div class="bill bill-' + bills[i] + '">' + bills[i] + '</div>';
+                    break;
+                }
+            }
+            if (paymentAmount === 0) { 
+                paymentAmount = Math.ceil(totalCost / 100) * 100;
+                paymentHTML = '<div class="bill bill-100">' + paymentAmount + '</div>';
+            }
+        }
+        else {
+            var billPool = [10, 20, 50, 100];
+            var paymentParts = [];
+            var attempts = 0;
+            var numBills = (Math.random() < 0.5) ? 2 : 3;
+            var targetMinPayment = totalCost + 10;
+            var targetMaxPayment = totalCost + 40;
+            while (attempts < 20) {
+                paymentAmount = 0;
+                paymentParts = [];
+                for (var j = 0; j < numBills; j++) {
+                    var bill = billPool[Math.floor(Math.random() * billPool.length)];
+                    paymentAmount += bill;
+                    paymentParts.push(bill);
+                }
+                if (paymentAmount > totalCost && paymentAmount < targetMaxPayment) {
+                    break; 
+                }
+                attempts++;
+            }
+            if (paymentAmount <= totalCost || paymentAmount >= targetMaxPayment) {
+                 for (var k = 0; k < bills.length; k++) {
+                    if (bills[k] > totalCost) { paymentAmount = bills[k]; paymentHTML = '<div class="bill bill-' + bills[k] + '">' + bills[k] + '</div>'; break; }
+                }
+                if (paymentAmount === 0) { paymentAmount = 200; paymentHTML = '<div class="bill bill-200">200</div>'; }
+            } else {
+                 paymentParts.sort(function(a,b){ return b - a; });
+                 paymentHTML = paymentParts.map(function(bill) {
+                     return '<div class="bill bill-' + bill + '">' + bill + '</div>';
+                 }).join('');
+            }
+        }
+        DOM.paymentDisplay.style.display = 'flex';
+        DOM.answerPromptLabel.textContent = 'CALCULAR VUELTO:';
+        DOM.paymentDisplay.classList.remove('pulse-payment-anim');
+        void DOM.paymentDisplay.offsetWidth;
+        DOM.paymentDisplay.classList.add('pulse-payment-anim');
+        setTimeout(function() { DOM.paymentDisplay.classList.remove('pulse-payment-anim'); }, 1600); 
+        DOM.paymentBillsContainer.innerHTML = paymentHTML + ' Bs.';
+        gameState.paymentAmount = paymentAmount;
+        gameState.paymentStringHTML = paymentHTML;
+        return { amount: paymentAmount, html: paymentHTML };
+    }
+    function generateProblem() {
+        var items = [];
+        var totalCost = 0;
+        var hasSpecialStateItem = false;
+        gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 };
+        var config = gameState.config;
+        var mods = config.mods;
+        var pool = EMOJI_POOLS[config.pool || 'todos'];
+        var levelIndex = gameState.levelIndex;
+        var minPrice, maxPrice;
+        if (levelIndex === 0) { minPrice = 1; maxPrice = 6; }
+        else if (levelIndex === 1) { minPrice = 2; maxPrice = 9; }
+        else if (levelIndex === 2) { minPrice = 3; maxPrice = 12; }
+        else if (levelIndex === 3) { minPrice = 4; maxPrice = 15; }
+        else { minPrice = 5; maxPrice = 15; }
+        var priceRange = maxPrice - minPrice + 1;
+        var maxMultipliedItems = Math.floor(config.items * 0.4);
+        var multipliedCount = 0;
+        var priceMap = {};
+        pool.forEach(function(emoji) { priceMap[emoji] = Math.floor(Math.random() * priceRange) + minPrice; });
+        var shuffledPool = pool.slice(0).sort(function() { return 0.5 - Math.random() });
+        var itemsForThisRound = shuffledPool.slice(0, config.items);
+        console.log(`Generando problema - Nivel ${levelIndex}, Precios: ${minPrice}-${maxPrice}, Max Multiplicados: ${maxMultipliedItems}`);
+        for (var i = 0; i < itemsForThisRound.length; i++) {
+            var emoji = itemsForThisRound[i];
+            var quantity = 1;
+            var maxQuantityAllowed = levelIndex === 0 ? 1 : (levelIndex === 1 ? 2 : (levelIndex === 2 ? 3 : 3));
+            if (levelIndex === 1) maxQuantityAllowed = 2; 
+            if (multipliedCount < maxMultipliedItems && maxQuantityAllowed > 1) {
+                quantity = Math.floor(Math.random() * maxQuantityAllowed) + 1;
+                if (quantity > 1) { multipliedCount++; }
+            } else { quantity = 1; }
+            var price = priceMap[emoji];
+            var item = { emoji: emoji, price: price, quantity: quantity, mods: [] };
+            var canBeSpecial = quantity === 1;
+            if (canBeSpecial && !hasSpecialStateItem) {
+                if (mods.free && Math.random() < mods.free) { item.mods.push('free'); hasSpecialStateItem = true; }
+                else if (mods.defective && Math.random() < mods.defective) { item.mods.push('defective'); hasSpecialStateItem = true; }
+                else if (mods.canje && Math.random() < mods.canje) { item.mods.push('canje'); hasSpecialStateItem = true; }
+            }
+            var isStaticItem = item.mods.includes('free') || item.mods.includes('defective') || item.mods.includes('canje');
+            if (!isStaticItem) {
+                 if (mods.discount && Math.random() < mods.discount) item.mods.push('discount');
+                 if (mods.taxed && Math.random() < mods.taxed) item.mods.push('taxed');
+            }
+            var itemTotal = item.price * item.quantity;
+            if(item.mods.includes('canje')) { itemTotal = -itemTotal; if(item.emoji === '🔄') item.emoji = '🍾'; }
+            else { 
+                var discountAmount = 0; var taxAmount = 0;
+                if (item.mods.includes('discount')) { discountAmount = config.mods.discount || 0; }
+                if (item.mods.includes('taxed')) { taxAmount = config.mods.taxed || 0; }
+                itemTotal = itemTotal - discountAmount + taxAmount;
+            }
+            if(item.mods.includes('free')) itemTotal = 0;
+            if(item.mods.includes('defective')) itemTotal = 0;
+            itemTotal = item.mods.includes('canje') ? itemTotal : Math.max(0, itemTotal);
+            if (item.mods.includes('free')) gameState.specialCounts.free++;
+            if (item.mods.includes('defective')) gameState.specialCounts.defective++;
+            if (item.mods.includes('canje')) gameState.specialCounts.canje++;
+            if (item.quantity === 2) gameState.specialCounts.x2++;
+            if (item.quantity === 3) gameState.specialCounts.x3++;
+            totalCost += itemTotal; items.push(item);
+            console.log(`   Item ${i}: ${item.emoji}, Qty: ${item.quantity}, Price: ${item.price}, Mods: ${item.mods.join(',')}, ItemTotal: ${itemTotal}`);
+        }
+        gameState.totalCost = totalCost;
+        var paymentInfo = generatePayment(totalCost, levelIndex);
+        var finalAnswer;
+        if (paymentInfo.amount === 0) { finalAnswer = totalCost; }
+        else { finalAnswer = paymentInfo.amount - totalCost; }
+        console.log(`   Costo Total: ${totalCost}, Paga Con: ${paymentInfo.amount}, Respuesta Correcta: ${finalAnswer}`);
+        return { items: items, total: finalAnswer };
+    }
+    function renderProblem(items) {
+        DOM.problemList.innerHTML = '';
+        items.forEach(function(item, index) {
+            var card = document.createElement('div');
+            card.className = 'product-card';
+            var ribbonHTML = '';
+            if (item.quantity > 1) { ribbonHTML = '<div class="quantity-ribbon quantity-x' + item.quantity + '"><span>x' + item.quantity + '</span></div>'; }
+            var stateTagHTML = '';
+            var priceDisplay = '' + item.price;
+            if (item.mods.includes('free')) { stateTagHTML = '<div class="product-state-tag tag-free">GRATIS</div>'; }
+            else if (item.mods.includes('defective')) { stateTagHTML = '<div class="product-state-tag tag-defective">DEFECTUOSO</div>'; }
+            else if (item.mods.includes('canje')) { stateTagHTML = '<div class="product-state-tag tag-canje">CANJE</div>'; priceDisplay = '-' + item.price; card.classList.add('canje'); }
+            else if (item.mods.includes('discount')) { stateTagHTML = '<div class="product-state-tag tag-discount">DESC. -' + (gameState.config.mods.discount || 0) + '</div>'; }
+            else if (item.mods.includes('taxed')) { stateTagHTML = '<div class="product-state-tag tag-taxed">IMP. +' + (gameState.config.mods.taxed || 0) + '</div>'; }
+            else { stateTagHTML = '<div style="height: 25px;"></div>'; }
+            
+            card.innerHTML =
+                ribbonHTML +
+                '<div class="product-emoji-container">' + item.emoji + '</div>' +
+                '<div class="product-price-line">' +
+                '    <div class="product-price">' + priceDisplay + '</div>' +
+                '</div>' +
+                stateTagHTML;
+            
+            card.style.animationDelay = (index * 100) + 'ms';
+            DOM.problemList.appendChild(card);
+        });
+    }
+
+    // --- 6. MANEJO DE ENTRADAS ---
+    function handleNumpadInput(key) { if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; console.log(`Numpad input: ${key}`); if (key === 'del') { gameState.currentAnswer = gameState.currentAnswer.slice(0, -1); } else if (key === 'enter') { checkAnswer(); } else if (gameState.currentAnswer.length < 6) { if (key === '-' && gameState.currentAnswer.length === 0) { gameState.currentAnswer += key; } else if (!isNaN(parseInt(key))) { gameState.currentAnswer += key; } else { console.warn(`Input no válido ignorado: ${key}`); } } updateAnswerDisplay(); }
+    function updateAnswerDisplay() { DOM.answerDisplay.textContent = '' + (gameState.currentAnswer || ' '); if (gameState.currentAnswer.startsWith('-')) { DOM.answerDisplay.textContent = '-' + (gameState.currentAnswer.substring(1) || ' '); } }
+    function showRoundFeedback(isCorrect) { if (!DOM.roundFeedback) { console.error("Elemento roundFeedback no encontrado"); return; } clearTimeout(roundFeedbackTimeout); var feedbackHTML = ''; if (isCorrect) { var duration = 1000; DOM.roundFeedback.style.animationDuration = duration + 'ms'; feedbackHTML = '<h3 class="correct">✅ ¡CORRECTO!</h3>'; DOM.roundFeedback.className = 'correct'; roundFeedbackTimeout = setTimeout(hideRoundFeedback, duration); } else { DOM.roundFeedback.style.animationDuration = '0.3s'; var correctAnswerDisplay = gameState.correctAnswer < 0 ? '-' + Math.abs(gameState.correctAnswer) : '' + gameState.correctAnswer; var calcSummaryHTML = '<div class="feedback-calc-summary">'; gameState.lastProblemItems.forEach(function(item) { var itemCalcText = '' + item.price; if (item.quantity > 1) itemCalcText += ' x' + item.quantity; var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = []; if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE'); } else { var discountAmount = 0; var taxAmount = 0; if (item.mods.includes('discount')) { discountAmount = (gameState.config.mods.discount || 0); modsApplied.push('DESC. -' + discountAmount); } if (item.mods.includes('taxed')) { taxAmount = (gameState.config.mods.taxed || 0); modsApplied.push('IMP. +' + taxAmount); } finalValue = finalValue - discountAmount + taxAmount; } if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); } if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DEFECT.'); } finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue); calcSummaryHTML += '<div class="feedback-calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalcText + ' ' + (modsApplied.length > 0 ? '['+modsApplied.join('/')+']' : '') + '</span> <span class="price">' + (finalValue >= 0 ? finalValue : '('+Math.abs(finalValue)+')') + '</span> </div>'; }); calcSummaryHTML += '</div>'; var totalDisplay = (gameState.paymentAmount > 0) ? 'Total: ' + gameState.totalCost + ' / Pago: ' + gameState.paymentAmount : 'Total Correcto:'; if (gameState.paymentAmount > 0) { feedbackHTML = ' <h3 class="incorrect">❌ INCORRECTO</h3> ' + calcSummaryHTML + ' <div class="feedback-correct-total" style="font-size: 1.1rem;">Total: ' + gameState.totalCost + ' / Pago: ' + gameState.paymentAmount + ' / Vuelto: <span>' + correctAnswerDisplay + '</span></div> '; } else { feedbackHTML = ' <h3 class="incorrect">❌ INCORRECTO</h3> ' + calcSummaryHTML + ' <div class="feedback-correct-total">Correcto: <span>' + correctAnswerDisplay + '</span></div> '; } DOM.roundFeedback.className = 'incorrect'; gameState.isWaitingForFeedbackClick = true; } DOM.roundFeedback.innerHTML = feedbackHTML + (isCorrect ? '' : '<p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">(Haz clic o presiona una tecla para continuar)</p>'); DOM.roundFeedback.style.animation = 'none'; void DOM.roundFeedback.offsetWidth; DOM.roundFeedback.classList.add('visible'); if (!isCorrect) { DOM.roundFeedback.style.animation = 'feedback-pop-in 0.3s forwards'; } else { DOM.roundFeedback.style.animation = 'feedback-anim 1s ease-out forwards'; } }
+    function hideRoundFeedback() { if (DOM.roundFeedback) { DOM.roundFeedback.style.animation = 'feedback-fade-out 0.3s forwards'; setTimeout(function() { DOM.roundFeedback.classList.remove('visible'); }, 300); } }
+    function handleFeedbackDismiss() { if (!gameState.isWaitingForFeedbackClick) return; console.log("Feedback de error descartado por el usuario."); gameState.isWaitingForFeedbackClick = false; hideRoundFeedback(); setTimeout(function() { if (gameState.lives <= 0) { endGame(false); } else { nextRound(); } }, 300); }
+    function checkAnswer() { if (gameState.isWaitingForFeedbackClick) return; console.log("Verificando respuesta..."); var userAnswer = parseInt(gameState.currentAnswer, 10) || 0; console.log(`   Usuario: ${userAnswer}, Correcta: ${gameState.correctAnswer}`); if (userAnswer === gameState.correctAnswer) { handleCorrectAnswer(); } else { handleIncorrectAnswer(); } }
+    function handleCorrectAnswer() { console.log("Respuesta CORRECTA"); stopTimer(); showRoundFeedback(true); gameState.wins++; gameState.roundResults.push(true); updateHUD(); setTimeout(function() { if (gameState.wins >= gameState.config.rounds) { endGame(true); } else { nextRound(); } }, 1000); }
+    function handleIncorrectAnswer() { console.log("Respuesta INCORRECTA"); stopTimer(); showRoundFeedback(false); DOM.answerDisplay.parentElement.classList.add('answer-error-flash'); setTimeout(function() { DOM.answerDisplay.parentElement.classList.remove('answer-error-flash'); }, 400); DOM.hudLives.classList.add('shake-animation'); setTimeout(function() { DOM.hudLives.classList.remove('shake-animation'); }, 500); gameState.lives--; gameState.roundResults.push(false); updateHUD(); }
+    function showModal() { console.log("Intentando mostrar modal..."); try { if (!DOM.modalContainer) { console.error("Error: modalContainer no encontrado en DOM."); return; } DOM.modalContainer.style.display = 'flex'; if (DOM.modalContent) { DOM.modalContent.classList.remove('pop-in'); void DOM.modalContent.offsetWidth; DOM.modalContent.classList.add('pop-in'); } else { console.error("Error: modalContent no encontrado en DOM."); } console.log("Modal display set to flex."); } catch(error) { console.error("Error en showModal:", error); } }
+    function hideModal() { console.log("Intentando ocultar modal..."); if (DOM.modalContainer) { DOM.modalContainer.style.display = 'none'; console.log("Modal ocultado."); } else { console.error("Error: modalContainer no encontrado al intentar ocultar."); } }
+    
+    // **NUEVO**: Modal de Preparación
+    function showPreRoundModal() {
+        console.log("Mostrando Modal de Preparación...");
+        gameState.isPausedForPreRound = true; // Pausar
+        var alertsHTML = '';
+        
+        // 1. Tarea
+        if (gameState.paymentAmount > 0) {
+            alertsHTML += '<div class="alert-section"><div class="alert-title">Tarea</div>';
+            alertsHTML += '<div class="alert-item">¡CALCULAR VUELTO!</div>';
+            alertsHTML += '<div class="alert-item">Pago: <div class="payment-bills-modal">' + gameState.paymentStringHTML + ' Bs.</div></div></div>';
+        } else {
+            alertsHTML += '<div class="alert-section"><div class="alert-title">Tarea</div><div class="alert-item">CALCULAR TOTAL</div></div>';
+        }
+
+        // 2. Modificadores
+        var modsHTML = '';
+        gameState.lastProblemItems.forEach(function(item) {
+            var emoji = '<span class="emoji">' + item.emoji + '</span>';
+            if (item.quantity > 1) {
+                modsHTML += '<div class="alert-item">¡PROMO ' + item.quantity + '! ' + emoji + ' se cobra ' + item.quantity + ' veces.</div>';
+            }
+            if (item.mods.includes('free')) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-error);">¡OFERTA! ' + emoji + ' es GRATIS.</div>';
+            }
+            if (item.mods.includes('defective')) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-danger);">¡DAÑADO! No cobres ' + emoji + '.</div>';
+            }
+            if (item.mods.includes('canje')) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-canje);">¡CANJE! Resta el valor de ' + emoji + '.</div>';
+            }
+            if (item.mods.includes('discount')) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-green);">¡DESC! ' + emoji + ' tiene -' + (gameState.config.mods.discount || 0) + ' Bs.</div>';
+            }
+            if (item.mods.includes('taxed')) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-blue);">¡IMP! ' + emoji + ' tiene +' + (gameState.config.mods.taxed || 0) + ' Bs.</div>';
+            }
+        });
+
+        if (modsHTML !== '') {
+            alertsHTML += '<div class="alert-section"><div class="alert-title">Modificadores</div>' + modsHTML + '</div>';
+        }
+
+        DOM.preRoundContent.innerHTML =
+            '<h2>¡ATENCIÓN!</h2>' +
+            alertsHTML +
+            '<p class="dismiss-prompt">[ Haz clic o presiona Enter para Comenzar ]</p>';
+        
+        DOM.preRoundModal.style.display = 'flex';
+        DOM.preRoundContent.classList.remove('pop-in');
+        void DOM.preRoundContent.offsetWidth;
+        DOM.preRoundContent.classList.add('pop-in');
+    }
+
+    function hidePreRoundModal() {
+        if (!gameState.isPausedForPreRound) return; // Evitar doble ejecución
+        console.log("Ocultando Modal de Preparación. Iniciando ronda.");
+        gameState.isPausedForPreRound = false;
+        DOM.preRoundModal.style.display = 'none';
+        startTimer(); // **AQUÍ ES DONDE SE INICIA EL TIMER**
+    }
+    
+    function generateCalculationExplanationHTML(items) { var explanationHTML = '<div class="calculation-details"><h4>Detalle del Cálculo Final:</h4>'; var calculatedTotal = 0; items.forEach(function(item) { var itemCalc = '' + item.price; if (item.quantity > 1) itemCalc += ' x ' + item.quantity; var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = []; if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE (-)'); } else { var discountAmount = 0; var taxAmount = 0; if (item.mods.includes('discount')) { discountAmount = gameState.config.mods.discount || 0; modsApplied.push('DESC. -' + discountAmount); } if (item.mods.includes('taxed')) { taxAmount = gameState.config.mods.taxed || 0; modsApplied.push('IMP. +' + taxAmount); } finalValue = finalValue - discountAmount + taxAmount; } if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); } if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DEFECT.'); } finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue); calculatedTotal += finalValue; explanationHTML += ' <div class="calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalc + ' ' + (modsApplied.length > 0 ? '('+modsApplied.join(', ')+')' : '') + ' =</span> <span class="price">' + finalValue + '</span> </div>'; }); if (gameState.paymentAmount > 0) { explanationHTML += '<div class="calc-total" style="text-align: right;">Total Compra: <span>' + calculatedTotal + '</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">Pago Con: <span style="display: flex; gap: 4px; flex-wrap: wrap;">' + gameState.paymentStringHTML + ' Bs.</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; font-size: 1.2rem;">Vuelto Correcto: <span>' + (gameState.paymentAmount - calculatedTotal) + '</span></div>'; } else { explanationHTML += '<div class="calc-total">Total Calculado: <span>' + calculatedTotal + '</span></div>'; } explanationHTML += '</div>'; return explanationHTML; }
+    function endGame(isWin) {
+        console.log(`Fin del juego. Resultado: ${isWin ? 'VICTORIA' : 'DERROTA'}`);
+        stopTimer();
+        try {
+            var playerData = gameState.players[gameState.currentPlayerName];
+            var currentLevelIndex = gameState.levelIndex;
+            if (isWin) {
+                DOM.modalTitle.textContent = "MISIÓN CUMPLIDA";
+                DOM.modalTitle.classList.remove('fail');
+                var stars = 1;
+                if (gameState.lives === 3) stars = 3;
+                else if (gameState.lives === 2) stars = 2;
+                if (!playerData.stars) playerData.stars = [];
+                if (!playerData.stars[currentLevelIndex] || stars > playerData.stars[currentLevelIndex]) {
+                    playerData.stars[currentLevelIndex] = stars;
+                    console.log(`Nuevo récord de ${stars} estrellas para Nivel ${currentLevelIndex}`);
+                }
+                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p>";
+                if (playerData && currentLevelIndex === playerData.unlockedLevel && currentLevelIndex < LEVEL_CONFIG.length - 1) {
+                    playerData.unlockedLevel = playerData.unlockedLevel + 1;
+                    console.log(`Nivel ${playerData.unlockedLevel} desbloqueado para ${gameState.currentPlayerName}`);
+                }
+                savePlayers();
+            } else {
+                DOM.modalTitle.textContent = "MISIÓN FALLIDA";
+                DOM.modalTitle.classList.add('fail');
+                var userAnswer = parseInt(gameState.currentAnswer, 10) || 0;
+                var userAnswerDisplay = gameState.currentAnswer.startsWith('-') ? '-' + Math.abs(userAnswer) : '' + userAnswer;
+                var correctAnswerDisplay = gameState.correctAnswer < 0 ? '-' + Math.abs(gameState.correctAnswer) : '' + gameState.correctAnswer;
+                var explanationHTML = generateCalculationExplanationHTML(gameState.lastProblemItems);
+                var feedbackGridHTML = '<div class="feedback-grid">';
+                if (gameState.paymentAmount > 0) {
+                    feedbackGridHTML += '<span>TOTAL COMPRA:</span><span class="answer-value correct">' + gameState.totalCost + '</span>';
+                    feedbackGridHTML += '<span>PAGO CON:</span><span class="answer-value correct" style="display: flex; flex-wrap: wrap; gap: 4px; justify-self: start;">' + gameState.paymentStringHTML + ' Bs.</span>';
+                    feedbackGridHTML += '<span>TU VUELTO:</span><span class="answer-value user">' + userAnswerDisplay + '</span>';
+                    feedbackGridHTML += '<span>VUELTO CORRECTO:</span><span class="answer-value correct">' + correctAnswerDisplay + '</span>';
+                } else {
+                     feedbackGridHTML += '<span>TU RESPUESTA:</span><span class="answer-value user">' + userAnswerDisplay + '</span>';
+                     feedbackGridHTML += '<span>TOTAL CORRECTO:</span><span class="answer-value correct">' + correctAnswerDisplay + '</span>';
+                }
+                feedbackGridHTML += '</div>';
+                DOM.modalFeedback.innerHTML = ' <p>Se han detectado inconsistencias críticas.</p> ' + feedbackGridHTML + ' ' + explanationHTML + ' ';
+            }
+            showModal();
+        } catch (error) {
+            console.error("Error al preparar o mostrar el modal en endGame:", error);
+        }
+    }
+
+
+    // --- 7. ASIGNACIÓN DE EVENTOS ---
+    try {
+        console.log("Asignando event listeners...");
+        document.getElementById('start-fullscreen-btn').addEventListener('click', function() { console.log("Start Fullscreen button clicked"); enterFullscreen(); showScreen('playerSelect'); });
+        DOM.confirmPlayerBtn.addEventListener('click', function() { console.log("Confirm Player button clicked"); if (!gameState.currentPlayerName) return; showScreen('levelSelect'); });
+        DOM.showCreatePlayerBtn.addEventListener('click', function() { console.log("Show Create Player button clicked"); showScreen('createPlayer'); });
+        DOM.cancelCreatePlayerBtn.addEventListener('click', function() { console.log("Cancel Create Player button clicked"); showScreen('playerSelect'); });
+        DOM.virtualKeyboard.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleKeyboardInput(key); } });
+        DOM.numpadGrid.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleNumpadInput(key); } });
+        DOM.retryBtn.addEventListener('click', function() { console.log("Retry button clicked"); hideModal(); startGame(gameState.levelIndex); });
+        DOM.backToMenuBtn.addEventListener('click', function() { console.log("Back to Menu button clicked"); hideModal(); showScreen('levelSelect'); });
+        DOM.reenterFullscreenBtn.addEventListener('click', function() { console.log("Re-enter fullscreen button clicked"); enterFullscreen(); });
+        document.addEventListener('fullscreenchange', checkFullscreen);
+        document.addEventListener('webkitfullscreenchange', checkFullscreen);
+        document.addEventListener('mozfullscreenchange', checkFullscreen);
+        document.addEventListener('MSFullscreenChange', checkFullscreen);
+        
+        DOM.roundFeedback.addEventListener('click', handleFeedbackDismiss);
+        DOM.preRoundModal.addEventListener('click', hidePreRoundModal); // **NUEVO**
+        
+        console.log("Event listeners asignados.");
+    } catch (error) {
+        console.error("Error al asignar event listeners:", error);
+    }
+
+    // --- 8. HUEVO DE PASCUA ---
+    var easterEggTimeout;
+    function activateNumpadSolver() { if (!SCREENS.game.classList.contains('active')) return; clearTimeout(easterEggTimeout); var answerString = gameState.correctAnswer.toString(); var delay = 100; answerString.split('').forEach(function(digit) { easterEggTimeout = setTimeout(function() { var keyElement = DOM.numpadGrid.querySelector('.key[data-key="' + (digit === '-' ? '-' : digit) + '"]'); if (keyElement) { handleNumpadInput(digit); keyElement.classList.add('key-flash'); setTimeout(function() { keyElement.classList.remove('key-flash'); }, 200); } }, delay); delay += 250; }); easterEggTimeout = setTimeout(function() { var enterKey = DOM.numpadGrid.querySelector('.key[data-key="enter"]'); if (enterKey) { handleNumpadInput('enter'); enterKey.classList.add('key-flash'); setTimeout(function() { keyElement.classList.remove('key-flash'); }, 200); } }, delay + 100); }
+    document.addEventListener('keydown', function(event) { if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'H') { event.preventDefault(); console.log("Easter Egg Activated!"); activateNumpadSolver(); } });
+
+    // --- 9. SOPORTE TECLADO FÍSICO ---
+    document.addEventListener('keydown', function(event) {
+        // **CAMBIO**: Manejar ambos flags de pausa
+        if (gameState.isWaitingForFeedbackClick) {
+            event.preventDefault();
+            handleFeedbackDismiss();
+            return;
+        }
+        if (gameState.isPausedForPreRound) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                hidePreRoundModal();
+            }
+            return;
+        }
+        
+        if (!SCREENS.game.classList.contains('active') || DOM.modalContainer.style.display === 'flex' || DOM.forceFullscreenModal.style.display === 'flex') { return; }
+        var key = event.key;
+        var targetKey = null;
+        if (!isNaN(parseInt(key))) { targetKey = key; }
+        else if (key === 'Enter') { targetKey = 'enter'; }
+        else if (key === 'Backspace') { targetKey = 'del'; }
+        else if (key === '-' && gameState.currentAnswer.length === 0) { targetKey = '-'; }
+        
+        if (targetKey) {
+            event.preventDefault();
+            var keyElement = DOM.numpadGrid.querySelector('.key[data-key="' + targetKey + '"]');
+            if (keyElement) {
+                keyElement.classList.add('active-keypress');
+                setTimeout(function() { keyElement.classList.remove('active-keypress'); }, 150);
+                handleNumpadInput(targetKey);
+            }
+        }
+    });
+
+
+    // --- INICIALIZACIÓN ---
+    try { console.log("Iniciando carga de jugadores..."); loadPlayers(); console.log("Jugadores cargados. Creando teclado virtual..."); createVirtualKeyboard(); console.log("Teclado virtual creado. Mostrando preloader..."); showScreen('preloader'); console.log("Inicialización completa."); } catch (error) { console.error("Error durante la inicialización:", error); alert("Error crítico durante la inicialización. Revisa la consola (F12) para más detalles."); }
+});
+</script>
+</body>
+</html>
