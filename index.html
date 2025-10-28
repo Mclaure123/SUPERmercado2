@@ -23,7 +23,7 @@
             --bill-50: #9b59b6; /* Violeta */
             --bill-100: #e74c3c; /* Rojo */
             --bill-200: #f1c40f; /* Dorado */
-            
+
             --font-main: "Share Tech Mono", "Noto Color Emoji", monospace;
             --font-system: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Noto Color Emoji";
             --border-radius-main: 12px;
@@ -41,13 +41,13 @@
         /* Oculta scrollbar en Firefox */
         * {
             scrollbar-width: none;
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
         /* --- FIN DE OCULTADOR --- */
-        
+
         html, body { width: 100vw; height: 100vh; overflow: hidden; font-family: var(--font-system); color: var(--color-text); background-color: var(--color-bg); background-image: linear-gradient(rgba(255, 193, 7, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(255, 193, 7, 0.03) 1px, transparent 1px); background-size: 50px 50px; }
         #app-container { position: relative; width: 100%; height: 100%; }
         @keyframes pop-in { 0% { opacity: 0; transform: scale(0.7); } 80% { opacity: 1; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
@@ -69,7 +69,7 @@
         @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulse-payment { 0% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } 50% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 15px var(--color-primary); } 100% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } }
         .pulse-payment-anim { animation: pulse-payment 0.8s ease-in-out 2; }
-        
+
         /* --- ANIMACIÓN DE GLITCH --- */
         @keyframes screen-glitch {
           0% { transform: translate(0); filter: none; }
@@ -160,12 +160,12 @@
         .problem-title { background-color: rgba(0,0,0,0.2); padding: 5px 10px; border-bottom: 1px solid var(--color-surface-light); display: inline-block; width: 100%; font-family: var(--font-main); text-transform: uppercase; margin: 0; }
         .problem-item-list { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 12px; padding: 15px 0; flex-grow: 1; overflow-y: auto; }
         #action-bar { width: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; flex-shrink: 0; padding: 15px; }
-        
+
         @media (max-width: 768px), (max-height: 700px) {
             .game-content-wrapper { flex-direction: column; max-width: 700px; height: calc(100vh - 80px); gap: 10px; }
             #problem-container { padding: 10px; flex-grow: 1; min-height: 0; }
-            .problem-item-list { 
-                flex-grow: 1; 
+            .problem-item-list {
+                flex-grow: 1;
                 /* MODIFICADO: sin scroll-x, con wrap */
                 flex-wrap: wrap;
                 overflow-y: auto;
@@ -214,7 +214,7 @@
         .quantity-ribbon span { position: absolute; color: var(--color-bg); padding: 5px 0; width: 150%; text-align: center; font-size: 1.6rem; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.4); transform: rotate(45deg) translateY(-20px); }
         .quantity-ribbon.quantity-x2 span { background-color: var(--color-primary); }
         .quantity-ribbon.quantity-x3 span { background-color: var(--color-green); }
-        
+
         #payment-display {
             width: 100%;
             max-width: 300px;
@@ -265,13 +265,13 @@
             text-transform: uppercase;
             margin-bottom: -10px;
         }
-        
+
         #answer-display { width: 100%; max-width: 300px; height: 70px; font-size: 4.2rem; font-weight: bold; letter-spacing: 5px; color: var(--color-primary); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px var(--color-primary-dark); }
         #numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, auto); gap: 10px; width: 100%; max-width: 300px; }
         #numpad-grid .key { height: 55px; font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--color-text); background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 6px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); transition: all 0.1s ease-out; cursor: pointer; }
         #numpad-grid .key:active, #numpad-grid .key.active-keypress { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); background: var(--color-bg); }
-        
-        /* (NUEVO) Estilo para el botón Enter deshabilitado */
+
+        /* Estilo para el botón Enter deshabilitado */
         #numpad-grid .key.disabled {
             background: var(--color-surface-light) !important;
             color: #888 !important;
@@ -283,7 +283,7 @@
         .key[data-key="del"] { grid-column: 1 / 2; grid-row: 4 / 5; }
         .key[data-key="0"] { grid-column: 2 / 3; grid-row: 4 / 5; }
         #numpad-enter { grid-column: 3 / 4; grid-row: 4 / 5; background: linear-gradient(to bottom, #FFD54F, #FFC107) !important; color: #22252A !important; }
-        
+
         /* --- MODALES --- */
         .modal-overlay {
             position: absolute;
@@ -341,7 +341,7 @@
         .summary-item .count-canje { color: var(--color-canje); }
         .summary-item .count-x2 { color: var(--color-primary); }
         .summary-item .count-x3 { color: var(--color-green); }
-        
+
         #round-feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background-color: rgba(44, 47, 54, 0.95); border: 2px solid; border-radius: var(--border-radius-main); padding: 25px; text-align: center; font-family: var(--font-main); opacity: 0; pointer-events: none; z-index: 10001; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transition: opacity 0.3s, transform 0.3s; }
         #round-feedback.correct { border-color: var(--color-green); }
         #round-feedback.incorrect { border-color: var(--color-danger); }
@@ -357,7 +357,7 @@
         .feedback-calc-item .price { font-weight: bold; float: right; }
         .feedback-correct-total { font-size: 1.6rem; font-weight: bold; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--color-surface-light); }
         .feedback-correct-total span { color: var(--color-green); }
-        
+
         #force-fullscreen-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26, 28, 31, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 30px; padding: 20px; text-align: center; }
         #force-fullscreen-modal .title { color: var(--color-error); }
         #force-fullscreen-modal p { font-size: 1.3rem; color: #ccc; }
@@ -365,12 +365,12 @@
         #help-hud .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; }
         #help-hud-content { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; font-size: 0.9rem; color: #ccc; }
         #help-hud-content span { white-space: nowrap; }
-        
+
         /* Modal de Preparación */
         #pre-round-modal { z-index: 9000; cursor: pointer; }
-        #pre-round-content { 
-            text-align: left; 
-            font-family: var(--font-main); 
+        #pre-round-content {
+            text-align: left;
+            font-family: var(--font-main);
             /* MODIFICADO: Se quitaron max-height y overflow-y */
         }
         #pre-round-content h2 { font-size: 2.5rem; color: var(--color-primary); text-align: center; margin-bottom: 20px; }
@@ -391,13 +391,13 @@
         }
 
         /* --- ESTILOS MODIFICADOS PARA PRE-ROUND-MODAL --- */
-        
-        @keyframes pulse-bills-modal { 
+
+        @keyframes pulse-bills-modal {
             0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
             50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); }
             100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
         }
-        
+
         /* Hacer el texto de alerta y el icono más grandes */
         #pre-round-content .alert-item {
             font-size: 1.5rem; /* Aumentado de 1.1rem */
@@ -420,7 +420,7 @@
             width: 100%;
             gap: 10px;
         }
-        
+
         /* Billetes más grandes y llamativos en el modal */
         #pre-round-content .payment-bills-modal .bill {
             height: 45px;       /* Aumentado de 22px */
@@ -432,10 +432,10 @@
         }
 
         /* --- FIN DE ESTILOS MODIFICADOS --- */
-        
-        
-        /* --- ANIMACIÓN DE BILLETES DE PAGO (NUEVO) --- */
-        
+
+
+        /* --- ANIMACIÓN DE BILLETES DE PAGO --- */
+
         /* 1. Define la nueva animación de destello */
         @keyframes flash-bill-appear {
           0%, 100% {
@@ -450,11 +450,10 @@
         }
 
         /* 2. Aplica la animación a los billetes cuando el panel de pago aparece */
-        /* (El JS ya añade 'pulse-payment-anim' al panel #payment-display) */
         .pulse-payment-anim .bill {
             animation: flash-bill-appear 0.3s ease-in-out 3; /* 3 destellos rápidos */
         }
-        
+
         /* --- FIN DE ESTILOS MODIFICADOS --- */
 
         /* --- ACTUALIZACIÓN VISUAL: SCANLINE EN HOVER --- */
@@ -464,7 +463,7 @@
             90% { opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
-        
+
         .product-card::after {
             content: '';
             position: absolute;
@@ -479,7 +478,7 @@
             pointer-events: none;
             border-radius: 50%;
         }
-        
+
         .product-card:hover::after {
             animation: scanline-hover 0.75s ease-out;
         }
@@ -541,7 +540,7 @@
             </div>
         </div>
         <div id="modal-container" class="modal-overlay"> <div id="modal-content" class="pop-in"> <h2 id="modal-title" class="title"></h2> <div id="modal-feedback"></div> <div id="modal-actions"> <button id="retry-btn" class="btn">Reintentar Misión</button> <button id="back-to-menu-btn" class="btn btn-secondary">Volver al Menú</button> </div> </div> </div>
-        
+
         <div id="pre-round-modal" class="modal-overlay">
             <div id="pre-round-content" class="modal-content pop-in">
                 </div>
@@ -559,10 +558,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var SVG_ICONS = { basicos: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.8 8.4L12 13.2L2.2 8.4L12 3.6L21.8 8.4ZM12 14.7L3 9.4V15.6C3 16.1 3.4 16.5 3.9 16.5H20.1C20.6 16.5 21 16.1 21 15.6V9.4L12 14.7Z M22.5 17.4V19.8C22.5 20.1 22.2 20.4 21.9 20.4H2.1C1.8 20.4 1.5 20.1 1.5 19.8V17.4C1.5 17.1 1.8 16.8 2.1 16.8H21.9C22.2 16.8 22.5 17.1 22.5 17.4Z"/></svg>', limpieza: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19.38 2.5H4.62C3.18 2.5 2 3.68 2 5.12V10.62C2 11.23 2.3 11.79 2.76 12.14L10.38 18.06V20.5H4.62C4.07 20.5 3.62 20.95 3.62 21.5C3.62 22.05 4.07 22.5 4.62 22.5H19.38C19.93 22.5 20.38 22.05 20.38 21.5C20.38 20.95 19.93 20.5 19.38 20.5V18.06L21.24 12.14C21.7 11.79 22 11.23 22 10.62V5.12C22 3.68 20.82 2.5 19.38 2.5ZM16.5 8.5H14.5V6.5H16.5V8.5Z"/></svg>', congelados: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C9.2 2 7 4.2 7 7V7.4C4.8 8.1 3.1 9.9 2.4 12C1.7 14.1 2.3 16.4 3.7 17.8L9.4 23.5C9.8 23.9 10.4 24 11 24H13C13.6 24 14.2 23.9 14.6 23.5L20.3 17.8C21.7 16.4 22.3 14.1 21.6 12C20.9 9.9 19.2 8.1 17 7.4V7C17 4.2 14.8 2 12 2ZM12 3.5C14 3.5 15.5 5 15.5 7V9.5H8.5V7C8.5 5 10 3.5 12 3.5ZM10.5 11H13.5V12.5H10.5V11ZM10.5 14H13.5V15.5H10.5V14ZM7.5 11H9V12.5H7.5V11ZM7.5 14H9V15.5H7.5V14ZM15 11H16.5V12.5H15V11ZM15 14H16.5V15.5H15V14Z"/></svg>', carnes: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M9.81 12.56C9.21 13.56 8.13 14.25 7 14.25C5.34 14.25 4 12.9 4 11.25S5.34 8.25 7 8.25C8.13 8.25 9.21 8.94 9.81 9.94C10.74 9.35 11.84 9 13 9C14.76 9 16.32 10.03 17.19 11.56C17.79 10.56 18.87 9.88 20 9.88C21.66 9.88 23 11.22 23 12.88S21.66 15.88 20 15.88C18.87 15.88 17.79 15.19 17.19 14.19C16.32 15.72 14.76 16.75 13 16.75C11.84 16.75 10.74 16.4 9.81 15.81C9.07 17.43 7.5 18.7 5.62 19.33L4.93 17.6C6.18 17.2 7.23 16.32 7.76 15.19C5.81 15.19 2 15.76 2 18.25V20C2 20.55 2.45 21 3 21H5C5.55 21 6 20.55 6 20V18.88C6 17.5 8.18 16.94 9.81 12.56Z"/></svg>', rapida: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M11 21H10V14.1L5.6 16.3L4.9 14.8L10.3 12H11V21M13 21V12H13.7L19.1 14.8L18.4 16.3L14 14.1V21H13M6.5 10.4L12 2L17.5 10.4L16 11.1L12 4.1L8 11.1L6.5 10.4Z"/></svg>' };
     var EMOJI_POOLS = { basico: ['🍞', '🥛', '🍎', '🍌'], lacteos: ['🥛', '🧀', '🍓'], panaderia: ['🍞', '🍩', '🍪'], frutasVerduras: ['🍎', '🍌', '🍇', '🍓', '🥕', '🥦'], limpieza: [SVG_ICONS.limpieza, '🧻', '🧴'], congelados: [SVG_ICONS.congelados, '🍕', '🍗', '🍟'], bebidas: ['🍾', '🔄', '🥛'], carnes: ['🍗', SVG_ICONS.carnes, '🌭'], snacks: ['🍿', '🍩', '🍪', '🍫', '🍬', '🍭', '🍟', '🍕', '🍔', '🌭'], todos: ['🍎','🍌','🍞','🥛','🧀','🍗','🍇','🍓','🥕','🥦','🍕','🍔','🍟','🌭','🍿','🍩','🍪','🍫','🍬','🍭','🔄','🍾',SVG_ICONS.limpieza,'🧻','🧴',SVG_ICONS.congelados,SVG_ICONS.carnes] };
     var SCREENS = { preloader: document.getElementById('screen-preloader'), playerSelect: document.getElementById('screen-player-select'), createPlayer: document.getElementById('screen-create-player'), levelSelect: document.getElementById('screen-level-select'), game: document.getElementById('screen-game'), };
-    
-    // (MODIFICADO) Añadido 'numpadEnterBtn' y 'appContainer'
+
     var DOM = { hudLives: document.getElementById('hud-lives'), hudWinsTracker: document.getElementById('hud-wins-tracker'), hudRoundCounter: document.getElementById('hud-round-counter'), hudTimer: document.getElementById('hud-timer'), hudPlayerName: document.getElementById('hud-player-name'), hudLevelName: document.getElementById('hud-level-name'), problemList: document.querySelector('.problem-item-list'), answerDisplay: document.getElementById('answer-display'), paymentDisplay: document.getElementById('payment-display'), paymentBillsContainer: document.getElementById('payment-bills-container'), answerPromptLabel: document.getElementById('answer-prompt-label'), numpadGrid: document.getElementById('numpad-grid'), playerListContainer: document.getElementById('player-list-container'), confirmPlayerBtn: document.getElementById('confirm-player-btn'), showCreatePlayerBtn: document.getElementById('show-create-player-btn'), cancelCreatePlayerBtn: document.getElementById('cancel-create-player-btn'), newPlayerInput: document.getElementById('new-player-input'), virtualKeyboard: document.getElementById('virtual-keyboard-container'), levelSelectGrid: document.getElementById('level-select-grid'), modalContainer: document.getElementById('modal-container'), modalContent: document.getElementById('modal-content'), modalTitle: document.getElementById('modal-title'), modalFeedback: document.getElementById('modal-feedback'), retryBtn: document.getElementById('retry-btn'), backToMenuBtn: document.getElementById('back-to-menu-btn'), summaryCountFree: document.getElementById('summary-count-free'), summaryCountDefective: document.getElementById('summary-count-defective'), summaryCountCanje: document.getElementById('summary-count-canje'), summaryCountX2: document.getElementById('summary-count-x2'), summaryCountX3: document.getElementById('summary-count-x3'), roundFeedback: document.getElementById('round-feedback'), forceFullscreenModal: document.getElementById('force-fullscreen-modal'), reenterFullscreenBtn: document.getElementById('reenter-fullscreen-btn'), helpHudContent: document.getElementById('help-hud-content'), preRoundModal: document.getElementById('pre-round-modal'), preRoundContent: document.getElementById('pre-round-content'), appContainer: document.getElementById('app-container'), numpadEnterBtn: document.getElementById('numpad-enter') };
-    
+
     var LEVEL_CONFIG = [
         { name: "Básicos", icon: SVG_ICONS.basicos, items: 2, timePerRound: 45, rounds: 10, mods: {}, pool: 'basico', forceQuantityOne: true },
         { name: "Panadería", icon: "🍞", items: 3, timePerRound: 45, rounds: 10, mods: {}, pool: 'panaderia' },
@@ -645,7 +643,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 }
             }
-            if (paymentAmount === 0) { 
+            if (paymentAmount === 0) {
                 paymentAmount = Math.ceil(totalCost / 100) * 100;
                 paymentHTML = '<div class="bill bill-100">' + paymentAmount + '</div>';
             }
@@ -666,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     paymentParts.push(bill);
                 }
                 if (paymentAmount > totalCost && paymentAmount < targetMaxPayment) {
-                    break; 
+                    break;
                 }
                 attempts++;
             }
@@ -692,8 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.paymentStringHTML = paymentHTML;
         return { amount: paymentAmount, html: paymentHTML };
     }
-    
-    // (VERSIÓN CON LÓGICA MODIFICADA)
+
     function generateProblem() {
         var items = [];
         var totalCost = 0;
@@ -703,8 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var mods = config.mods;
         var pool = EMOJI_POOLS[config.pool || 'todos'];
         var levelIndex = gameState.levelIndex;
-        
-        // Banderas para limitar descuentos/impuestos a 1 por ronda
+
         var hasAppliedDiscount = false;
         var hasAppliedTax = false;
 
@@ -721,32 +717,32 @@ document.addEventListener('DOMContentLoaded', function() {
         pool.forEach(function(emoji) { priceMap[emoji] = Math.floor(Math.random() * priceRange) + minPrice; });
         var shuffledPool = pool.slice(0).sort(function() { return 0.5 - Math.random() });
         var itemsForThisRound = shuffledPool.slice(0, config.items);
-        
+
         console.log(`Generando problema - Nivel ${levelIndex}, Precios: ${minPrice}-${maxPrice}, Max Multiplicados: ${maxMultipliedItems}`);
-        
+
         for (var i = 0; i < itemsForThisRound.length; i++) {
             var emoji = itemsForThisRound[i];
             var quantity = 1;
             var maxQuantityAllowed = levelIndex === 0 ? 1 : (levelIndex === 1 ? 2 : 3);
-            if (levelIndex === 1) maxQuantityAllowed = 2; 
+            if (levelIndex === 1) maxQuantityAllowed = 2;
             if (multipliedCount < maxMultipliedItems && maxQuantityAllowed > 1) {
                 quantity = Math.floor(Math.random() * maxQuantityAllowed) + 1;
                 if (quantity > 1) { multipliedCount++; }
             } else { quantity = 1; }
-            
+
             var price = priceMap[emoji];
             var item = { emoji: emoji, price: price, quantity: quantity, mods: [] };
             var canBeSpecial = quantity === 1;
-            
+
             if (canBeSpecial && !hasSpecialStateItem) {
                 if (mods.free && Math.random() < mods.free) { item.mods.push('free'); hasSpecialStateItem = true; }
                 else if (mods.defective && Math.random() < mods.defective) { item.mods.push('defective'); hasSpecialStateItem = true; }
                 else if (mods.canje && Math.random() < mods.canje) { item.mods.push('canje'); hasSpecialStateItem = true; }
             }
-            
+
             var isStaticItem = item.mods.includes('free') || item.mods.includes('defective') || item.mods.includes('canje');
             var hasQuantity = item.quantity > 1;
-            
+
             if (!isStaticItem && !hasQuantity) {
                  if (mods.discount && !hasAppliedDiscount && Math.random() < 0.3) {
                      item.mods.push('discount');
@@ -757,10 +753,10 @@ document.addEventListener('DOMContentLoaded', function() {
                      hasAppliedTax = true;
                  }
             }
-            
+
             var itemTotal = item.price * item.quantity;
             if(item.mods.includes('canje')) { itemTotal = -itemTotal; if(item.emoji === '🔄') item.emoji = '🍾'; }
-            else { 
+            else {
                 var discountAmount = 0; var taxAmount = 0;
                 if (item.mods.includes('discount')) { discountAmount = config.mods.discount || 0; }
                 if (item.mods.includes('taxed')) { taxAmount = config.mods.taxed || 0; }
@@ -769,13 +765,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if(item.mods.includes('free')) itemTotal = 0;
             if(item.mods.includes('defective')) itemTotal = 0;
             itemTotal = item.mods.includes('canje') ? itemTotal : Math.max(0, itemTotal);
-            
+
             if (item.mods.includes('free')) gameState.specialCounts.free++;
             if (item.mods.includes('defective')) gameState.specialCounts.defective++;
             if (item.mods.includes('canje')) gameState.specialCounts.canje++;
             if (item.quantity === 2) gameState.specialCounts.x2++;
             if (item.quantity === 3) gameState.specialCounts.x3++;
-            
+
             totalCost += itemTotal; items.push(item);
             console.log(`   Item ${i}: ${item.emoji}, Qty: ${item.quantity}, Price: ${item.price}, Mods: ${item.mods.join(',')}, ItemTotal: ${itemTotal}`);
         }
@@ -805,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (item.mods.includes('discount')) { stateTagHTML = '<div class="product-state-tag tag-discount">DESC. -' + (gameState.config.mods.discount || 0) + '</div>'; }
             else if (item.mods.includes('taxed')) { stateTagHTML = '<div class="product-state-tag tag-taxed">IMP. +' + (gameState.config.mods.taxed || 0) + '</div>'; }
             else { stateTagHTML = '<div style="height: 25px;"></div>'; }
-            
+
             card.innerHTML =
                 ribbonHTML +
                 '<div class="product-emoji-container">' + item.emoji + '</div>' +
@@ -813,54 +809,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 '    <div class="product-price">' + priceDisplay + '</div>' +
                 '</div>' +
                 stateTagHTML;
-            
+
             card.style.animationDelay = (index * 100) + 'ms';
             DOM.problemList.appendChild(card);
         });
     }
 
     // --- 6. MANEJO DE ENTRADAS ---
-    
-    // (MODIFICADO) Corregido el bug de 'Enter'
-    function handleNumpadInput(key) { 
-        if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; 
-        console.log(`Numpad input: ${key}`); 
-        
-        if (key === 'del') { 
-            gameState.currentAnswer = gameState.currentAnswer.slice(0, -1); 
+
+    function handleNumpadInput(key) {
+        if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return;
+        console.log(`Numpad input: ${key}`);
+
+        if (key === 'del') {
+            gameState.currentAnswer = gameState.currentAnswer.slice(0, -1);
         } else if (key === 'enter') {
-            // Comprobar si está deshabilitado
             if (gameState.currentAnswer === '' || gameState.currentAnswer === '-') {
-                return; // No hacer nada si está vacío
+                return;
             }
-            checkAnswer(); 
-        } else if (gameState.currentAnswer.length < 6) { 
-            if (key === '-' && gameState.currentAnswer.length === 0) { 
-                gameState.currentAnswer += key; 
-            } else if (!isNaN(parseInt(key))) { 
-                gameState.currentAnswer += key; 
-            } else { 
-                console.warn(`Input no válido ignorado: ${key}`); 
-            } 
-        } 
+            checkAnswer();
+        } else if (gameState.currentAnswer.length < 6) {
+            if (key === '-' && gameState.currentAnswer.length === 0) {
+                gameState.currentAnswer += key;
+            } else if (!isNaN(parseInt(key))) {
+                gameState.currentAnswer += key;
+            } else {
+                console.warn(`Input no válido ignorado: ${key}`);
+            }
+        }
         updateAnswerDisplay();
     }
-    
-    // (MODIFICADO) Habilita/Deshabilita el botón 'Enter'
-    function updateAnswerDisplay() { 
-        DOM.answerDisplay.textContent = '' + (gameState.currentAnswer || ' '); 
-        if (gameState.currentAnswer.startsWith('-')) { 
-            DOM.answerDisplay.textContent = '-' + (gameState.currentAnswer.substring(1) || ' '); 
+
+    function updateAnswerDisplay() {
+        DOM.answerDisplay.textContent = '' + (gameState.currentAnswer || ' ');
+        if (gameState.currentAnswer.startsWith('-')) {
+            DOM.answerDisplay.textContent = '-' + (gameState.currentAnswer.substring(1) || ' ');
         }
-        
-        // Lógica para habilitar/deshabilitar Enter
+
         if (gameState.currentAnswer === '' || gameState.currentAnswer === '-') {
             if (DOM.numpadEnterBtn) DOM.numpadEnterBtn.classList.add('disabled');
         } else {
             if (DOM.numpadEnterBtn) DOM.numpadEnterBtn.classList.remove('disabled');
         }
     }
-    
+
     function showRoundFeedback(isCorrect) {
         if (!DOM.roundFeedback) { console.error("Elemento roundFeedback no encontrado"); return; }
         clearTimeout(roundFeedbackTimeout);
@@ -880,7 +872,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var itemCalcText = '' + item.price; if (item.quantity > 1) itemCalcText += ' x' + item.quantity;
                 var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = [];
                 if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE'); }
-                else { 
+                else {
                     var discountAmount = 0; var taxAmount = 0;
                     if (item.mods.includes('discount')) { discountAmount = (gameState.config.mods.discount || 0); modsApplied.push('DESC. -' + discountAmount); }
                     if (item.mods.includes('taxed')) { taxAmount = (gameState.config.mods.taxed || 0); modsApplied.push('IMP. +' + taxAmount); }
@@ -902,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.roundFeedback.className = 'incorrect';
             gameState.isWaitingForFeedbackClick = true;
         }
-        
+
         DOM.roundFeedback.innerHTML = feedbackHTML + (isCorrect ? '' : '<p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">(Haz clic o presiona una tecla para continuar)</p>');
         DOM.roundFeedback.style.animation = 'none';
         void DOM.roundFeedback.offsetWidth;
@@ -910,10 +902,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isCorrect) {
              DOM.roundFeedback.style.animation = 'feedback-pop-in 0.3s forwards';
         } else {
-             DOM.roundFeedback.style.animation = 'feedback-anim 1s ease-out forwards';
+             // Puedes descomentar la siguiente línea si quieres una animación específica para el feedback correcto
+             // DOM.roundFeedback.style.animation = 'feedback-anim 1s ease-out forwards';
         }
     }
-    
+
     function hideRoundFeedback() {
         if (DOM.roundFeedback) {
              DOM.roundFeedback.style.animation = 'feedback-fade-out 0.3s forwards';
@@ -928,7 +921,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Feedback de error descartado por el usuario.");
         gameState.isWaitingForFeedbackClick = false;
         hideRoundFeedback();
-        
+
         setTimeout(function() {
             if (gameState.lives <= 0) {
                 endGame(false);
@@ -938,45 +931,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
 
-    function checkAnswer() { 
-        if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; 
-        // (MODIFICADO) Doble chequeo por si acaso
+    function checkAnswer() {
+        if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return;
         if (gameState.currentAnswer === '' || gameState.currentAnswer === '-') return;
 
-        console.log("Verificando respuesta..."); 
-        var userAnswer = parseInt(gameState.currentAnswer, 10) || 0; 
-        console.log(`   Usuario: ${userAnswer}, Correcta: ${gameState.correctAnswer}`); 
-        if (userAnswer === gameState.correctAnswer) { 
-            handleCorrectAnswer(); 
-        } else { 
-            handleIncorrectAnswer(); 
-        } 
+        console.log("Verificando respuesta...");
+        var userAnswer = parseInt(gameState.currentAnswer, 10) || 0;
+        console.log(`   Usuario: ${userAnswer}, Correcta: ${gameState.correctAnswer}`);
+        if (userAnswer === gameState.correctAnswer) {
+            handleCorrectAnswer();
+        } else {
+            handleIncorrectAnswer();
+        }
     }
-    
+
+    // (MODIFICADO) Limpia la respuesta al ser correcta
     function handleCorrectAnswer() {
         console.log("Respuesta CORRECTA");
         stopTimer();
+
+        // Limpiar la respuesta inmediatamente para prevenir el bug de Enter repetido
+        gameState.currentAnswer = '';
+        updateAnswerDisplay(); // Esto también deshabilita el botón Enter visualmente
+
         showRoundFeedback(true);
         gameState.wins++;
         gameState.roundResults.push(true);
         updateHUD();
-        
+
         setTimeout(function() {
             if (gameState.wins >= gameState.config.rounds) {
                 endGame(true);
             } else {
                 nextRound();
             }
-        }, 1000); 
+        }, 1000);
     }
 
-    // (VERSIÓN CON GLITCH)
     function handleIncorrectAnswer() {
         console.log("Respuesta INCORRECTA");
         stopTimer();
         showRoundFeedback(false); // Pausa el juego
-        
-        // Activar Glitch
+
         if (DOM.appContainer) {
             DOM.appContainer.classList.add('glitch-effect');
             setTimeout(function() { DOM.appContainer.classList.remove('glitch-effect'); }, 400);
@@ -984,36 +980,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         DOM.answerDisplay.parentElement.classList.add('answer-error-flash');
         setTimeout(function() { DOM.answerDisplay.parentElement.classList.remove('answer-error-flash'); }, 400);
-        
+
         DOM.hudLives.classList.add('shake-animation');
         setTimeout(function() { DOM.hudLives.classList.remove('shake-animation'); }, 500);
-        
+
         gameState.lives--;
         gameState.roundResults.push(false);
         updateHUD();
-        
+
         // La lógica de continuar se mueve a handleFeedbackDismiss()
     }
 
     function showModal() { console.log("Intentando mostrar modal..."); try { if (!DOM.modalContainer) { console.error("Error: modalContainer no encontrado en DOM."); return; } DOM.modalContainer.style.display = 'flex'; if (DOM.modalContent) { DOM.modalContent.classList.remove('pop-in'); void DOM.modalContent.offsetWidth; DOM.modalContent.classList.add('pop-in'); } else { console.error("Error: modalContent no encontrado en DOM."); } console.log("Modal display set to flex."); } catch(error) { console.error("Error en showModal:", error); } }
     function hideModal() { console.log("Intentando ocultar modal..."); if (DOM.modalContainer) { DOM.modalContainer.style.display = 'none'; console.log("Modal ocultado."); } else { console.error("Error: modalContainer no encontrado al intentar ocultar."); } }
-    
-    // **CAMBIO**: Modal de Preparación Creativo (Versión Modificada)
+
     function showPreRoundModal() {
         console.log("Mostrando Modal de Preparación...");
         gameState.isPausedForPreRound = true;
         stopTimer();
-        
+
         var alertsHTML = '';
         var taskTitle = '¡CALCULAR TOTAL!';
         var paymentHTML = '';
 
         if (gameState.paymentAmount > 0) {
             taskTitle = '¡CALCULAR VUELTO!';
-            // MODIFICADO: Texto más corto y clase añadida para estilos
-            paymentHTML = '<div class="alert-item payment-alert-item">' + 
-                          '<span>PAGA CON:</span>' + 
-                          '<div class="payment-bills payment-bills-modal">' + gameState.paymentStringHTML + '</div>' + 
+            paymentHTML = '<div class="alert-item payment-alert-item">' +
+                          '<span>PAGA CON:</span>' +
+                          '<div class="payment-bills payment-bills-modal">' + gameState.paymentStringHTML + '</div>' +
                           '</div>';
         }
         alertsHTML += '<div class="alert-section"><div class="alert-title">Tarea</div>';
@@ -1023,29 +1017,23 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.lastProblemItems.forEach(function(item) {
             var emoji = '<span class="emoji">' + item.emoji + '</span>';
             var config = gameState.config;
-            
+
             if (item.quantity > 1) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-primary);">' + emoji + ' ¡PROMO x' + item.quantity + '!</div>';
             }
             if (item.mods.includes('free')) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-error);">' + emoji + ' ¡GRATIS!</div>';
             }
             if (item.mods.includes('defective')) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-danger);">' + emoji + ' ¡DEFECTUOSO!</div>';
             }
             if (item.mods.includes('canje')) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-canje);">' + emoji + ' ¡CANJE! (Resta)</div>';
             }
             if (item.mods.includes('discount')) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-green);">' + emoji + ' ¡DESC. -' + (config.mods.discount || 0) + '!</div>';
             }
             if (item.mods.includes('taxed')) {
-                // MODIFICADO: Texto corto
                 modsHTML += '<div class="alert-item" style="color: var(--color-blue);">' + emoji + ' ¡IMP. +' + (config.mods.taxed || 0) + '!</div>';
             }
         });
@@ -1055,10 +1043,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         DOM.preRoundContent.innerHTML =
-            '<h2>¡ATENCIÓN!</h2>' + // Título modificado
+            '<h2>¡ATENCIÓN!</h2>' +
             alertsHTML +
-            '<p class="dismiss-prompt">[ Clic o tecla para Comenzar ]</p>'; // Texto modificado
-        
+            '<p class="dismiss-prompt">[ Clic o tecla para Comenzar ]</p>';
+
         DOM.preRoundModal.style.display = 'flex';
         DOM.preRoundContent.classList.remove('pop-in');
         void DOM.preRoundContent.offsetWidth;
@@ -1070,9 +1058,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Ocultando Modal de Preparación. Iniciando ronda.");
         gameState.isPausedForPreRound = false;
         DOM.preRoundModal.style.display = 'none';
-        startTimer(); // Iniciar el temporizador AHORA
+        startTimer();
     }
-    
+
     function generateCalculationExplanationHTML(items) { var explanationHTML = '<div class="calculation-details"><h4>Detalle del Cálculo Final:</h4>'; var calculatedTotal = 0; items.forEach(function(item) { var itemCalc = '' + item.price; if (item.quantity > 1) itemCalc += ' x ' + item.quantity; var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = []; if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE (-)'); } else { var discountAmount = 0; var taxAmount = 0; if (item.mods.includes('discount')) { discountAmount = gameState.config.mods.discount || 0; modsApplied.push('DESC. -' + discountAmount); } if (item.mods.includes('taxed')) { taxAmount = gameState.config.mods.taxed || 0; modsApplied.push('IMP. +' + taxAmount); } finalValue = finalValue - discountAmount + taxAmount; } if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); } if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DEFECT.'); } finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue); calculatedTotal += finalValue; explanationHTML += ' <div class="calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalc + ' ' + (modsApplied.length > 0 ? '('+modsApplied.join(', ')+')' : '') + ' =</span> <span class="price">' + finalValue + '</span> </div>'; }); if (gameState.paymentAmount > 0) { explanationHTML += '<div class="calc-total" style="text-align: right;">Total Compra: <span>' + calculatedTotal + '</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">Pago Con: <span style="display: flex; gap: 4px; flex-wrap: wrap;">' + gameState.paymentStringHTML + ' Bs.</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; font-size: 1.2rem;">Vuelto Correcto: <span>' + (gameState.paymentAmount - calculatedTotal) + '</span></div>'; } else { explanationHTML += '<div class="calc-total">Total Calculado: <span>' + calculatedTotal + '</span></div>'; } explanationHTML += '</div>'; return explanationHTML; }
     function endGame(isWin) {
         console.log(`Fin del juego. Resultado: ${isWin ? 'VICTORIA' : 'DERROTA'}`);
@@ -1123,7 +1111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     // --- 7. ASIGNACIÓN DE EVENTOS ---
     try { console.log("Asignando event listeners..."); document.getElementById('start-fullscreen-btn').addEventListener('click', function() { console.log("Start Fullscreen button clicked"); enterFullscreen(); showScreen('playerSelect'); }); DOM.confirmPlayerBtn.addEventListener('click', function() { console.log("Confirm Player button clicked"); if (!gameState.currentPlayerName) return; showScreen('levelSelect'); }); DOM.showCreatePlayerBtn.addEventListener('click', function() { console.log("Show Create Player button clicked"); showScreen('createPlayer'); }); DOM.cancelCreatePlayerBtn.addEventListener('click', function() { console.log("Cancel Create Player button clicked"); showScreen('playerSelect'); }); DOM.virtualKeyboard.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleKeyboardInput(key); } }); DOM.numpadGrid.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleNumpadInput(key); } }); DOM.retryBtn.addEventListener('click', function() { console.log("Retry button clicked"); hideModal(); startGame(gameState.levelIndex); }); DOM.backToMenuBtn.addEventListener('click', function() { console.log("Back to Menu button clicked"); hideModal(); showScreen('levelSelect'); }); DOM.reenterFullscreenBtn.addEventListener('click', function() { console.log("Re-enter fullscreen button clicked"); enterFullscreen(); }); document.addEventListener('fullscreenchange', checkFullscreen); document.addEventListener('webkitfullscreenchange', checkFullscreen); document.addEventListener('mozfullscreenchange', checkFullscreen); document.addEventListener('MSFullscreenChange', checkFullscreen);
         DOM.roundFeedback.addEventListener('click', handleFeedbackDismiss);
@@ -1143,35 +1130,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         if (gameState.isPausedForPreRound) {
-            event.preventDefault(); // Prevenir cualquier acción por defecto
+            event.preventDefault();
             hidePreRoundModal();
             return;
         }
-        
+
         if (!SCREENS.game.classList.contains('active') || DOM.modalContainer.style.display === 'flex' || DOM.forceFullscreenModal.style.display === 'flex') { return; }
         var key = event.key;
         var targetKey = null;
         if (!isNaN(parseInt(key))) { targetKey = key; }
-        else if (key === 'Enter') { 
-            // (MODIFICADO) Añadida la comprobación del bug
+        else if (key === 'Enter') {
+            // Comprobación del bug de Enter
             if (gameState.currentAnswer !== '' && gameState.currentAnswer !== '-') {
-                targetKey = 'enter'; 
+                targetKey = 'enter';
             }
         }
         else if (key === 'Backspace') { targetKey = 'del'; }
         else if (key === '-' && gameState.currentAnswer.length === 0) { targetKey = '-'; }
-        
+
         if (targetKey) {
             event.preventDefault();
             var keyElement = DOM.numpadGrid.querySelector('.key[data-key="' + targetKey + '"]');
             if (keyElement) {
+                // No aplicar 'active-keypress' si el botón está deshabilitado
+                if (targetKey === 'enter' && keyElement.classList.contains('disabled')) {
+                   return;
+                }
                 keyElement.classList.add('active-keypress');
                 setTimeout(function() { keyElement.classList.remove('active-keypress'); }, 150);
                 handleNumpadInput(targetKey);
             }
         }
     });
-
 
     // --- INICIALIZACIÓN ---
     try { console.log("Iniciando carga de jugadores..."); loadPlayers(); console.log("Jugadores cargados. Creando teclado virtual..."); createVirtualKeyboard(); console.log("Teclado virtual creado. Mostrando preloader..."); showScreen('preloader'); console.log("Inicialización completa."); } catch (error) { console.error("Error durante la inicialización:", error); alert("Error crítico durante la inicialización. Revisa la consola (F12) para más detalles."); }
