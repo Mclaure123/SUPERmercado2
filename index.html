@@ -3,138 +3,874 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Misión Supermercado v7.25 - Visual Bills</title>
+    <title>Misión Supermercado v7.26 - FIXED: Puntos por Nivel & Auto-Verificación</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+        
         :root {
-            --color-bg: #1a1c1f;
-            --color-surface: #2c2f36;
-            --color-surface-light: #484c54;
-            --color-text: #EAEAEA;
-            --color-primary: #FFC107; /* Ámbar */
-            --color-primary-dark: #FFA000;
-            --color-error: #F44336;
-            --color-danger: #D32F2F;
-            --color-green: #4CAF50;
-            --color-blue: #2196F3;
-            --color-canje: #E0E0E0;
-            /* Colores Billetes (Bs.) */
-            --bill-10: #3498db; /* Azul */
-            --bill-20: #e67e22; /* Naranja */
-            --bill-50: #9b59b6; /* Violeta */
-            --bill-100: #e74c3c; /* Rojo */
-            --bill-200: #f1c40f; /* Dorado */
+            /* Colores Base Modernos - AMARILLO DOMINANTE */
+            --color-bg: #1a1508;
+            --color-bg-secondary: #2a2210;
+            --color-surface: #3a3218;
+            --color-surface-light: #4a4220;
+            --color-surface-hover: #5a5228;
+            --color-text: #fff9e6;
+            --color-text-secondary: #d4c098;
+            
+            /* Colores de Marca - AMARILLO NEON */
+            --color-primary: #FFD700;
+            --color-primary-dark: #FFA500;
+            --color-primary-glow: rgba(255, 215, 0, 0.8);
+            
+            --color-accent: #FF8C00;
+            --color-accent-glow: rgba(255, 140, 0, 0.6);
+            
+            --color-success: #32CD32;
+            --color-success-glow: rgba(50, 205, 50, 0.5);
+            
+            --color-warning: #FFB700;
+            --color-warning-glow: rgba(255, 183, 0, 0.6);
+            
+            --color-error: #ff4757;
+            --color-danger: #ee1d36;
+            --color-error-glow: rgba(255, 71, 87, 0.5);
+            
+            --color-green: #32CD32;
+            --color-blue: #1E90FF;
+            --color-canje: #f5f5f5;
+            
+            /* Billetes - Gradientes Vibrantes */
+            --bill-10: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bill-20: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --bill-50: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --bill-100: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --bill-200: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
 
-            --font-main: "Share Tech Mono", "Noto Color Emoji", monospace;
-            --font-system: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Noto Color Emoji";
+            /* Tipografía */
+            --font-main: 'Outfit', sans-serif;
+            --font-system: 'Outfit', system-ui, -apple-system, sans-serif;
+            
+            /* Geometría */
             --border-radius-main: 12px;
-            --glow-main: 0 0 10px rgba(255, 193, 7, 0.2);
-            --glow-main-hover: 0 0 15px rgba(255, 193, 7, 0.4);
-            --transition-speed: 0.35s;
-            --transition-speed-fast: 0.2s;
+            --border-radius-sm: 8px;
+            --border-radius-md: 14px;
+            --border-radius-lg: 18px;
+            --border-radius-xl: 24px;
+            
+            /* Sombras Modernas */
+            --glow-main: 0 0 20px var(--color-primary-glow);
+            --glow-main-hover: 0 0 30px var(--color-primary-glow);
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 16px 60px rgba(0, 0, 0, 0.5);
+            
+            /* Transiciones */
+            --transition-speed: 0.3s;
+            --transition-speed-fast: 0.15s;
         }
 
-        /* --- OCULTADOR GLOBAL DE SCROLLBARS --- */
-        /* Oculta scrollbar en navegadores WebKit (Chrome, Safari, Edge) */
-        ::-webkit-scrollbar {
-            display: none;
-        }
-        /* Oculta scrollbar en Firefox */
+
+        /* Reset y Base */
         * {
             scrollbar-width: none;
+            -ms-overflow-style: none;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
         }
-        /* --- FIN DE OCULTADOR --- */
+        
+        ::-webkit-scrollbar { display: none; }
 
-        html, body { width: 100vw; height: 100vh; overflow: hidden; font-family: var(--font-system); color: var(--color-text); background-color: var(--color-bg); background-image: linear-gradient(rgba(255, 193, 7, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(255, 193, 7, 0.03) 1px, transparent 1px); background-size: 50px 50px; }
-        #app-container { position: relative; width: 100%; height: 100%; }
-        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.7); } 80% { opacity: 1; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes flash-confirm { 0% { box-shadow: 0 0 15px 5px rgba(255, 193, 7, 0.4); } 100% { box-shadow: none; } }
-        @keyframes power-on-glitch { 0%, 100% { opacity: 1; transform: none; } 5% { opacity: 0.8; transform: translate(-2px, 2px); } 10% { opacity: 0.9; transform: translate(2px, -2px); } }
-        @keyframes blink-red { 0%, 100% { color: var(--color-error); } 50% { color: var(--color-text); } }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: var(--glow-main); } 50% { transform: scale(1.05); box-shadow: var(--glow-main-hover); } 100% { transform: scale(1); box-shadow: var(--glow-main); } }
-        @keyframes flash-error-bg { 0%, 100% { background-color: var(--color-surface); } 50% { background-color: var(--color-danger); } }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); } }
-        .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes item-fade-in { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        #scanline-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.5; }
-        #scanline-overlay::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to bottom, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0) 100%); animation: scanline-move-down 4s linear infinite; }
-        @keyframes scanline-move-down { 0% { transform: translateY(-10px); } 100% { transform: translateY(100vh); } }
-        .key-flash { animation: flash-confirm var(--transition-speed-fast) ease-out; }
-        .answer-error-flash { animation: flash-error-bg 0.4s ease-in-out; }
-        @keyframes feedback-pop-in { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-        @keyframes feedback-fade-out { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); } }
-        @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes pulse-payment { 0% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } 50% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 15px var(--color-primary); } 100% { box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); } }
-        .pulse-payment-anim { animation: pulse-payment 0.8s ease-in-out 2; }
-
-        /* --- ANIMACIÓN DE GLITCH --- */
-        @keyframes screen-glitch {
-          0% { transform: translate(0); filter: none; }
-          10% { transform: translate(-5px, -5px); filter: hue-rotate(30deg); }
-          20% { transform: translate(5px, 5px); filter: hue-rotate(-30deg); }
-          30% { transform: translate(-5px, 5px); filter: saturate(3); }
-          40% { transform: translate(5px, -5px); }
-          50% { transform: translate(-5px, -5px); filter: contrast(2); }
-          60% { transform: translate(5px, 5px); }
-          70% { transform: translate(-5px, 5px); filter: hue-rotate(60deg); }
-          80% { transform: translate(5px, -5px); }
-          90% { transform: translate(-5px, -5px); filter: none; }
-          100% { transform: translate(0); }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background: radial-gradient(ellipse at top, #2a2210 0%, #1a1508 60%);
+            background-attachment: fixed;
         }
+        
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.08) 0%, transparent 50%);
+        }
+
+        /* Animaciones Modernas */
+        @keyframes pop-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            80% {
+                transform: scale(1.03);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes flash-confirm {
+            0% {
+                box-shadow: 0 0 0 0 var(--color-primary-glow);
+            }
+            50% {
+                box-shadow: 0 0 25px 8px var(--color-primary-glow);
+            }
+            100% {
+                box-shadow: none;
+            }
+        }
+        
+        @keyframes power-on-glitch {
+            0%, 100% {
+                opacity: 1;
+                transform: none;
+            }
+            5% {
+                opacity: 0.85;
+                transform: translate(-1px, 1px);
+            }
+            10% {
+                opacity: 0.95;
+                transform: translate(1px, -1px);
+            }
+        }
+        
+        @keyframes blink-red {
+            0%, 100% {
+                color: var(--color-error);
+                text-shadow: 0 0 10px var(--color-error-glow);
+            }
+            50% {
+                color: var(--color-text);
+                text-shadow: none;
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: var(--glow-main);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: var(--glow-main-hover);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: var(--glow-main);
+            }
+        }
+        
+        @keyframes flash-error-bg {
+            0%, 100% {
+                background-color: var(--color-surface);
+            }
+            50% {
+                background-color: rgba(255, 71, 87, 0.3);
+            }
+        }
+        
+        @keyframes shake {
+            10%, 90% {
+                transform: translate3d(-2px, 0, 0);
+            }
+            20%, 80% {
+                transform: translate3d(3px, 0, 0);
+            }
+            30%, 50%, 70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            40%, 60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+        
+        .shake-animation {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes item-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.94);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes scanline-move-down {
+            0% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
+        @keyframes screen-glitch {
+            0% {
+                transform: translate(0);
+                filter: none;
+            }
+            10% {
+                transform: translate(-3px, -3px);
+                filter: hue-rotate(20deg);
+            }
+            20% {
+                transform: translate(3px, 3px);
+                filter: hue-rotate(-20deg);
+            }
+            30% {
+                transform: translate(-3px, 3px);
+                filter: saturate(2);
+            }
+            40% {
+                transform: translate(3px, -3px);
+            }
+            50% {
+                transform: translate(-3px, -3px);
+                filter: contrast(1.5);
+            }
+            60% {
+                transform: translate(3px, 3px);
+            }
+            70% {
+                transform: translate(-3px, 3px);
+                filter: hue-rotate(40deg);
+            }
+            80% {
+                transform: translate(3px, -3px);
+            }
+            90% {
+                transform: translate(-3px, -3px);
+                filter: none;
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+        
         .glitch-effect {
             animation: screen-glitch 0.4s cubic-bezier(.25,.75,.5,1.25) both;
         }
-        /* --- FIN GLITCH --- */
+        
+        @keyframes feedback-pop-in {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes feedback-fade-out {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.92);
+            }
+        }
+        
+        @keyframes pulse-dot {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.25);
+                opacity: 0.75;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse-payment {
+            0% {
+                box-shadow: var(--shadow-md);
+            }
+            50% {
+                box-shadow: var(--shadow-lg), 0 0 25px var(--color-primary-glow);
+            }
+            100% {
+                box-shadow: var(--shadow-md);
+            }
+        }
+        
+        .pulse-payment-anim {
+            animation: pulse-payment 0.8s ease-in-out 2;
+        }
+        
+        .key-flash {
+            animation: flash-confirm var(--transition-speed-fast) ease-out;
+        }
+        
+        .answer-error-flash {
+            animation: flash-error-bg 0.4s ease-in-out;
+        }
+        
+        @keyframes pulse-bills-modal {
+            0% {
+                transform: scale(1);
+                box-shadow: var(--shadow-sm);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 255, 255, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: var(--shadow-sm);
+            }
+        }
+        
+        @keyframes flash-bill-appear {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.08);
+                filter: brightness(1.4);
+                box-shadow: 0 0 20px var(--color-primary-glow);
+            }
+        }
+        
+        .pulse-payment-anim .bill {
+            animation: flash-bill-appear 0.3s ease-in-out 3;
+        }
+        
+        @keyframes scanline-hover {
+            0% {
+                top: 0;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
 
-        .screen { display: none; flex-direction: column; width: 100%; height: 100%; align-items: center; justify-content: center; opacity: 0; transform: scale(0.98); transition: opacity var(--transition-speed) ease-in-out, transform var(--transition-speed) ease-in-out; }
-        .screen.active { display: flex; opacity: 1; transform: scale(1); }
-        .screen-content-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 800px; gap: 25px; padding: 20px; }
-        .title { font-family: var(--font-main); font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 700; text-align: center; color: var(--color-primary); text-shadow: 0 0 10px rgba(255, 193, 7, 0.3); min-height: 1.2em; }
-        .subtitle { font-size: clamp(1.2rem, 4vw, 1.8rem); text-align: center; color: #aaa; min-height: 1.2em; }
-        .btn { padding: 15px 30px; font-family: var(--font-main); font-size: clamp(1.1rem, 4vw, 1.5rem); text-transform: uppercase; font-weight: 700; color: var(--color-bg); background-color: var(--color-primary); border: 1px solid var(--color-primary-dark); cursor: pointer; transition: all var(--transition-speed-fast) ease-out; min-width: clamp(220px, 50vw, 300px); box-shadow: var(--glow-main); border-radius: 4px; }
-        .btn:hover { background-color: var(--color-primary-dark); box-shadow: var(--glow-main-hover); transform: translateY(-2px); }
-        .btn.disabled { background-color: var(--color-surface-light); color: #888; cursor: not-allowed; box-shadow: none; transform: none; }
-        .btn.btn-secondary { background-color: var(--color-surface); color: var(--color-primary); border: 1px solid var(--color-primary); box-shadow: none; font-size: clamp(1rem, 3.5vw, 1.3rem); min-width: 250px; }
-        .btn.btn-secondary:hover { background-color: var(--color-surface-light); color: var(--color-primary-dark); box-shadow: var(--glow-main); transform: translateY(-2px); }
-        #start-fullscreen-btn { animation: pulse 2s infinite ease-in-out; }
-        .display-panel { position: relative; background-color: var(--color-surface); border: 2px solid #1a1c1f; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); color: var(--color-text); padding: 20px; }
-        #screen-player-select { justify-content: flex-start; padding-top: 5vh; }
-        #player-list-container { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; max-height: 50vh; overflow-y: auto; padding: 10px; background-color: var(--color-bg); border-radius: var(--border-radius-main); }
-        .player-card { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 6px; font-family: var(--font-main); font-size: 1.4rem; cursor: pointer; transition: all var(--transition-speed-fast) ease-out; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
-        .player-card:hover { background: linear-gradient(to bottom, #5a6069, #424851); transform: scale(1.02); }
-        .player-card.selected { background: linear-gradient(to bottom, #FFD54F, #FFC107); color: var(--color-bg); box-shadow: var(--glow-main-hover); }
-        .delete-player-btn { font-size: 1.5rem; color: var(--color-text); background: none; border: none; cursor: pointer; opacity: 0.5; transition: opacity var(--transition-speed-fast); }
-        .delete-player-btn:hover { opacity: 1; color: var(--color-error); }
-        .player-card.selected .delete-player-btn { color: var(--color-bg); opacity: 0.7; }
-        .player-select-actions { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%; }
-        #screen-create-player { justify-content: center; }
-        #new-player-input { width: 100%; max-width: 450px; height: 55px; font-size: 2.2rem; font-weight: bold; letter-spacing: 5px; color: var(--color-primary); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px var(--color-primary-dark); font-family: var(--font-main); min-height: 55px; }
-        #virtual-keyboard-container { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 800px; }
-        .keyboard-row { display: flex; justify-content: center; gap: 8px; }
-        #virtual-keyboard-container .key { display: flex; justify-content: center; align-items: center; height: 45px; flex-grow: 1; flex-basis: 0; font-size: 1.2rem; font-weight: 700; background: linear-gradient(to bottom, #4F555E, #3A3F47); color: var(--color-text); border: 1px solid #2a2e33; border-radius: 6px; cursor: pointer; transition: all 0.1s ease-out; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); font-family: var(--font-main); }
-        #virtual-keyboard-container .key:active { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
-        #virtual-keyboard-container .key[data-key="DEL"] { min-width: 60px; flex-grow: 1.5; background-color: var(--color-surface-light); }
-        #virtual-keyboard-container .key[data-key="ENTER"] { min-width: 80px; flex-grow: 2; background-color: var(--color-primary); color: var(--color-bg); }
-        #screen-level-select .screen-content-wrapper { justify-content: center; gap: 20px; height: 100%; max-width: 900px; }
-        #level-select-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; max-height: 75vh; overflow-y: auto; padding: 15px; border: 1px solid var(--color-surface-light); border-radius: var(--border-radius-main); background: rgba(0,0,0,0.1); }
-        .level-btn { background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 8px; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); color: var(--color-text); font-family: var(--font-main); font-weight: 700; text-transform: uppercase; transition: all var(--transition-speed-fast) ease-out; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 8px; min-height: 160px; cursor: pointer; padding: 10px; position: relative; }
-        .level-number { position: absolute; top: 5px; left: 8px; font-size: 0.9rem; color: #aaa; opacity: 0.7; }
-        .level-icon { font-size: 2.5rem; line-height: 1; margin-top: 10px; display: flex; align-items: center; justify-content: center; }
-        .level-title { font-size: 1.1rem; text-align: center; }
-        .level-stars-container { display: flex; gap: 4px; font-size: 1.2rem; line-height: 1; margin-bottom: 5px; color: var(--color-primary); }
-        .level-stars-container .star-empty { color: var(--color-surface-light); opacity: 0.5; }
-        .level-btn:hover { background: linear-gradient(to bottom, #5a6069, #424851); transform: scale(1.05) translateY(-3px); box-shadow: 0 8px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1); z-index: 10; }
-        .level-btn:active { transform: scale(1.02) translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
-        .level-btn.locked { background: var(--color-surface); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); color: #666; cursor: not-allowed; opacity: 0.6; }
-        .level-btn.locked:hover { transform: none; box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); }
-        .level-btn.locked .level-icon { }
-        .level-btn.locked .level-title { opacity: 0.5; }
-        .level-btn.locked .level-number { opacity: 0.3; }
-        .level-btn.locked .level-stars-container { display: none; }
-        .level-icon svg { width: 2.5rem; height: 2.5rem; fill: currentColor; }
+
+        /* Scanline Overlay */
+        #scanline-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.25;
+        }
+        
+        #scanline-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to bottom, var(--color-primary) 0%, transparent 100%);
+            animation: scanline-move-down 6s linear infinite;
+        }
+
+        /* Screens y Layouts */
+        .screen {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity var(--transition-speed) ease-in-out, transform var(--transition-speed) ease-in-out;
+        }
+        
+        .screen.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .screen-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+            gap: 32px;
+            padding: 24px;
+        }
+
+        /* Tipografía Profesional */
+        .title {
+            font-family: var(--font-main);
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-success) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px var(--color-primary-glow));
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            min-height: 1.2em;
+        }
+        
+        .subtitle {
+            font-size: clamp(1.1rem, 4vw, 1.6rem);
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            min-height: 1.2em;
+        }
+
+        /* Botones Modernos */
+        .btn {
+            position: relative;
+            padding: 18px 42px;
+            font-family: var(--font-main);
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-bg);
+            background: linear-gradient(135deg, var(--color-primary) 0%, #00b8d4 100%);
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-speed-fast);
+            box-shadow: var(--shadow-md), 0 0 20px var(--color-primary-glow);
+            min-width: clamp(220px, 50vw, 320px);
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), 0 0 35px var(--color-primary-glow);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn.disabled {
+            background: var(--color-surface-light);
+            color: var(--color-text-secondary);
+            cursor: not-allowed;
+            box-shadow: var(--shadow-sm);
+            opacity: 0.5;
+            transform: none;
+        }
+        
+        .btn.btn-secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            box-shadow: var(--shadow-sm);
+            min-width: 280px;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+        }
+        
+        .btn.btn-secondary:hover {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #00b8d4 100%);
+            color: var(--color-bg);
+            box-shadow: var(--shadow-md), 0 0 25px var(--color-primary-glow);
+            transform: translateY(-2px);
+        }
+        
+        #start-fullscreen-btn {
+            animation: pulse 2s infinite ease-in-out;
+            font-size: clamp(1.2rem, 5vw, 1.6rem);
+            padding: 20px 50px;
+        }
+
+        /* Panels y Superficies */
+        .display-panel {
+            position: relative;
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            color: var(--color-text);
+            padding: 24px;
+            backdrop-filter: blur(12px);
+        }
+        /* Player Select */
+        #screen-player-select {
+            justify-content: flex-start;
+            padding-top: 5vh;
+        }
+        
+        #player-list-container {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        
+        .player-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-main);
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed-fast);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 229, 255, 0.3);
+            border-color: var(--color-primary);
+        }
+        
+        .player-card:hover::before {
+            left: 100%;
+        }
+        
+        .player-card.selected {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #00b8d4 100%);
+            color: var(--color-bg);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-lg), 0 0 30px var(--color-primary-glow);
+            transform: scale(1.02);
+        }
+        
+        .delete-player-btn {
+            font-size: 1.5rem;
+            color: var(--color-text);
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all var(--transition-speed-fast);
+            padding: 4px 8px;
+        }
+        
+        .delete-player-btn:hover {
+            opacity: 1;
+            color: var(--color-error);
+            transform: scale(1.2);
+        }
+        
+        .player-card.selected .delete-player-btn {
+            color: var(--color-bg);
+            opacity: 0.8;
+        }
+        
+        .player-select-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+        }
+        /* Create Player Screen */
+        #screen-create-player {
+            justify-content: center;
+        }
+        
+        #new-player-input {
+            width: 100%;
+            max-width: 500px;
+            height: 70px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: var(--color-primary);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-surface);
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md), inset 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px var(--color-primary-glow);
+            font-family: var(--font-main);
+            min-height: 70px;
+        }
+        
+        #virtual-keyboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        #virtual-keyboard-container .key {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 52px;
+            flex-grow: 1;
+            flex-basis: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
+            color: var(--color-text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-speed-fast);
+            box-shadow: var(--shadow-sm);
+            font-family: var(--font-main);
+        }
+        
+        #virtual-keyboard-container .key:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-primary);
+        }
+        
+        #virtual-keyboard-container .key:active {
+            transform: translateY(0);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        #virtual-keyboard-container .key[data-key="DEL"] {
+            min-width: 80px;
+            flex-grow: 1.5;
+            background: linear-gradient(135deg, var(--color-accent) 0%, #ee1d36 100%);
+        }
+        
+        #virtual-keyboard-container .key[data-key="ENTER"] {
+            min-width: 100px;
+            flex-grow: 2;
+            background: linear-gradient(135deg, var(--color-success) 0%, #00cc7e 100%);
+            color: var(--color-bg);
+            font-size: 1.1rem;
+        }
+        /* Level Select */
+        #screen-level-select .screen-content-wrapper {
+            justify-content: center;
+            gap: 24px;
+            height: 100%;
+            max-width: 950px;
+        }
+        
+        #level-select-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 18px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 20px;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            border-radius: var(--border-radius-lg);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .level-btn {
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md);
+            color: var(--color-text);
+            font-family: var(--font-main);
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all var(--transition-speed-fast) ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            min-height: 180px;
+            cursor: pointer;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 229, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+        
+        .level-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .level-number {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+        }
+        
+        .level-icon {
+            font-size: 3rem;
+            line-height: 1;
+            margin-top: 20px;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .level-title {
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .level-stars-container {
+            display: flex;
+            gap: 4px;
+            font-size: 1.4rem;
+            line-height: 1;
+            margin-bottom: 5px;
+            color: var(--color-warning);
+            filter: drop-shadow(0 0 8px var(--color-warning-glow));
+        }
+        
+        .level-stars-container .star-empty {
+            color: var(--color-surface-light);
+            opacity: 0.3;
+        }
+        
+        .level-btn:hover {
+            background: linear-gradient(135deg, var(--color-surface-hover) 0%, var(--color-surface-light) 100%);
+            transform: scale(1.05) translateY(-4px);
+            box-shadow: var(--shadow-xl), 0 0 24px rgba(0, 229, 255, 0.3);
+            border-color: var(--color-primary);
+            z-index: 10;
+        }
+        
+        .level-btn:active {
+            transform: scale(1.02) translateY(0px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .level-btn.locked {
+            background: var(--color-bg-secondary);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .level-btn.locked:hover {
+            transform: none;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        .level-btn.locked .level-icon {
+        }
+        
+        .level-btn.locked .level-title {
+            opacity: 0.5;
+        }
+        
+        .level-btn.locked .level-number {
+            opacity: 0.3;
+        }
+        
+        .level-btn.locked .level-stars-container {
+            display: none;
+        }
+        
+        .level-icon svg {
+            width: 3rem;
+            height: 3rem;
+            fill: currentColor;
+        }
 
         /* --- LAYOUT DE JUEGO --- */
         #screen-game { flex-direction: column; padding: 10px; justify-content: flex-start; gap: 10px; position: relative; }
@@ -214,6 +950,8 @@
         .quantity-ribbon span { position: absolute; color: var(--color-bg); padding: 5px 0; width: 150%; text-align: center; font-size: 1.6rem; font-weight: bold; box-shadow: 0 3px 6px rgba(0,0,0,0.4); transform: rotate(45deg) translateY(-20px); }
         .quantity-ribbon.quantity-x2 span { background-color: var(--color-primary); }
         .quantity-ribbon.quantity-x3 span { background-color: var(--color-green); }
+        .quantity-ribbon.quantity-2x1 span { background-color: var(--color-accent); }
+        .quantity-ribbon.quantity-3x2 span { background-color: var(--color-blue); }
 
         #payment-display {
             width: 100%;
@@ -333,7 +1071,7 @@
         .calc-total span { color: var(--color-green); }
         #special-items-summary { width: 100%; background-color: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 6px; margin-top: 10px; margin-bottom: 15px; font-family: var(--font-main); text-transform: uppercase; border: 1px solid var(--color-surface-light); }
         .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; border-bottom: 1px dashed var(--color-surface-light); padding-bottom: 5px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; font-size: 1rem; }
+        .summary-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; font-size: 0.9rem; }
         .summary-item .label { color: #aaa; font-size: 0.9rem; white-space: nowrap; }
         .summary-item .count { font-size: 1.3rem; font-weight: 700; }
         .summary-item .count-free { color: var(--color-error); }
@@ -341,6 +1079,8 @@
         .summary-item .count-canje { color: var(--color-canje); }
         .summary-item .count-x2 { color: var(--color-primary); }
         .summary-item .count-x3 { color: var(--color-green); }
+        .summary-item .count-2x1 { color: var(--color-accent); }
+        .summary-item .count-3x2 { color: var(--color-blue); }
 
         #round-feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background-color: rgba(44, 47, 54, 0.95); border: 2px solid; border-radius: var(--border-radius-main); padding: 25px; text-align: center; font-family: var(--font-main); opacity: 0; pointer-events: none; z-index: 10001; box-shadow: 0 5px 20px rgba(0,0,0,0.6); transition: opacity 0.3s, transform 0.3s; }
         #round-feedback.correct { border-color: var(--color-green); }
@@ -365,6 +1105,9 @@
         #help-hud .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; }
         #help-hud-content { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; font-size: 0.9rem; color: #ccc; }
         #help-hud-content span { white-space: nowrap; }
+        #help-hud-content .promo-item { color: var(--color-success); font-weight: 600; }
+        #help-hud-content .promo-2x1 { color: var(--color-accent); font-weight: 600; }
+        #help-hud-content .promo-3x2 { color: var(--color-blue); font-weight: 600; }
 
         /* Modal de Preparación */
         #pre-round-modal { z-index: 9000; cursor: pointer; }
@@ -506,7 +1249,10 @@
                          <div id="hud-round-counter">RONDA 1/10</div>
                     </div>
                 </div>
-                 <div id="hud-right"> <div id="hud-timer">00:00.0</div> </div>
+                 <div id="hud-right"> 
+                     <div id="hud-points" style="font-family: var(--font-main); font-size: 1.5rem; color: var(--color-primary); font-weight: 700; margin-right: 20px;">★ <span id="hud-points-value">0</span></div>
+                     <div id="hud-timer">00:00.0</div> 
+                 </div>
              </div>
             <div class="game-content-wrapper">
                 <div id="problem-container" class="display-panel">
@@ -515,10 +1261,12 @@
                         <div class="summary-title">ESPECIALES</div>
                         <div class="summary-grid">
                             <div class="summary-item"> <div class="label">Gratis</div> <div class="count count-free" id="summary-count-free">0</div> </div>
-                            <div class="summary-item"> <div class="label">Defect.</div> <div class="count count-defective" id="summary-count-defective">0</div> </div>
+                            <div class="summary-item"> <div class="label">Dañado</div> <div class="count count-defective" id="summary-count-defective">0</div> </div>
                             <div class="summary-item"> <div class="label">Canje</div> <div class="count count-canje" id="summary-count-canje">0</div> </div>
                             <div class="summary-item"> <div class="label">x2</div> <div class="count count-x2" id="summary-count-x2">0</div> </div>
                             <div class="summary-item"> <div class="label">x3</div> <div class="count count-x3" id="summary-count-x3">0</div> </div>
+                            <div class="summary-item"> <div class="label">2x1</div> <div class="count count-2x1" id="summary-count-2x1">0</div> </div>
+                            <div class="summary-item"> <div class="label">3x2</div> <div class="count count-3x2" id="summary-count-3x2">0</div> </div>
                         </div>
                     </div>
                     <div id="round-feedback"></div>
@@ -534,7 +1282,14 @@
                     <div id="numpad-grid"> <button class="key" data-key="7">7</button> <button class="key" data-key="8">8</button> <button class="key" data-key="9">9</button> <button class="key" data-key="4">4</button> <button class="key" data-key="5">5</button> <button class="key" data-key="6">6</button> <button class="key" data-key="1">1</button> <button class="key" data-key="2">2</button> <button class="key" data-key="3">3</button> <button class="key" data-key="del">⌫</button> <button class="key" data-key="0">0</button> <button id="numpad-enter" class="key" data-key="enter">↵</button> </div>
                     <div id="help-hud">
                         <div class="summary-title">AYUDA</div>
-                        <div id="help-hud-content"></div>
+                        <div id="help-hud-content">
+                            <span>🆓 GRATIS = 0</span>
+                            <span>💔 DAÑADO = 0</span>
+                            <span>🔄 CANJE = Resta</span>
+                            <span class="promo-item">x2, x3 = Cantidad</span>
+                            <span class="promo-2x1">2x1 = Paga 1, lleva 2</span>
+                            <span class="promo-3x2">3x2 = Paga 2, lleva 3</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -559,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var EMOJI_POOLS = { basico: ['🍞', '🥛', '🍎', '🍌'], lacteos: ['🥛', '🧀', '🍓'], panaderia: ['🍞', '🍩', '🍪'], frutasVerduras: ['🍎', '🍌', '🍇', '🍓', '🥕', '🥦'], limpieza: [SVG_ICONS.limpieza, '🧻', '🧴'], congelados: [SVG_ICONS.congelados, '🍕', '🍗', '🍟'], bebidas: ['🍾', '🔄', '🥛'], carnes: ['🍗', SVG_ICONS.carnes, '🌭'], snacks: ['🍿', '🍩', '🍪', '🍫', '🍬', '🍭', '🍟', '🍕', '🍔', '🌭'], todos: ['🍎','🍌','🍞','🥛','🧀','🍗','🍇','🍓','🥕','🥦','🍕','🍔','🍟','🌭','🍿','🍩','🍪','🍫','🍬','🍭','🔄','🍾',SVG_ICONS.limpieza,'🧻','🧴',SVG_ICONS.congelados,SVG_ICONS.carnes] };
     var SCREENS = { preloader: document.getElementById('screen-preloader'), playerSelect: document.getElementById('screen-player-select'), createPlayer: document.getElementById('screen-create-player'), levelSelect: document.getElementById('screen-level-select'), game: document.getElementById('screen-game'), };
 
-    var DOM = { hudLives: document.getElementById('hud-lives'), hudWinsTracker: document.getElementById('hud-wins-tracker'), hudRoundCounter: document.getElementById('hud-round-counter'), hudTimer: document.getElementById('hud-timer'), hudPlayerName: document.getElementById('hud-player-name'), hudLevelName: document.getElementById('hud-level-name'), problemList: document.querySelector('.problem-item-list'), answerDisplay: document.getElementById('answer-display'), paymentDisplay: document.getElementById('payment-display'), paymentBillsContainer: document.getElementById('payment-bills-container'), answerPromptLabel: document.getElementById('answer-prompt-label'), numpadGrid: document.getElementById('numpad-grid'), playerListContainer: document.getElementById('player-list-container'), confirmPlayerBtn: document.getElementById('confirm-player-btn'), showCreatePlayerBtn: document.getElementById('show-create-player-btn'), cancelCreatePlayerBtn: document.getElementById('cancel-create-player-btn'), newPlayerInput: document.getElementById('new-player-input'), virtualKeyboard: document.getElementById('virtual-keyboard-container'), levelSelectGrid: document.getElementById('level-select-grid'), modalContainer: document.getElementById('modal-container'), modalContent: document.getElementById('modal-content'), modalTitle: document.getElementById('modal-title'), modalFeedback: document.getElementById('modal-feedback'), retryBtn: document.getElementById('retry-btn'), backToMenuBtn: document.getElementById('back-to-menu-btn'), summaryCountFree: document.getElementById('summary-count-free'), summaryCountDefective: document.getElementById('summary-count-defective'), summaryCountCanje: document.getElementById('summary-count-canje'), summaryCountX2: document.getElementById('summary-count-x2'), summaryCountX3: document.getElementById('summary-count-x3'), roundFeedback: document.getElementById('round-feedback'), forceFullscreenModal: document.getElementById('force-fullscreen-modal'), reenterFullscreenBtn: document.getElementById('reenter-fullscreen-btn'), helpHudContent: document.getElementById('help-hud-content'), preRoundModal: document.getElementById('pre-round-modal'), preRoundContent: document.getElementById('pre-round-content'), appContainer: document.getElementById('app-container'), numpadEnterBtn: document.getElementById('numpad-enter') };
+    var DOM = { hudLives: document.getElementById('hud-lives'), hudWinsTracker: document.getElementById('hud-wins-tracker'), hudRoundCounter: document.getElementById('hud-round-counter'), hudTimer: document.getElementById('hud-timer'), hudPlayerName: document.getElementById('hud-player-name'), hudLevelName: document.getElementById('hud-level-name'), hudPoints: document.getElementById('hud-points-value'), problemList: document.querySelector('.problem-item-list'), answerDisplay: document.getElementById('answer-display'), paymentDisplay: document.getElementById('payment-display'), paymentBillsContainer: document.getElementById('payment-bills-container'), answerPromptLabel: document.getElementById('answer-prompt-label'), numpadGrid: document.getElementById('numpad-grid'), playerListContainer: document.getElementById('player-list-container'), confirmPlayerBtn: document.getElementById('confirm-player-btn'), showCreatePlayerBtn: document.getElementById('show-create-player-btn'), cancelCreatePlayerBtn: document.getElementById('cancel-create-player-btn'), newPlayerInput: document.getElementById('new-player-input'), virtualKeyboard: document.getElementById('virtual-keyboard-container'), levelSelectGrid: document.getElementById('level-select-grid'), modalContainer: document.getElementById('modal-container'), modalContent: document.getElementById('modal-content'), modalTitle: document.getElementById('modal-title'), modalFeedback: document.getElementById('modal-feedback'), retryBtn: document.getElementById('retry-btn'), backToMenuBtn: document.getElementById('back-to-menu-btn'), summaryCountFree: document.getElementById('summary-count-free'), summaryCountDefective: document.getElementById('summary-count-defective'), summaryCountCanje: document.getElementById('summary-count-canje'), summaryCountX2: document.getElementById('summary-count-x2'), summaryCountX3: document.getElementById('summary-count-x3'), roundFeedback: document.getElementById('round-feedback'), forceFullscreenModal: document.getElementById('force-fullscreen-modal'), reenterFullscreenBtn: document.getElementById('reenter-fullscreen-btn'), helpHudContent: document.getElementById('help-hud-content'), preRoundModal: document.getElementById('pre-round-modal'), preRoundContent: document.getElementById('pre-round-content'), appContainer: document.getElementById('app-container'), numpadEnterBtn: document.getElementById('numpad-enter') };
 
     var LEVEL_CONFIG = [
         { name: "Básicos", icon: SVG_ICONS.basicos, items: 2, timePerRound: 45, rounds: 10, mods: {}, pool: 'basico', forceQuantityOne: true },
@@ -567,19 +1322,39 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: "Lácteos", icon: "🥛", items: 3, timePerRound: 50, rounds: 10, mods: { free: 0.3 }, pool: 'lacteos' },
         { name: "Frutería", icon: "🍓", items: 4, timePerRound: 50, rounds: 10, mods: { defective: 0.25 }, pool: 'frutasVerduras' },
         { name: "Limpieza", icon: SVG_ICONS.limpieza, items: 4, timePerRound: 55, rounds: 10, mods: { discount: 3 }, pool: 'limpieza' },
-        { name: "Congelados", icon: SVG_ICONS.congelados, items: 5, timePerRound: 60, rounds: 10, mods: { taxed: 2 }, pool: 'congelados' },
+        { name: "Congelados", icon: SVG_ICONS.congelados, items: 5, timePerRound: 60, rounds: 10, mods: {}, pool: 'congelados' },
         { name: "Bebidas", icon: "🍾", items: 5, timePerRound: 60, rounds: 10, mods: { canje: 0.3 }, pool: 'bebidas' },
-        { name: "Carnicería", icon: "🥩", items: 5, timePerRound: 70, rounds: 10, mods: { taxed: 4, discount: 5 }, pool: 'carnes' },
+        { name: "Carnicería", icon: "🥩", items: 5, timePerRound: 70, rounds: 10, mods: { discount: 5 }, pool: 'carnes' },
         { name: "Snacks", icon: "🍿", items: 6, timePerRound: 75, rounds: 10, mods: { free: 0.2, defective: 0.2, canje: 0.15 }, pool: 'snacks' },
-        { name: "Caja Rápida", icon: SVG_ICONS.rapida, items: 7, timePerRound: 90, rounds: 10, mods: { free: 0.15, defective: 0.15, discount: 5, taxed: 5, canje: 0.15 }, pool: 'todos' }
+        { name: "Caja Rápida", icon: SVG_ICONS.rapida, items: 7, timePerRound: 90, rounds: 10, mods: { free: 0.15, defective: 0.15, discount: 5, canje: 0.15 }, pool: 'todos' }
     ];
 
-    var gameState = { players: {}, currentPlayerName: null, newPlayerName: "", currentLevelName: "", activeScreenId: 'preloader', specialCounts: { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 }, lastProblemItems: [], totalCost: 0, paymentAmount: 0, paymentStringHTML: "", isWaitingForFeedbackClick: false, isPausedForPreRound: false };
+    var gameState = { 
+        players: {}, 
+        currentPlayerName: null, 
+        newPlayerName: "", 
+        currentLevelName: "", 
+        activeScreenId: 'preloader', 
+        specialCounts: { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 }, 
+        lastProblemItems: [], 
+        totalCost: 0, 
+        paymentAmount: 0, 
+        paymentStringHTML: "", 
+        isWaitingForFeedbackClick: false, 
+        isPausedForPreRound: false,
+        // NUEVO: Sistema de puntos y tutorial
+        points: 0,
+        tutorialShown: {
+            operationWindow: 0,  // Contador de veces mostrado (máx 2 por nivel)
+            specialProducts: 0,  // Contador de veces mostrado (máx 3 total)
+            twoForOne: false     // Solo se muestra una vez
+        }
+    };
     var timerInterval;
     var roundFeedbackTimeout;
 
     // --- 2. GESTIÓN DE JUGADORES ---
-    function loadPlayers() { try { var savedPlayers = localStorage.getItem('supermercadoPlayers'); if (savedPlayers) { gameState.players = JSON.parse(savedPlayers); if (typeof gameState.players !== 'object' || gameState.players === null) throw new Error("Invalid player data format"); } else { throw new Error("No player data found"); } } catch (error) { console.warn("Error loading players or data corrupt:", error.message, ". Resetting to default."); gameState.players = { "INVITADO": { unlockedLevel: 0, stars: [] } }; savePlayers(); } }
+    function loadPlayers() { try { var savedPlayers = localStorage.getItem('supermercadoPlayers'); if (savedPlayers) { gameState.players = JSON.parse(savedPlayers); if (typeof gameState.players !== 'object' || gameState.players === null) throw new Error("Invalid player data format"); } else { throw new Error("No player data found"); } } catch (error) { console.warn("Error loading players or data corrupt:", error.message, ". Resetting to default."); gameState.players = { "INVITADO": { unlockedLevel: 0, stars: [], totalPoints: 0 } }; savePlayers(); } }
     function savePlayers() { try { localStorage.setItem('supermercadoPlayers', JSON.stringify(gameState.players)); } catch (error) { console.error("Error saving player data:", error); } }
     function renderPlayerList() { DOM.playerListContainer.innerHTML = ''; Object.keys(gameState.players).forEach(function(name) { var card = document.createElement('button'); card.className = 'player-card'; if (name === gameState.currentPlayerName) card.classList.add('selected'); var nameSpan = document.createElement('span'); nameSpan.textContent = name; card.appendChild(nameSpan); if (name !== "INVITADO") { var deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-player-btn'; deleteBtn.textContent = '✖'; deleteBtn.onclick = function(e) { e.stopPropagation(); deletePlayer(name); }; card.appendChild(deleteBtn); } card.onclick = function() { selectPlayer(name); }; DOM.playerListContainer.appendChild(card); }); }
     function selectPlayer(name) { gameState.currentPlayerName = name; DOM.confirmPlayerBtn.classList.remove('disabled'); renderPlayerList(); }
@@ -596,27 +1371,99 @@ document.addEventListener('DOMContentLoaded', function() {
     function showForceFullscreenModal() { if (DOM.forceFullscreenModal) { console.log("Mostrando modal para forzar pantalla completa."); DOM.forceFullscreenModal.style.display = 'flex'; } else { console.error("Modal #force-fullscreen-modal no encontrado."); } }
     function hideForceFullscreenModal() { if (DOM.forceFullscreenModal) { DOM.forceFullscreenModal.style.display = 'none'; } }
     function checkFullscreen() { var isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement; if (!isFullscreen && DOM.forceFullscreenModal.style.display !== 'flex' && (gameState.activeScreenId === 'game' || gameState.activeScreenId === 'levelSelect' || gameState.activeScreenId === 'playerSelect' )) { console.log("Salida de pantalla completa detectada."); showForceFullscreenModal(); } else if (isFullscreen && DOM.forceFullscreenModal.style.display === 'flex') { hideForceFullscreenModal(); } }
-    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [] }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; } savePlayers(); } if (!playerData.stars) playerData.stars = []; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; } else { levelBtn.dataset.levelIndex = index; levelBtn.addEventListener('click', function() { console.log(`Iniciando nivel ${index}`); startGame(index); }); } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
+    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [], totalPoints: 0 }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; } savePlayers(); } if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; var pointsHTML = ''; if (index <= unlockedLevel && playerData.totalPoints > 0) { pointsHTML = '<div style="font-size: 0.9rem; color: var(--color-primary); margin-top: 5px; font-weight: 600;">⭐ ' + playerData.totalPoints + ' pts</div>'; } if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; pointsHTML = ''; } else { levelBtn.dataset.levelIndex = index; levelBtn.addEventListener('click', function() { console.log(`Iniciando nivel ${index}`); startGame(index); }); } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML + pointsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
 
     // --- 4. LÓGICA PRINCIPAL DEL JUEGO ---
-    function startGame(levelIndex) { var config = LEVEL_CONFIG[levelIndex]; gameState.levelIndex = levelIndex; gameState.config = config; gameState.currentLevelName = config.name; gameState.lives = 3; gameState.wins = 0; gameState.currentAnswer = ''; gameState.correctAnswer = 0; gameState.roundResults = []; gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 }; gameState.lastProblemItems = []; gameState.totalCost = 0; gameState.paymentAmount = 0; gameState.paymentStringHTML = ""; console.log("Iniciando juego - Nivel:", levelIndex); showScreen('game'); updateGameHUDInfo(); updateHelpHUD(); nextRound(); }
+    function startGame(levelIndex) { 
+        var config = LEVEL_CONFIG[levelIndex]; 
+        gameState.levelIndex = levelIndex; 
+        gameState.config = config; 
+        gameState.currentLevelName = config.name; 
+        gameState.lives = 3; 
+        gameState.wins = 0; 
+        gameState.currentAnswer = '';
+        // CORREGIDO: Los puntos se resetean al inicio de cada nivel
+        gameState.points = 0;
+        console.log("Puntos reseteados a 0 para nuevo nivel");
+        gameState.correctAnswer = 0; 
+        gameState.roundResults = []; 
+        gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0, twoForOne: 0, threeForTwo: 0 }; 
+        gameState.lastProblemItems = []; 
+        gameState.totalCost = 0; 
+        gameState.paymentAmount = 0; 
+        gameState.paymentStringHTML = "";
+        // NUEVO: Resetear sistema de tutorial y puntos
+        gameState.points = 0;
+        gameState.tutorialShown = {
+            operationWindow: 0,
+            specialProducts: 0,
+            twoForOne: false
+        };
+        console.log("Iniciando juego - Nivel:", levelIndex); 
+        showScreen('game'); 
+        updateGameHUDInfo(); 
+        updateHelpHUD(); 
+        nextRound(); 
+    }
     function nextRound() { gameState.currentAnswer = ''; updateAnswerDisplay(); var problem = generateProblem(); gameState.correctAnswer = problem.total; gameState.lastProblemItems = problem.items; renderProblem(problem.items); updateHUD(); updateSpecialItemsSummary(); showPreRoundModal(); }
-    function startTimer() { clearInterval(timerInterval); gameState.timeLeft = gameState.config.timePerRound * 10; DOM.hudTimer.classList.remove('low-time'); updateTimerDisplay(); timerInterval = setInterval(function() { if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; gameState.timeLeft--; updateTimerDisplay(); if (Math.floor(gameState.timeLeft / 10) <= 10) { DOM.hudTimer.classList.add('low-time'); } else { DOM.hudTimer.classList.remove('low-time'); } if (gameState.timeLeft <= 0) { console.log("Tiempo agotado!"); clearInterval(timerInterval); checkAnswer(); } }, 100); }
+    function startTimer() { clearInterval(timerInterval); gameState.timeLeft = gameState.config.timePerRound * 10; DOM.hudTimer.classList.remove('low-time'); updateTimerDisplay(); timerInterval = setInterval(function() { if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; gameState.timeLeft--; updateTimerDisplay(); if (Math.floor(gameState.timeLeft / 10) <= 10) { DOM.hudTimer.classList.add('low-time'); } else { DOM.hudTimer.classList.remove('low-time'); } if (gameState.timeLeft <= 0) { console.log("Tiempo agotado!"); clearInterval(timerInterval); 
+        // CORREGIDO: Si no hay respuesta en el teclado, verificar automáticamente como incorrecta
+        if (gameState.currentAnswer === '' || gameState.currentAnswer === '-') {
+            console.log("Sin respuesta en el teclado - marcando como incorrecta");
+            handleIncorrectAnswer();
+        } else {
+            checkAnswer();
+        }
+    } }, 100); }
     function updateTimerDisplay() { var totalTenths = Math.max(0, gameState.timeLeft); var totalSeconds = Math.floor(totalTenths / 10); var minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0'); var seconds = (totalSeconds % 60).toString().padStart(2, '0'); var tenths = (totalTenths % 10).toString(); DOM.hudTimer.textContent = minutes + ':' + seconds + '.' + tenths; }
     function stopTimer() { console.log("Deteniendo temporizador"); clearInterval(timerInterval); }
-    function updateHUD() { var livesHTML = ''; var totalLives = 3; for (var i = 1; i <= totalLives; i++) { livesHTML += (i <= gameState.lives) ? '❤️' : '<span class="lost-life">❤️</span>'; } DOM.hudLives.innerHTML = livesHTML; if (DOM.hudRoundCounter) { DOM.hudRoundCounter.textContent = "RONDA: " + (gameState.roundResults.length + 1) + "/" + gameState.config.rounds; } DOM.hudWinsTracker.innerHTML = ''; for (var i = 0; i < gameState.config.rounds; i++) { var dot = document.createElement('div'); dot.className = 'win-dot'; if (i === gameState.roundResults.length) dot.classList.add('current'); if (gameState.roundResults[i] === true) dot.classList.add('correct'); else if (gameState.roundResults[i] === false) dot.classList.add('incorrect'); DOM.hudWinsTracker.appendChild(dot); } }
+    function updateHUD() { 
+        var livesHTML = ''; 
+        var totalLives = 3; 
+        for (var i = 1; i <= totalLives; i++) { 
+            livesHTML += (i <= gameState.lives) ? '❤️' : '<span class="lost-life">❤️</span>'; 
+        } 
+        DOM.hudLives.innerHTML = livesHTML; 
+        
+        if (DOM.hudRoundCounter) { 
+            DOM.hudRoundCounter.textContent = "RONDA: " + (gameState.roundResults.length + 1) + "/" + gameState.config.rounds; 
+        } 
+        
+        // NUEVO: Actualizar puntos
+        if (DOM.hudPoints) {
+            DOM.hudPoints.textContent = gameState.points || 0;
+        }
+        
+        DOM.hudWinsTracker.innerHTML = ''; 
+        for (var i = 0; i < gameState.config.rounds; i++) { 
+            var dot = document.createElement('div'); 
+            dot.className = 'win-dot'; 
+            if (i === gameState.roundResults.length) dot.classList.add('current'); 
+            if (gameState.roundResults[i] === true) dot.classList.add('correct'); 
+            else if (gameState.roundResults[i] === false) dot.classList.add('incorrect'); 
+            DOM.hudWinsTracker.appendChild(dot); 
+        } 
+    }
     function updateGameHUDInfo() { if(DOM.hudPlayerName) DOM.hudPlayerName.textContent = gameState.currentPlayerName || 'INVITADO'; if(DOM.hudLevelName) DOM.hudLevelName.textContent = gameState.currentLevelName || 'NIVEL DESCONOCIDO'; }
-    function updateSpecialItemsSummary() { DOM.summaryCountFree.textContent = gameState.specialCounts.free; DOM.summaryCountDefective.textContent = gameState.specialCounts.defective; DOM.summaryCountCanje.textContent = gameState.specialCounts.canje; if (DOM.summaryCountX2) DOM.summaryCountX2.textContent = gameState.specialCounts.x2; if (DOM.summaryCountX3) DOM.summaryCountX3.textContent = gameState.specialCounts.x3; }
+    function updateSpecialItemsSummary() { 
+        DOM.summaryCountFree.textContent = gameState.specialCounts.free; 
+        DOM.summaryCountDefective.textContent = gameState.specialCounts.defective; 
+        DOM.summaryCountCanje.textContent = gameState.specialCounts.canje; 
+        if (DOM.summaryCountX2) DOM.summaryCountX2.textContent = gameState.specialCounts.x2; 
+        if (DOM.summaryCountX3) DOM.summaryCountX3.textContent = gameState.specialCounts.x3; 
+        if (DOM.summaryCount2x1) DOM.summaryCount2x1.textContent = gameState.specialCounts.twoForOne;
+        if (DOM.summaryCount3x2) DOM.summaryCount3x2.textContent = gameState.specialCounts.threeForTwo;
+    }
     function updateHelpHUD() {
         var helpHTML = '';
         var unlockedLevel = 0;
         if (gameState.players[gameState.currentPlayerName]) { unlockedLevel = gameState.players[gameState.currentPlayerName].unlockedLevel; }
-        if (unlockedLevel >= 2) { helpHTML += '<span>[VUELTO] = Pago - Total</span>'; }
-        if (unlockedLevel >= 2) { helpHTML += '<span>[GRATIS] = 0</span>'; }
-        if (unlockedLevel >= 3) { helpHTML += '<span>[DEFECT.] = 0</span>'; }
-        if (unlockedLevel >= 4) { helpHTML += '<span>[DESC. -N] = Restar N</span>'; }
-        if (unlockedLevel >= 5) { helpHTML += '<span>[IMP. +N] = Sumar N</span>'; }
-        if (unlockedLevel >= 6) { helpHTML += '<span>[CANJE] = Restar Valor</span>'; }
+        helpHTML += '<span>🆓 GRATIS = 0</span>';
+        helpHTML += '<span>💔 DAÑADO = 0</span>';
+        helpHTML += '<span>🔄 CANJE = Resta</span>';
+        helpHTML += '<span class="promo-item">x2, x3 = Cantidad</span>';
+        helpHTML += '<span class="promo-2x1">2x1 = Paga 1, lleva 2</span>';
+        helpHTML += '<span class="promo-3x2">3x2 = Paga 2, lleva 3</span>';
         if (DOM.helpHudContent) { DOM.helpHudContent.innerHTML = helpHTML || '<span>¡Calcula el total!</span>'; }
     }
 
@@ -695,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var items = [];
         var totalCost = 0;
         var hasSpecialStateItem = false;
-        gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0 };
+        gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0, twoForOne: 0, threeForTwo: 0 };
         var config = gameState.config;
         var mods = config.mods;
         var pool = EMOJI_POOLS[config.pool || 'todos'];
@@ -748,19 +1595,23 @@ document.addEventListener('DOMContentLoaded', function() {
                      item.mods.push('discount');
                      hasAppliedDiscount = true;
                  }
-                 else if (mods.taxed && !hasAppliedTax && Math.random() < 0.3) {
-                     item.mods.push('taxed');
-                     hasAppliedTax = true;
-                 }
             }
 
-            var itemTotal = item.price * item.quantity;
+            // CORREGIDO: Calcular precio correcto para 2x1 (pagas 1) y 3x2 (pagas 2)
+            var itemTotal;
+            if (item.quantity === 2) {
+                itemTotal = item.price * 1;  // 2x1: Pagas 1, llevas 2
+            } else if (item.quantity === 3) {
+                itemTotal = item.price * 2;  // 3x2: Pagas 2, llevas 3
+            } else {
+                itemTotal = item.price * item.quantity;
+            }
+            
             if(item.mods.includes('canje')) { itemTotal = -itemTotal; if(item.emoji === '🔄') item.emoji = '🍾'; }
             else {
-                var discountAmount = 0; var taxAmount = 0;
+                var discountAmount = 0;
                 if (item.mods.includes('discount')) { discountAmount = config.mods.discount || 0; }
-                if (item.mods.includes('taxed')) { taxAmount = config.mods.taxed || 0; }
-                itemTotal = itemTotal - discountAmount + taxAmount;
+                itemTotal = itemTotal - discountAmount;
             }
             if(item.mods.includes('free')) itemTotal = 0;
             if(item.mods.includes('defective')) itemTotal = 0;
@@ -769,8 +1620,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (item.mods.includes('free')) gameState.specialCounts.free++;
             if (item.mods.includes('defective')) gameState.specialCounts.defective++;
             if (item.mods.includes('canje')) gameState.specialCounts.canje++;
-            if (item.quantity === 2) gameState.specialCounts.x2++;
-            if (item.quantity === 3) gameState.specialCounts.x3++;
+            if (item.quantity === 2) {
+                gameState.specialCounts.x2++;
+                gameState.specialCounts.twoForOne++;
+            }
+            if (item.quantity === 3) {
+                gameState.specialCounts.x3++;
+                gameState.specialCounts.threeForTwo++;
+            }
 
             totalCost += itemTotal; items.push(item);
             console.log(`   Item ${i}: ${item.emoji}, Qty: ${item.quantity}, Price: ${item.price}, Mods: ${item.mods.join(',')}, ItemTotal: ${itemTotal}`);
@@ -789,17 +1646,43 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderProblem(items) {
         DOM.problemList.innerHTML = '';
         items.forEach(function(item, index) {
+            // Crear contenedor para sombras múltiples (2x1, 3x1)
+            var containerDiv = document.createElement('div');
+            containerDiv.style.position = 'relative';
+            containerDiv.style.display = 'inline-block';
+            
+            // Crear sombras para productos múltiples ANTES de la tarjeta principal
+            if (item.quantity >= 2) {
+                for (var shadowIndex = item.quantity - 1; shadowIndex > 0; shadowIndex--) {
+                    var shadow = document.createElement('div');
+                    shadow.className = 'product-card';
+                    shadow.style.position = 'absolute';
+                    shadow.style.opacity = '0.5';
+                    shadow.style.zIndex = '-' + shadowIndex;
+                    shadow.style.transform = 'translate(' + (shadowIndex * 6) + 'px, ' + (shadowIndex * 6) + 'px)';
+                    shadow.style.backgroundColor = 'var(--color-surface)';
+                    shadow.style.border = '2px solid var(--color-primary)';
+                    containerDiv.appendChild(shadow);
+                }
+            }
+            
             var card = document.createElement('div');
             card.className = 'product-card';
+            card.style.position = 'relative';
+            card.style.zIndex = '1';
+            
             var ribbonHTML = '';
-            if (item.quantity > 1) { ribbonHTML = '<div class="quantity-ribbon quantity-x' + item.quantity + '"><span>x' + item.quantity + '</span></div>'; }
+            if (item.quantity === 2) { 
+                ribbonHTML = '<div class="quantity-ribbon quantity-2x1"><span>2x1</span></div>'; 
+            } else if (item.quantity === 3) { 
+                ribbonHTML = '<div class="quantity-ribbon quantity-3x2"><span>3x2</span></div>'; 
+            }
             var stateTagHTML = '';
             var priceDisplay = '' + item.price;
             if (item.mods.includes('free')) { stateTagHTML = '<div class="product-state-tag tag-free">GRATIS</div>'; }
-            else if (item.mods.includes('defective')) { stateTagHTML = '<div class="product-state-tag tag-defective">DEFECTUOSO</div>'; }
+            else if (item.mods.includes('defective')) { stateTagHTML = '<div class="product-state-tag tag-defective">DAÑADO</div>'; }
             else if (item.mods.includes('canje')) { stateTagHTML = '<div class="product-state-tag tag-canje">CANJE</div>'; priceDisplay = '-' + item.price; card.classList.add('canje'); }
             else if (item.mods.includes('discount')) { stateTagHTML = '<div class="product-state-tag tag-discount">DESC. -' + (gameState.config.mods.discount || 0) + '</div>'; }
-            else if (item.mods.includes('taxed')) { stateTagHTML = '<div class="product-state-tag tag-taxed">IMP. +' + (gameState.config.mods.taxed || 0) + '</div>'; }
             else { stateTagHTML = '<div style="height: 25px;"></div>'; }
 
             card.innerHTML =
@@ -811,7 +1694,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 stateTagHTML;
 
             card.style.animationDelay = (index * 100) + 'ms';
-            DOM.problemList.appendChild(card);
+            containerDiv.appendChild(card);
+            DOM.problemList.appendChild(containerDiv);
         });
     }
 
@@ -870,16 +1754,30 @@ document.addEventListener('DOMContentLoaded', function() {
             var calcSummaryHTML = '<div class="feedback-calc-summary">';
             gameState.lastProblemItems.forEach(function(item) {
                 var itemCalcText = '' + item.price; if (item.quantity > 1) itemCalcText += ' x' + item.quantity;
-                var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = [];
+                
+                // CORREGIDO: Calcular precio correcto para 2x1 y 3x2 + DECLARAR modsApplied
+                var baseValue;
+                var modsApplied;  // CORREGIDO: Variable declarada correctamente
+                if (item.quantity === 2) {
+                    baseValue = item.price * 1;  // 2x1: Pagas 1
+                    modsApplied = ['2x1: Pagas 1'];
+                } else if (item.quantity === 3) {
+                    baseValue = item.price * 2;  // 3x2: Pagas 2
+                    modsApplied = ['3x2: Pagas 2'];
+                } else {
+                    baseValue = item.price * item.quantity;
+                    modsApplied = [];
+                }
+                
+                var finalValue = baseValue;
                 if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE'); }
                 else {
-                    var discountAmount = 0; var taxAmount = 0;
+                    var discountAmount = 0;
                     if (item.mods.includes('discount')) { discountAmount = (gameState.config.mods.discount || 0); modsApplied.push('DESC. -' + discountAmount); }
-                    if (item.mods.includes('taxed')) { taxAmount = (gameState.config.mods.taxed || 0); modsApplied.push('IMP. +' + taxAmount); }
-                    finalValue = finalValue - discountAmount + taxAmount;
+                    finalValue = finalValue - discountAmount;
                 }
                 if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); }
-                if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DEFECT.'); }
+                if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DAÑADO'); }
                 finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue);
                 calcSummaryHTML += '<div class="feedback-calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalcText + ' ' + (modsApplied.length > 0 ? '['+modsApplied.join('/')+']' : '') + '</span> <span class="price">' + (finalValue >= 0 ? finalValue : '('+Math.abs(finalValue)+')') + '</span> </div>';
             });
@@ -945,7 +1843,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // (MODIFICADO) Limpia la respuesta al ser correcta
+    // (MODIFICADO) Limpia la respuesta al ser correcta + AGREGA PUNTOS
     function handleCorrectAnswer() {
         console.log("Respuesta CORRECTA");
         stopTimer();
@@ -953,6 +1851,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Limpiar la respuesta inmediatamente para prevenir el bug de Enter repetido
         gameState.currentAnswer = '';
         updateAnswerDisplay(); // Esto también deshabilita el botón Enter visualmente
+
+        // NUEVO: Agregar puntos por respuesta correcta
+        gameState.points += 100;
+        console.log("Puntos ganados: +100. Total: " + gameState.points);
 
         showRoundFeedback(true);
         gameState.wins++;
@@ -996,6 +1898,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showPreRoundModal() {
         console.log("Mostrando Modal de Preparación...");
+        
+        // NUEVO: Sistema de tutorial limitado
+        var hasSpecialProducts = gameState.lastProblemItems.some(function(item) {
+            return item.quantity > 1 || item.mods.some(function(mod) {
+                return ['free', 'defective', 'canje', 'discount', 'taxed'].indexOf(mod) !== -1;
+            });
+        });
+        
+        var has2x1 = gameState.lastProblemItems.some(function(item) { return item.quantity >= 2; });
+        
+        var shouldShowTutorial = false;
+        
+        // Ventana de operación: solo la primera vez
+        if (gameState.wins === 0 && gameState.tutorialShown.operationWindow === 0) {
+            shouldShowTutorial = true;
+            gameState.tutorialShown.operationWindow = 1;
+            console.log("Tutorial: Ventana de operación mostrada (1/1)");
+        }
+        // Productos especiales: máximo 2 veces
+        else if (hasSpecialProducts && gameState.tutorialShown.specialProducts < 2) {
+            shouldShowTutorial = true;
+            gameState.tutorialShown.specialProducts++;
+            console.log("Tutorial: Productos especiales mostrado (" + gameState.tutorialShown.specialProducts + "/2)");
+        }
+        
+        // Si no debe mostrar tutorial, iniciar timer directamente
+        if (!shouldShowTutorial) {
+            console.log("Tutorial omitido. Iniciando ronda directamente.");
+            startTimer();
+            return;
+        }
+        
         gameState.isPausedForPreRound = true;
         stopTimer();
 
@@ -1018,23 +1952,23 @@ document.addEventListener('DOMContentLoaded', function() {
             var emoji = '<span class="emoji">' + item.emoji + '</span>';
             var config = gameState.config;
 
-            if (item.quantity > 1) {
-                modsHTML += '<div class="alert-item" style="color: var(--color-primary);">' + emoji + ' ¡PROMO x' + item.quantity + '!</div>';
+            if (item.quantity === 2) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-primary);">' + emoji + ' ¡PROMO 2x1! (Pagas 1, llevas 2)</div>';
+            }
+            if (item.quantity === 3) {
+                modsHTML += '<div class="alert-item" style="color: var(--color-success);">' + emoji + ' ¡PROMO 3x2! (Pagas 2, llevas 3)</div>';
             }
             if (item.mods.includes('free')) {
                 modsHTML += '<div class="alert-item" style="color: var(--color-error);">' + emoji + ' ¡GRATIS!</div>';
             }
             if (item.mods.includes('defective')) {
-                modsHTML += '<div class="alert-item" style="color: var(--color-danger);">' + emoji + ' ¡DEFECTUOSO!</div>';
+                modsHTML += '<div class="alert-item" style="color: var(--color-danger);">' + emoji + ' ¡DAÑADO!</div>';
             }
             if (item.mods.includes('canje')) {
                 modsHTML += '<div class="alert-item" style="color: var(--color-canje);">' + emoji + ' ¡CANJE! (Resta)</div>';
             }
             if (item.mods.includes('discount')) {
                 modsHTML += '<div class="alert-item" style="color: var(--color-green);">' + emoji + ' ¡DESC. -' + (config.mods.discount || 0) + '!</div>';
-            }
-            if (item.mods.includes('taxed')) {
-                modsHTML += '<div class="alert-item" style="color: var(--color-blue);">' + emoji + ' ¡IMP. +' + (config.mods.taxed || 0) + '!</div>';
             }
         });
 
@@ -1061,7 +1995,13 @@ document.addEventListener('DOMContentLoaded', function() {
         startTimer();
     }
 
-    function generateCalculationExplanationHTML(items) { var explanationHTML = '<div class="calculation-details"><h4>Detalle del Cálculo Final:</h4>'; var calculatedTotal = 0; items.forEach(function(item) { var itemCalc = '' + item.price; if (item.quantity > 1) itemCalc += ' x ' + item.quantity; var baseValue = item.price * item.quantity; var finalValue = baseValue; var modsApplied = []; if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE (-)'); } else { var discountAmount = 0; var taxAmount = 0; if (item.mods.includes('discount')) { discountAmount = gameState.config.mods.discount || 0; modsApplied.push('DESC. -' + discountAmount); } if (item.mods.includes('taxed')) { taxAmount = gameState.config.mods.taxed || 0; modsApplied.push('IMP. +' + taxAmount); } finalValue = finalValue - discountAmount + taxAmount; } if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); } if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DEFECT.'); } finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue); calculatedTotal += finalValue; explanationHTML += ' <div class="calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalc + ' ' + (modsApplied.length > 0 ? '('+modsApplied.join(', ')+')' : '') + ' =</span> <span class="price">' + finalValue + '</span> </div>'; }); if (gameState.paymentAmount > 0) { explanationHTML += '<div class="calc-total" style="text-align: right;">Total Compra: <span>' + calculatedTotal + '</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">Pago Con: <span style="display: flex; gap: 4px; flex-wrap: wrap;">' + gameState.paymentStringHTML + ' Bs.</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; font-size: 1.2rem;">Vuelto Correcto: <span>' + (gameState.paymentAmount - calculatedTotal) + '</span></div>'; } else { explanationHTML += '<div class="calc-total">Total Calculado: <span>' + calculatedTotal + '</span></div>'; } explanationHTML += '</div>'; return explanationHTML; }
+    function generateCalculationExplanationHTML(items) { var explanationHTML = '<div class="calculation-details"><h4>Detalle del Cálculo Final:</h4>'; var calculatedTotal = 0; items.forEach(function(item) { var itemCalc = '' + item.price; if (item.quantity > 1) itemCalc += ' x ' + item.quantity; 
+        // CORREGIDO: Calcular precio correcto para 2x1 y 3x2
+        var baseValue; var modsApplied = [];
+        if (item.quantity === 2) { baseValue = item.price * 1; modsApplied.push('2x1: Pagas 1'); }
+        else if (item.quantity === 3) { baseValue = item.price * 2; modsApplied.push('3x2: Pagas 2'); }
+        else { baseValue = item.price * item.quantity; }
+        var finalValue = baseValue; if (item.mods.includes('canje')) { finalValue = -baseValue; modsApplied.push('CANJE (-)'); } else { var discountAmount = 0; if (item.mods.includes('discount')) { discountAmount = gameState.config.mods.discount || 0; modsApplied.push('DESC. -' + discountAmount); } finalValue = finalValue - discountAmount; } if (item.mods.includes('free')) { finalValue = 0; modsApplied.push('GRATIS'); } if (item.mods.includes('defective')) { finalValue = 0; modsApplied.push('DAÑADO'); } finalValue = item.mods.includes('canje') ? finalValue : Math.max(0, finalValue); calculatedTotal += finalValue; explanationHTML += ' <div class="calc-item"> <span class="emoji">' + item.emoji + '</span> <span class="details">' + itemCalc + ' ' + (modsApplied.length > 0 ? '('+modsApplied.join(', ')+')' : '') + ' =</span> <span class="price">' + finalValue + '</span> </div>'; }); if (gameState.paymentAmount > 0) { explanationHTML += '<div class="calc-total" style="text-align: right;">Total Compra: <span>' + calculatedTotal + '</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">Pago Con: <span style="display: flex; gap: 4px; flex-wrap: wrap;">' + gameState.paymentStringHTML + ' Bs.</span></div>'; explanationHTML += '<div class="calc-total" style="text-align: right; font-size: 1.2rem;">Vuelto Correcto: <span>' + (gameState.paymentAmount - calculatedTotal) + '</span></div>'; } else { explanationHTML += '<div class="calc-total">Total Calculado: <span>' + calculatedTotal + '</span></div>'; } explanationHTML += '</div>'; return explanationHTML; }
     function endGame(isWin) {
         console.log(`Fin del juego. Resultado: ${isWin ? 'VICTORIA' : 'DERROTA'}`);
         stopTimer();
@@ -1079,7 +2019,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     playerData.stars[currentLevelIndex] = stars;
                     console.log(`Nuevo récord de ${stars} estrellas para Nivel ${currentLevelIndex}`);
                 }
-                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p>";
+                // CORREGIDO: Los puntos solo se suman al total al completar el nivel exitosamente
+                if (!playerData.totalPoints) playerData.totalPoints = 0;
+                playerData.totalPoints += gameState.points;
+                console.log(`Nivel completado! Puntos de este nivel: ${gameState.points}. Total acumulado: ${playerData.totalPoints}`);
+                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p><p style='font-size: 2rem; margin-top: 15px; color: var(--color-primary);'>⭐ +" + gameState.points + " PUNTOS</p><p style='font-size: 1.2rem; margin-top: 10px; color: var(--color-text-secondary);'>Total Acumulado: " + playerData.totalPoints + " pts</p>";
                 if (playerData && currentLevelIndex === playerData.unlockedLevel && currentLevelIndex < LEVEL_CONFIG.length - 1) {
                     playerData.unlockedLevel = playerData.unlockedLevel + 1;
                     console.log(`Nivel ${playerData.unlockedLevel} desbloqueado para ${gameState.currentPlayerName}`);
@@ -1090,7 +2034,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 DOM.modalTitle.classList.add('fail');
                 var userAnswer = parseInt(gameState.currentAnswer, 10) || 0;
                 var userAnswerDisplay = gameState.currentAnswer.startsWith('-') ? '-' + Math.abs(userAnswer) : '' + userAnswer;
-                var correctAnswerDisplay = gameState.correctAnswer < 0 ? '-' + Math.abs(gameState.correctAnswer) : '' + correctAnswerDisplay;
+                var correctAnswerDisplay = gameState.correctAnswer < 0 ? '-' + Math.abs(gameState.correctAnswer) : '' + gameState.correctAnswer;
                 var explanationHTML = generateCalculationExplanationHTML(gameState.lastProblemItems);
                 var feedbackGridHTML = '<div class="feedback-grid">';
                 if (gameState.paymentAmount > 0) {
@@ -1103,7 +2047,8 @@ document.addEventListener('DOMContentLoaded', function() {
                      feedbackGridHTML += '<span>TOTAL CORRECTO:</span><span class="answer-value correct">' + correctAnswerDisplay + '</span>';
                 }
                 feedbackGridHTML += '</div>';
-                DOM.modalFeedback.innerHTML = ' <p>Se han detectado inconsistencias críticas.</p> ' + feedbackGridHTML + ' ' + explanationHTML + ' ';
+                // CORREGIDO: En derrota, los puntos se muestran pero NO se suman al total del jugador
+                DOM.modalFeedback.innerHTML = ' <p>Se han detectado inconsistencias críticas.</p> ' + feedbackGridHTML + ' ' + explanationHTML + ' <p style="font-size: 1.5rem; margin-top: 15px; color: var(--color-error);">⭐ ' + gameState.points + ' PUNTOS</p><p style="font-size: 0.9rem; color: var(--color-text-secondary);">(Los puntos solo se suman al completar el nivel)</p>';
             }
             showModal();
         } catch (error) {
