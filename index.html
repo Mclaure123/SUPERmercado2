@@ -315,17 +315,33 @@
         @keyframes pulse-payment {
             0% {
                 box-shadow: var(--shadow-md);
+                transform: scale(1);
+                border-color: var(--color-primary);
+            }
+            25% {
+                box-shadow: var(--shadow-xl), 0 0 40px var(--color-primary-glow), 0 0 80px rgba(255, 215, 0, 0.4);
+                transform: scale(1.08);
+                border-color: var(--color-success);
             }
             50% {
-                box-shadow: var(--shadow-lg), 0 0 25px var(--color-primary-glow);
+                box-shadow: var(--shadow-xl), 0 0 50px var(--color-primary-glow), 0 0 100px rgba(255, 215, 0, 0.5);
+                transform: scale(1.12);
+                border-color: var(--color-primary);
+            }
+            75% {
+                box-shadow: var(--shadow-xl), 0 0 40px var(--color-primary-glow), 0 0 80px rgba(255, 215, 0, 0.4);
+                transform: scale(1.08);
+                border-color: var(--color-success);
             }
             100% {
                 box-shadow: var(--shadow-md);
+                transform: scale(1);
+                border-color: var(--color-primary);
             }
         }
         
         .pulse-payment-anim {
-            animation: pulse-payment 0.8s ease-in-out 2;
+            animation: pulse-payment 1.2s ease-in-out 3;
         }
         
         .key-flash {
@@ -925,11 +941,11 @@
             .product-price { font-size: 1.4em; }
             .quantity-ribbon { width: 70px; height: 70px; top: -8px; right: -8px;}
             .quantity-ribbon span { font-size: 1.2rem; transform: rotate(45deg) translateY(-15px); padding: 4px 0;}
-            #payment-display { height: 35px; min-height: 35px; padding: 5px 10px; font-size: 0.9rem; }
-            .bill { height: 20px; min-width: 30px; font-size: 0.8rem; }
+            #payment-display { height: 60px; min-height: 60px; padding: 10px 15px; font-size: 1.3rem; border-width: 3px; }
+            .bill { height: 28px; min-width: 40px; font-size: 1rem; }
             #answer-prompt-label { font-size: 0.9rem; margin-bottom: -5px; }
             #answer-display { height: 45px; font-size: 2.5rem; }
-            #numpad-grid { max-width: 350px; gap: 5px; }
+            #numpad-grid { max-width: 350px; gap: 5px; grid-template-rows: repeat(5, auto); }
             #numpad-grid .key { height: 40px; font-size: 1.5rem; }
         }
 
@@ -953,59 +969,99 @@
         .quantity-ribbon.quantity-2x1 span { background-color: var(--color-accent); }
         .quantity-ribbon.quantity-3x2 span { background-color: var(--color-blue); }
 
+        /* SUPER MEJORADO: Display de pago MUY visible y llamativo */
         #payment-display {
             width: 100%;
-            max-width: 300px;
-            min-height: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            max-width: 350px;
+            min-height: 90px;
+            font-size: 1.8rem;
+            font-weight: 900;
             font-family: var(--font-main);
-            color: #aaa;
+            color: var(--color-primary);
             display: none;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-            padding: 10px 15px;
-            gap: 10px;
-            transition: box-shadow 0.3s;
+            justify-content: center;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6), 
+                        0 0 30px var(--color-primary-glow),
+                        0 0 60px var(--color-primary-glow);
+            padding: 20px 30px;
+            gap: 15px;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-surface) 100%);
+            border: 4px solid var(--color-primary);
+            border-radius: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: visible;
         }
+        
+        /* Efecto de brillo pulsante permanente */
+        #payment-display::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: var(--color-primary);
+            border-radius: 18px;
+            opacity: 0.3;
+            filter: blur(12px);
+            animation: pulse-glow 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        
         #payment-bills-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            justify-content: flex-end;
+            gap: 12px;
+            justify-content: center;
             flex-grow: 1;
+            align-items: center;
         }
         .bill {
-            display: flex;
+            display: inline-flex;
             justify-content: center;
             align-items: center;
-            height: 25px;
-            min-width: 40px;
-            padding: 0 5px;
-            border-radius: 4px;
+            height: 38px;
+            min-width: 55px;
+            padding: 0 18px;
+            border-radius: 8px;
             font-family: var(--font-main);
-            font-weight: 700;
-            font-size: 1rem;
-            color: #fff;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
-        .bill-10 { background-color: var(--bill-10); }
-        .bill-20 { background-color: var(--bill-20); }
-        .bill-50 { background-color: var(--bill-50); }
-        .bill-100 { background-color: var(--bill-100); }
-        .bill-200 { background-color: var(--bill-200); color: var(--color-bg); }
+        .bill-10 { background: var(--bill-10); }
+        .bill-20 { background: var(--bill-20); }
+        .bill-50 { background: var(--bill-50); }
+        .bill-100 { background: var(--bill-100); }
+        .bill-200 { background: var(--bill-200); color: var(--color-bg); }
+        .bill:hover { transform: scale(1.08); filter: brightness(1.2); }
 
         #answer-prompt-label {
             font-family: var(--font-main);
-            font-size: 1rem;
-            color: #aaa;
+            font-size: 1.2rem;
+            color: var(--color-primary);
             text-transform: uppercase;
-            margin-bottom: -10px;
+            margin-bottom: 0px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--color-primary-glow);
         }
 
         #answer-display { width: 100%; max-width: 300px; height: 70px; font-size: 4.2rem; font-weight: bold; letter-spacing: 5px; color: var(--color-primary); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 10px var(--color-primary-dark); }
-        #numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, auto); gap: 10px; width: 100%; max-width: 300px; }
+        #numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, auto); gap: 10px; width: 100%; max-width: 300px; }
         #numpad-grid .key { height: 55px; font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--color-text); background: linear-gradient(to bottom, #4F555E, #3A3F47); border: 1px solid #2a2e33; border-radius: 6px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 1px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); transition: all 0.1s ease-out; cursor: pointer; }
         #numpad-grid .key:active, #numpad-grid .key.active-keypress { transform: translateY(1px); box-shadow: inset 0 2px 3px rgba(0,0,0,0.5); background: var(--color-bg); }
 
@@ -1018,9 +1074,13 @@
             transform: none;
         }
 
-        .key[data-key="del"] { grid-column: 1 / 2; grid-row: 4 / 5; }
-        .key[data-key="0"] { grid-column: 2 / 3; grid-row: 4 / 5; }
-        #numpad-enter { grid-column: 3 / 4; grid-row: 4 / 5; background: linear-gradient(to bottom, #FFD54F, #FFC107) !important; color: #22252A !important; }
+        /* BUG CORREGIDO: Layout actualizado para 5 filas */
+        #numpad-enter { 
+            background: linear-gradient(to bottom, #FFD54F, #FFC107) !important; 
+            color: #22252A !important; 
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
 
         /* --- MODALES --- */
         .modal-overlay {
@@ -1101,13 +1161,6 @@
         #force-fullscreen-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26, 28, 31, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 20000; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 30px; padding: 20px; text-align: center; }
         #force-fullscreen-modal .title { color: var(--color-error); }
         #force-fullscreen-modal p { font-size: 1.3rem; color: #ccc; }
-        #help-hud { width: 100%; background-color: rgba(0,0,0,0.15); padding: 10px 15px; border-radius: 6px; margin-top: 15px; font-family: var(--font-main); border: 1px solid var(--color-surface-light); display: block; width: 100%; max-width: 300px; }
-        #help-hud .summary-title { font-size: 1.1rem; color: var(--color-primary); margin-bottom: 8px; text-align: center; }
-        #help-hud-content { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center; font-size: 0.9rem; color: #ccc; }
-        #help-hud-content span { white-space: nowrap; }
-        #help-hud-content .promo-item { color: var(--color-success); font-weight: 600; }
-        #help-hud-content .promo-2x1 { color: var(--color-accent); font-weight: 600; }
-        #help-hud-content .promo-3x2 { color: var(--color-blue); font-weight: 600; }
 
         /* Modal de Preparación */
         #pre-round-modal { z-index: 9000; cursor: pointer; }
@@ -1128,7 +1181,6 @@
 
         @media (max-width: 768px), (max-height: 700px) {
             #special-items-summary { display: none; }
-            #help-hud { display: none; }
             #pre-round-content h2 { font-size: 2rem; }
             #pre-round-content .alert-item { font-size: 1rem; }
         }
@@ -1279,17 +1331,20 @@
                     </div>
                     <div id="answer-prompt-label">CALCULAR TOTAL:</div>
                     <div id="answer-display" class="display-panel"></div>
-                    <div id="numpad-grid"> <button class="key" data-key="7">7</button> <button class="key" data-key="8">8</button> <button class="key" data-key="9">9</button> <button class="key" data-key="4">4</button> <button class="key" data-key="5">5</button> <button class="key" data-key="6">6</button> <button class="key" data-key="1">1</button> <button class="key" data-key="2">2</button> <button class="key" data-key="3">3</button> <button class="key" data-key="del">⌫</button> <button class="key" data-key="0">0</button> <button id="numpad-enter" class="key" data-key="enter">↵</button> </div>
-                    <div id="help-hud">
-                        <div class="summary-title">AYUDA</div>
-                        <div id="help-hud-content">
-                            <span>🆓 GRATIS = 0</span>
-                            <span>💔 DAÑADO = 0</span>
-                            <span>🔄 CANJE = Resta</span>
-                            <span class="promo-item">x2, x3 = Cantidad</span>
-                            <span class="promo-2x1">2x1 = Paga 1, lleva 2</span>
-                            <span class="promo-3x2">3x2 = Paga 2, lleva 3</span>
-                        </div>
+                    <div id="numpad-grid"> 
+                        <button class="key" data-key="7">7</button> 
+                        <button class="key" data-key="8">8</button> 
+                        <button class="key" data-key="9">9</button> 
+                        <button class="key" data-key="4">4</button> 
+                        <button class="key" data-key="5">5</button> 
+                        <button class="key" data-key="6">6</button> 
+                        <button class="key" data-key="1">1</button> 
+                        <button class="key" data-key="2">2</button> 
+                        <button class="key" data-key="3">3</button> 
+                        <button class="key" data-key="-">−</button> 
+                        <button class="key" data-key="0">0</button> 
+                        <button class="key" data-key="del">⌫</button>
+                        <button id="numpad-enter" class="key" data-key="enter" style="grid-column: 1 / 4; grid-row: 5 / 6;">↵ CONFIRMAR</button>
                     </div>
                 </div>
             </div>
@@ -1361,7 +1416,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function deletePlayer(name) { if (name === "INVITADO" || !gameState.players[name]) return; if (confirm('¿Seguro que quieres eliminar al jugador "' + name + '"? Se perderá todo su progreso.')) { delete gameState.players[name]; if (gameState.currentPlayerName === name) { gameState.currentPlayerName = null; DOM.confirmPlayerBtn.classList.add('disabled'); } savePlayers(); renderPlayerList(); } }
     function createVirtualKeyboard() { var keyLayout = ["1","2","3","4","5","6","7","8","9","0","Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M","DEL","ENTER"]; var rows = [ keyLayout.slice(0, 10), keyLayout.slice(10, 20), keyLayout.slice(20, 29), keyLayout.slice(29, 37), keyLayout.slice(37) ]; rows.forEach(function(row) { var rowDiv = document.createElement('div'); rowDiv.className = 'keyboard-row'; row.forEach(function(key) { var keyBtn = document.createElement('button'); keyBtn.className = 'key'; keyBtn.textContent = key === "DEL" ? "⌫" : (key === "ENTER" ? "↵" : key); keyBtn.dataset.key = key; rowDiv.appendChild(keyBtn); }); DOM.virtualKeyboard.appendChild(rowDiv); }); }
     function handleKeyboardInput(key) { if (key === 'DEL') { gameState.newPlayerName = gameState.newPlayerName.slice(0, -1); } else if (key === 'ENTER') { addNewPlayer(); } else if (gameState.newPlayerName.length < 10) { gameState.newPlayerName += key; } updateNewPlayerInput(); }
-    function addNewPlayer() { var name = gameState.newPlayerName.trim().toUpperCase(); if (name.length === 0) { alert("El nombre no puede estar vacío."); return; } if (gameState.players[name]) { alert("Ese nombre de jugador ya existe."); return; } gameState.players[name] = { unlockedLevel: 0, stars: [] }; savePlayers(); selectPlayer(name); showScreen('playerSelect'); }
+    function addNewPlayer() { var name = gameState.newPlayerName.trim().toUpperCase(); if (name.length === 0) { alert("El nombre no puede estar vacío."); return; } if (gameState.players[name]) { alert("Ese nombre de jugador ya existe."); return; } 
+    // BUG CORREGIDO: Inicializar totalPoints al crear jugador
+    gameState.players[name] = { unlockedLevel: 0, stars: [], totalPoints: 0 }; savePlayers(); selectPlayer(name); showScreen('playerSelect'); }
     function updateNewPlayerInput() { DOM.newPlayerInput.textContent = gameState.newPlayerName || ""; }
     function clearNewPlayerInput() { gameState.newPlayerName = ""; updateNewPlayerInput(); }
 
@@ -1371,7 +1428,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function showForceFullscreenModal() { if (DOM.forceFullscreenModal) { console.log("Mostrando modal para forzar pantalla completa."); DOM.forceFullscreenModal.style.display = 'flex'; } else { console.error("Modal #force-fullscreen-modal no encontrado."); } }
     function hideForceFullscreenModal() { if (DOM.forceFullscreenModal) { DOM.forceFullscreenModal.style.display = 'none'; } }
     function checkFullscreen() { var isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement; if (!isFullscreen && DOM.forceFullscreenModal.style.display !== 'flex' && (gameState.activeScreenId === 'game' || gameState.activeScreenId === 'levelSelect' || gameState.activeScreenId === 'playerSelect' )) { console.log("Salida de pantalla completa detectada."); showForceFullscreenModal(); } else if (isFullscreen && DOM.forceFullscreenModal.style.display === 'flex') { hideForceFullscreenModal(); } }
-    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [], totalPoints: 0 }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; } savePlayers(); } if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; var pointsHTML = ''; if (index <= unlockedLevel && playerData.totalPoints > 0) { pointsHTML = '<div style="font-size: 0.9rem; color: var(--color-primary); margin-top: 5px; font-weight: 600;">⭐ ' + playerData.totalPoints + ' pts</div>'; } if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; pointsHTML = ''; } else { levelBtn.dataset.levelIndex = index; levelBtn.addEventListener('click', function() { console.log(`Iniciando nivel ${index}`); startGame(index); }); } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML + pointsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
+    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [], totalPoints: 0 }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; } savePlayers(); } if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; var pointsHTML = ''; if (index <= unlockedLevel && playerData.totalPoints > 0) { pointsHTML = '<div style="font-size: 0.9rem; color: var(--color-primary); margin-top: 5px; font-weight: 600;">⭐ ' + playerData.totalPoints + ' pts</div>'; } if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; pointsHTML = ''; } else { 
+        // BUG CORREGIDO: Usar IIFE para capturar el índice correctamente en el closure
+        (function(levelIndex) {
+            levelBtn.dataset.levelIndex = levelIndex;
+            levelBtn.addEventListener('click', function() { 
+                console.log('Iniciando nivel ' + levelIndex); 
+                startGame(levelIndex); 
+            });
+        })(index);
+    } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML + pointsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
 
     // --- 4. LÓGICA PRINCIPAL DEL JUEGO ---
     function startGame(levelIndex) { 
@@ -1382,9 +1448,6 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.lives = 3; 
         gameState.wins = 0; 
         gameState.currentAnswer = '';
-        // CORREGIDO: Los puntos se resetean al inicio de cada nivel
-        gameState.points = 0;
-        console.log("Puntos reseteados a 0 para nuevo nivel");
         gameState.correctAnswer = 0; 
         gameState.roundResults = []; 
         gameState.specialCounts = { free: 0, defective: 0, canje: 0, x2: 0, x3: 0, twoForOne: 0, threeForTwo: 0 }; 
@@ -1392,20 +1455,43 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.totalCost = 0; 
         gameState.paymentAmount = 0; 
         gameState.paymentStringHTML = "";
-        // NUEVO: Resetear sistema de tutorial y puntos
+        // BUG CORREGIDO: Resetear puntos y tutorial (eliminada duplicación)
         gameState.points = 0;
         gameState.tutorialShown = {
             operationWindow: 0,
             specialProducts: 0,
             twoForOne: false
         };
-        console.log("Iniciando juego - Nivel:", levelIndex); 
+        console.log("Iniciando juego - Nivel: " + levelIndex + ", Puntos reseteados a 0"); 
         showScreen('game'); 
         updateGameHUDInfo(); 
         updateHelpHUD(); 
         nextRound(); 
     }
-    function nextRound() { gameState.currentAnswer = ''; updateAnswerDisplay(); var problem = generateProblem(); gameState.correctAnswer = problem.total; gameState.lastProblemItems = problem.items; renderProblem(problem.items); updateHUD(); updateSpecialItemsSummary(); showPreRoundModal(); }
+    function nextRound() { 
+        gameState.currentAnswer = ''; 
+        updateAnswerDisplay(); 
+        var problem = generateProblem(); 
+        gameState.correctAnswer = problem.total; 
+        gameState.lastProblemItems = problem.items; 
+        renderProblem(problem.items); 
+        updateHUD(); 
+        updateSpecialItemsSummary(); 
+        
+        // CRÍTICO: Forzar actualización visual del pago ANTES del modal
+        if (gameState.paymentAmount > 0 && DOM.paymentDisplay) {
+            DOM.paymentDisplay.style.display = 'flex';
+            DOM.paymentDisplay.style.opacity = '1';
+            DOM.paymentDisplay.style.visibility = 'visible';
+            // Forzar reflow para asegurar que el navegador procese el cambio
+            void DOM.paymentDisplay.offsetHeight;
+        }
+        
+        // Pequeño delay para asegurar que el pago se renderiza antes del modal
+        setTimeout(function() {
+            showPreRoundModal();
+        }, 100);
+    }
     function startTimer() { clearInterval(timerInterval); gameState.timeLeft = gameState.config.timePerRound * 10; DOM.hudTimer.classList.remove('low-time'); updateTimerDisplay(); timerInterval = setInterval(function() { if (gameState.isWaitingForFeedbackClick || gameState.isPausedForPreRound) return; gameState.timeLeft--; updateTimerDisplay(); if (Math.floor(gameState.timeLeft / 10) <= 10) { DOM.hudTimer.classList.add('low-time'); } else { DOM.hudTimer.classList.remove('low-time'); } if (gameState.timeLeft <= 0) { console.log("Tiempo agotado!"); clearInterval(timerInterval); 
         // CORREGIDO: Si no hay respuesta en el teclado, verificar automáticamente como incorrecta
         if (gameState.currentAnswer === '' || gameState.currentAnswer === '-') {
@@ -1471,6 +1557,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function generatePayment(totalCost, levelIndex) {
         if (levelIndex < 2) {
             DOM.paymentDisplay.style.display = 'none';
+            DOM.paymentDisplay.style.visibility = 'hidden';
             DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
             return { amount: 0, html: "" };
         }
@@ -1480,6 +1567,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (levelIndex >= 2 && levelIndex <= 4) {
             if (Math.random() < 0.5) {
                 DOM.paymentDisplay.style.display = 'none';
+                DOM.paymentDisplay.style.visibility = 'hidden';
                 DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
                 return { amount: 0, html: "" };
             }
@@ -1527,12 +1615,23 @@ document.addEventListener('DOMContentLoaded', function() {
                  }).join('');
             }
         }
+        // CRÍTICO: Asegurar máxima visibilidad del pago
         DOM.paymentDisplay.style.display = 'flex';
+        DOM.paymentDisplay.style.visibility = 'visible';
+        DOM.paymentDisplay.style.opacity = '1';
         DOM.answerPromptLabel.textContent = 'CALCULAR VUELTO:';
+        
+        // Actualizar contenido del pago
+        DOM.paymentBillsContainer.innerHTML = paymentHTML + ' Bs.';
+        
+        // Forzar reflow para asegurar renderizado
+        void DOM.paymentDisplay.offsetHeight;
+        
+        // Agregar animación DESPUÉS del reflow
         DOM.paymentDisplay.classList.remove('pulse-payment-anim');
         void DOM.paymentDisplay.offsetWidth;
         DOM.paymentDisplay.classList.add('pulse-payment-anim');
-        DOM.paymentBillsContainer.innerHTML = paymentHTML + ' Bs.';
+        
         gameState.paymentAmount = paymentAmount;
         gameState.paymentStringHTML = paymentHTML;
         return { amount: paymentAmount, html: paymentHTML };
@@ -1976,9 +2075,26 @@ document.addEventListener('DOMContentLoaded', function() {
             alertsHTML += '<div class="alert-section"><div class="alert-title">Alertas de Producto</div>' + modsHTML + '</div>';
         }
 
+        // Agregar guía de ayuda al inicio
+        var helpHTML = '';
+        if (gameState.wins === 0) {
+            helpHTML = '<div class="alert-section" style="background-color: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-top: 10px;">' +
+                       '<div class="alert-title" style="color: var(--color-success);">📖 GUÍA RÁPIDA</div>' +
+                       '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.95rem; margin-top: 10px;">' +
+                       '<div style="color: var(--color-error);">🆓 <strong>GRATIS</strong> = No paga</div>' +
+                       '<div style="color: var(--color-danger);">💔 <strong>DAÑADO</strong> = No paga</div>' +
+                       '<div style="color: var(--color-canje);">🔄 <strong>CANJE</strong> = Resta del total</div>' +
+                       '<div style="color: var(--color-green);">💲 <strong>DESC.</strong> = Descuento aplicado</div>' +
+                       '<div style="color: var(--color-accent);">🎁 <strong>2x1</strong> = Pagas 1, llevas 2</div>' +
+                       '<div style="color: var(--color-blue);">🎉 <strong>3x2</strong> = Pagas 2, llevas 3</div>' +
+                       '</div>' +
+                       '</div>';
+        }
+        
         DOM.preRoundContent.innerHTML =
             '<h2>¡ATENCIÓN!</h2>' +
             alertsHTML +
+            helpHTML +
             '<p class="dismiss-prompt">[ Clic o tecla para Comenzar ]</p>';
 
         DOM.preRoundModal.style.display = 'flex';
@@ -2021,9 +2137,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 // CORREGIDO: Los puntos solo se suman al total al completar el nivel exitosamente
                 if (!playerData.totalPoints) playerData.totalPoints = 0;
+                var pointsBeforeLevel = playerData.totalPoints; // Guardar puntos anteriores
                 playerData.totalPoints += gameState.points;
                 console.log(`Nivel completado! Puntos de este nivel: ${gameState.points}. Total acumulado: ${playerData.totalPoints}`);
-                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p><p style='font-size: 2rem; margin-top: 15px; color: var(--color-primary);'>⭐ +" + gameState.points + " PUNTOS</p><p style='font-size: 1.2rem; margin-top: 10px; color: var(--color-text-secondary);'>Total Acumulado: " + playerData.totalPoints + " pts</p>";
+                // BUG CORREGIDO: Mostrar claramente puntos del nivel vs total acumulado
+                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p><p style='font-size: 2.2rem; margin-top: 15px; color: var(--color-success); font-weight: 800;'>⭐ +" + gameState.points + " PUNTOS</p><p style='font-size: 1.1rem; margin-top: 8px; color: var(--color-text-secondary);'>Total Acumulado: " + playerData.totalPoints + " pts</p><p style='font-size: 0.9rem; margin-top: 5px; color: var(--color-text-secondary);'>(Antes: " + pointsBeforeLevel + " pts)</p>";
                 if (playerData && currentLevelIndex === playerData.unlockedLevel && currentLevelIndex < LEVEL_CONFIG.length - 1) {
                     playerData.unlockedLevel = playerData.unlockedLevel + 1;
                     console.log(`Nivel ${playerData.unlockedLevel} desbloqueado para ${gameState.currentPlayerName}`);
@@ -2064,7 +2182,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 8. HUEVO DE PASCUA ---
     var easterEggTimeout;
-    function activateNumpadSolver() { if (!SCREENS.game.classList.contains('active')) return; clearTimeout(easterEggTimeout); var answerString = gameState.correctAnswer.toString(); var delay = 100; answerString.split('').forEach(function(digit) { easterEggTimeout = setTimeout(function() { var keyElement = DOM.numpadGrid.querySelector('.key[data-key="' + (digit === '-' ? '-' : digit) + '"]'); if (keyElement) { handleNumpadInput(digit); keyElement.classList.add('key-flash'); setTimeout(function() { keyElement.classList.remove('key-flash'); }, 200); } }, delay); delay += 250; }); easterEggTimeout = setTimeout(function() { var enterKey = DOM.numpadGrid.querySelector('.key[data-key="enter"]'); if (enterKey) { handleNumpadInput('enter'); enterKey.classList.add('key-flash'); setTimeout(function() { keyElement.classList.remove('key-flash'); }, 200); } }, delay + 100); }
+    function activateNumpadSolver() { if (!SCREENS.game.classList.contains('active')) return; clearTimeout(easterEggTimeout); var answerString = gameState.correctAnswer.toString(); var delay = 100; answerString.split('').forEach(function(digit) { easterEggTimeout = setTimeout(function() { var keyElement = DOM.numpadGrid.querySelector('.key[data-key="' + (digit === '-' ? '-' : digit) + '"]'); if (keyElement) { handleNumpadInput(digit); keyElement.classList.add('key-flash'); setTimeout(function() { keyElement.classList.remove('key-flash'); }, 200); } }, delay); delay += 250; }); easterEggTimeout = setTimeout(function() { var enterKey = DOM.numpadGrid.querySelector('.key[data-key="enter"]'); if (enterKey) { handleNumpadInput('enter'); enterKey.classList.add('key-flash'); 
+        // BUG CORREGIDO: Usar 'enterKey' en lugar de 'keyElement' (variable no definida)
+        setTimeout(function() { enterKey.classList.remove('key-flash'); }, 200); } }, delay + 100); }
     document.addEventListener('keydown', function(event) { if (event.ctrlKey && event.shiftKey && event.key.toUpperCase() === 'H') { event.preventDefault(); console.log("Easter Egg Activated!"); activateNumpadSolver(); } });
 
     // --- 9. SOPORTE TECLADO FÍSICO ---
