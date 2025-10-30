@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Misión Supermercado v7.26 - FIXED: Puntos por Nivel & Auto-Verificación</title>
+    <title>🎮 Misión Supermercado v9.2 MEJORADO - Sin Scroll, Tarjetas Grandes</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
         
@@ -450,14 +450,14 @@
             justify-content: center;
             width: 100%;
             max-width: 900px;
-            gap: 32px;
-            padding: 24px;
+            gap: 18px;
+            padding: 16px;
         }
 
-        /* Tipografía Profesional */
+        /* Tipografía Profesional - MEJORADO: Más compacto */
         .title {
             font-family: var(--font-main);
-            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-size: clamp(2rem, 6vw, 4rem);
             font-weight: 900;
             text-align: center;
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-success) 100%);
@@ -742,10 +742,10 @@
             color: var(--color-bg);
             font-size: 1.1rem;
         }
-        /* Level Select */
+        /* Level Select - MEJORADO: Espaciado optimizado */
         #screen-level-select .screen-content-wrapper {
             justify-content: center;
-            gap: 24px;
+            gap: 15px;
             height: 100%;
             max-width: 950px;
         }
@@ -754,15 +754,16 @@
             width: 100%;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 18px;
-            max-height: 70vh;
+            gap: 15px;
+            max-height: 65vh;
             overflow-y: auto;
-            padding: 20px;
+            padding: 15px;
             border: 1px solid rgba(0, 229, 255, 0.1);
             border-radius: var(--border-radius-lg);
             background: rgba(0, 0, 0, 0.3);
         }
         
+        /* MEJORADO: Tarjetas de nivel más compactas para eliminar scroll */
         .level-btn {
             background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -777,10 +778,10 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            min-height: 180px;
+            gap: 6px;
+            min-height: 170px;
             cursor: pointer;
-            padding: 16px;
+            padding: 10px;
             position: relative;
             overflow: hidden;
         }
@@ -803,17 +804,17 @@
         
         .level-number {
             position: absolute;
-            top: 8px;
-            left: 12px;
-            font-size: 0.9rem;
+            top: 6px;
+            left: 10px;
+            font-size: 0.85rem;
             color: var(--color-text-secondary);
             font-weight: 600;
         }
         
         .level-icon {
-            font-size: 3rem;
+            font-size: 2.3rem;
             line-height: 1;
-            margin-top: 20px;
+            margin-top: 12px;
             filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
             display: flex;
             align-items: center;
@@ -821,19 +822,34 @@
         }
         
         .level-title {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
+            line-height: 1.2;
         }
         
         .level-stars-container {
             display: flex;
-            gap: 4px;
-            font-size: 1.4rem;
+            gap: 3px;
+            font-size: 1.1rem;
             line-height: 1;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             color: var(--color-warning);
             filter: drop-shadow(0 0 8px var(--color-warning-glow));
+        }
+        
+        /* MEJORADO: Estilo específico para el puntaje más compacto */
+        .level-score {
+            font-size: 0.9rem;
+            color: var(--color-success);
+            font-weight: 700;
+            padding: 3px 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            border: 1px solid var(--color-surface-light);
+            width: 100%;
+            text-align: center;
+            margin-top: 1px;
         }
         
         .level-stars-container .star-empty {
@@ -936,24 +952,25 @@
             #hud-level-name { font-size: 0.8rem; }
             #special-items-summary { display: none; }
             #help-hud { display: none; }
-            .product-card { width: 90px; height: 130px; flex-shrink: 0; }
-            .product-emoji-container { font-size: 2.8em; }
-            .product-price { font-size: 1.4em; }
+            .product-card { width: 100px; height: 145px; flex-shrink: 0; }
+            .product-emoji-container { font-size: 3em; }
+            .product-price { font-size: 1.5em; }
             .quantity-ribbon { width: 70px; height: 70px; top: -8px; right: -8px;}
             .quantity-ribbon span { font-size: 1.2rem; transform: rotate(45deg) translateY(-15px); padding: 4px 0;}
-            #payment-display { height: 60px; min-height: 60px; padding: 10px 15px; font-size: 1.3rem; border-width: 3px; }
-            .bill { height: 28px; min-width: 40px; font-size: 1rem; }
+            #payment-display { height: 65px; min-height: 65px; padding: 10px 15px; font-size: 1.4rem; border-width: 3px; }
+            .bill { height: 32px; min-width: 45px; font-size: 1.1rem; }
             #answer-prompt-label { font-size: 0.9rem; margin-bottom: -5px; }
             #answer-display { height: 45px; font-size: 2.5rem; }
             #numpad-grid { max-width: 350px; gap: 5px; grid-template-rows: repeat(5, auto); }
             #numpad-grid .key { height: 40px; font-size: 1.5rem; }
         }
 
-        .product-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background-color: var(--color-bg); padding: 10px; border-radius: var(--border-radius-main); gap: 8px; transition: transform var(--transition-speed-fast) ease-out, box-shadow var(--transition-speed-fast) ease-out; width: 110px; height: 160px; overflow: hidden; opacity: 0; animation: item-fade-in 0.5s ease-out forwards; }
-        .product-card:hover { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 193, 7, 0.3); z-index: 10; }
-        .product-emoji-container { font-size: 3.2em; line-height: 1; display: flex; align-items: center; justify-content: center; font-family: var(--font-system); margin-top: 10px; width: 100%; height: 3.2em; }
+        /* MEJORADO: Tarjetas de productos más grandes para mejor visualización EN PC */
+        .product-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background-color: var(--color-bg); padding: 10px; border-radius: var(--border-radius-main); gap: 8px; transition: transform var(--transition-speed-fast) ease-out, box-shadow var(--transition-speed-fast) ease-out; width: 145px; height: 175px; overflow: hidden; opacity: 0; animation: item-fade-in 0.5s ease-out forwards; }
+        .product-card:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 193, 7, 0.3); z-index: 10; }
+        .product-emoji-container { font-size: 3.2em; line-height: 1; display: flex; align-items: center; justify-content: center; font-family: var(--font-system); margin-top: 5px; width: 100%; height: 3.2em; }
         .product-emoji-container svg { width: 1.2em; height: 1.2em; fill: currentColor; }
-        .product-price-line { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .product-price-line { display: flex; align-items: center; justify-content: center; gap: 6px; }
         .product-price { font-weight: bold; white-space: nowrap; font-size: 1.6em; }
         .product-card.canje .product-price { color: var(--color-canje); }
         .product-state-tag { width: 100%; padding: 4px; text-align: center; font-family: var(--font-main); font-size: 1rem; font-weight: 700; border-radius: 4px; text-transform: uppercase; }
@@ -969,23 +986,24 @@
         .quantity-ribbon.quantity-2x1 span { background-color: var(--color-accent); }
         .quantity-ribbon.quantity-3x2 span { background-color: var(--color-blue); }
 
-        /* SUPER MEJORADO: Display de pago MUY visible y llamativo */
+        /* MEJORADO: Display de pago optimizado y más visible - CORREGIDO PARA MANTENER TEXTO EN UNA LÍNEA */
         #payment-display {
             width: 100%;
             max-width: 350px;
-            min-height: 90px;
-            font-size: 1.8rem;
+            min-height: 95px;
+            font-size: 2rem;
             font-weight: 900;
             font-family: var(--font-main);
             color: var(--color-primary);
             display: none;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6), 
                         0 0 30px var(--color-primary-glow),
                         0 0 60px var(--color-primary-glow);
-            padding: 20px 30px;
-            gap: 15px;
+            padding: 15px 25px;
+            gap: 12px;
             transition: all 0.3s;
             background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-surface) 100%);
             border: 4px solid var(--color-primary);
@@ -994,6 +1012,7 @@
             letter-spacing: 2px;
             position: relative;
             overflow: visible;
+            white-space: nowrap;
         }
         
         /* Efecto de brillo pulsante permanente */
@@ -1019,23 +1038,22 @@
         
         #payment-bills-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            flex-wrap: nowrap;
+            gap: 8px;
             justify-content: center;
-            flex-grow: 1;
             align-items: center;
         }
         .bill {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            height: 38px;
-            min-width: 55px;
-            padding: 0 18px;
+            height: 42px;
+            min-width: 58px;
+            padding: 0 20px;
             border-radius: 8px;
             font-family: var(--font-main);
             font-weight: 900;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             color: white;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
@@ -1162,27 +1180,28 @@
         #force-fullscreen-modal .title { color: var(--color-error); }
         #force-fullscreen-modal p { font-size: 1.3rem; color: #ccc; }
 
-        /* Modal de Preparación */
+        /* Modal de Preparación - COMPACTADO */
         #pre-round-modal { z-index: 9000; cursor: pointer; }
         #pre-round-content {
             text-align: left;
             font-family: var(--font-main);
-            /* MODIFICADO: Se quitaron max-height y overflow-y */
+            padding: 15px;
         }
-        #pre-round-content h2 { font-size: 2.5rem; color: var(--color-primary); text-align: center; margin-bottom: 20px; }
-        #pre-round-content .alert-section { margin-bottom: 15px; }
-        #pre-round-content .alert-title { font-size: 1.2rem; color: #aaa; text-transform: uppercase; border-bottom: 1px dashed var(--color-surface-light); padding-bottom: 5px; margin-bottom: 10px; }
-        #pre-round-content .alert-item { font-size: 1.1rem; color: var(--color-text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .alert-item .emoji { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; text-align: center; font-size: 1.2rem; }
-        .alert-item .emoji svg { width: 1.2em; height: 1.2em; fill: currentColor; }
-        .alert-item .payment-bills { display: flex; flex-wrap: wrap; gap: 5px; }
-        .alert-item .bill { height: 22px; min-width: 35px; font-size: 0.9rem; }
-        #pre-round-content .dismiss-prompt { font-size: 1rem; color: var(--color-primary); text-align: center; margin-top: 25px; animation: pulse 1.5s infinite; }
+        #pre-round-content h2 { font-size: 1.6rem; color: var(--color-primary); text-align: center; margin-bottom: 12px; }
+        #pre-round-content .alert-section { margin-bottom: 10px; }
+        #pre-round-content .alert-title { font-size: 0.95rem; color: #aaa; text-transform: uppercase; border-bottom: 1px dashed var(--color-surface-light); padding-bottom: 3px; margin-bottom: 6px; }
+        #pre-round-content .alert-item { font-size: 0.95rem; color: var(--color-text); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .alert-item .emoji { display: inline-flex; align-items: center; justify-content: center; width: 1.2em; height: 1.2em; text-align: center; font-size: 1rem; }
+        .alert-item .emoji svg { width: 1em; height: 1em; fill: currentColor; }
+        .alert-item .payment-bills { display: flex; flex-wrap: wrap; gap: 4px; }
+        .alert-item .bill { height: 20px; min-width: 32px; font-size: 0.85rem; }
+        #pre-round-content .dismiss-prompt { font-size: 0.85rem; color: var(--color-primary); text-align: center; margin-top: 15px; animation: pulse 1.5s infinite; }
 
         @media (max-width: 768px), (max-height: 700px) {
             #special-items-summary { display: none; }
-            #pre-round-content h2 { font-size: 2rem; }
-            #pre-round-content .alert-item { font-size: 1rem; }
+            #pre-round-content h2 { font-size: 1.4rem; }
+            #pre-round-content .alert-item { font-size: 0.85rem; }
+            #pre-round-content .payment-bills-modal .bill { height: 24px; min-width: 42px; font-size: 0.95rem; }
         }
 
         /* --- ESTILOS MODIFICADOS PARA PRE-ROUND-MODAL --- */
@@ -1193,36 +1212,36 @@
             100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
         }
 
-        /* Hacer el texto de alerta y el icono más grandes */
+        /* COMPACTADO: Texto de alerta más pequeño */
         #pre-round-content .alert-item {
-            font-size: 1.5rem; /* Aumentado de 1.1rem */
-            gap: 15px;
+            font-size: 0.95rem; /* Reducido para ser más compacto */
+            gap: 8px;
         }
         .alert-item .emoji {
-            font-size: 2.2rem; /* Aumentado de 1.2rem */
+            font-size: 1.2rem; /* Reducido para ser más compacto */
         }
 
-        /* Estilos para la alerta de pago (billetes) */
+        /* Estilos para la alerta de pago (billetes) - COMPACTADO */
         #pre-round-content .payment-alert-item {
-            flex-direction: column; /* Apilar "PAGA CON:" y los billetes */
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
-            font-size: 1.3rem; /* Hacer "PAGA CON:" más grande */
+            gap: 8px;
+            font-size: 1rem; /* Reducido */
             color: #aaa;
         }
         #pre-round-content .payment-bills-modal {
-            justify-content: center; /* Centrar los billetes */
+            justify-content: center;
             width: 100%;
-            gap: 10px;
+            gap: 6px;
         }
 
-        /* Billetes más grandes y llamativos en el modal */
+        /* Billetes COMPACTADOS en el modal */
         #pre-round-content .payment-bills-modal .bill {
-            height: 45px;       /* Aumentado de 22px */
-            min-width: 70px;    /* Aumentado de 35px */
-            font-size: 1.8rem;    /* Aumentado de 0.9rem */
-            border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            height: 28px;       /* Reducido */
+            min-width: 50px;    /* Reducido */
+            font-size: 1.1rem;  /* Reducido */
+            border-radius: 5px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
             animation: pulse-bills-modal 1.5s infinite ease-in-out;
         }
 
@@ -1278,16 +1297,260 @@
             animation: scanline-hover 0.75s ease-out;
         }
         /* --- FIN DE ACTUALIZACIÓN VISUAL --- */
+        
+        /* === NUEVOS ESTILOS: SISTEMA DE LOGROS === */
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-success) 100%);
+            color: var(--color-bg);
+            padding: 20px 30px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-xl), 0 0 40px var(--color-primary-glow);
+            z-index: 15000;
+            display: none;
+            animation: achievement-slide-in 0.5s ease-out;
+            max-width: 350px;
+        }
+        
+        @keyframes achievement-slide-in {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .achievement-notification.show {
+            display: block;
+        }
+        
+        .achievement-notification h3 {
+            font-size: 1.5rem;
+            margin: 0 0 8px 0;
+            font-weight: 800;
+        }
+        
+        .achievement-notification p {
+            font-size: 1rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .achievements-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 21, 8, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10500;
+        }
+        
+        .achievements-content {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            background: var(--color-bg-secondary);
+            border-radius: var(--border-radius-md);
+            margin-bottom: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .achievement-item.unlocked {
+            border-color: var(--color-primary);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(50, 205, 50, 0.1) 100%);
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+        
+        .achievement-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+        
+        .achievement-info {
+            flex-grow: 1;
+        }
+        
+        .achievement-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.3rem;
+            color: var(--color-primary);
+        }
+        
+        .achievement-info p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+        }
+        
+        /* === TABLA DE RÉCORDS === */
+        .records-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 21, 8, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10500;
+        }
+        
+        .records-content {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .records-table th,
+        .records-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-surface-light);
+        }
+        
+        .records-table th {
+            background: var(--color-bg-secondary);
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        
+        .records-table tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+        
+        .record-rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+        
+        .record-new {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(50, 205, 50, 0.2) 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        /* === FLECHAS TUTORIAL === */
+        .tutorial-arrow {
+            position: absolute;
+            font-size: 3rem;
+            color: var(--color-primary);
+            animation: bounce-arrow 1.5s infinite;
+            z-index: 10000;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px var(--color-primary-glow));
+        }
+        
+        @keyframes bounce-arrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .tutorial-highlight {
+            outline: 3px solid var(--color-primary) !important;
+            outline-offset: 5px;
+            box-shadow: 0 0 30px var(--color-primary-glow) !important;
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* === BONOS PASIVOS === */
+        .bonus-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, var(--color-success) 0%, var(--color-primary) 100%);
+            color: white;
+            padding: 40px 60px;
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-xl), 0 0 60px var(--color-success-glow);
+            z-index: 15000;
+            text-align: center;
+            animation: bonus-pop 0.6s ease-out forwards;
+        }
+        
+        @keyframes bonus-pop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            60% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .bonus-notification h2 {
+            font-size: 2.5rem;
+            margin: 0 0 15px 0;
+        }
+        
+        .bonus-notification p {
+            font-size: 1.3rem;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <div id="app-container">
         <div id="scanline-overlay"></div>
+        
+        <!-- Notificación de Logros -->
+        <div id="achievement-notification" class="achievement-notification">
+            <h3 id="achievement-title">🏆 ¡LOGRO DESBLOQUEADO!</h3>
+            <p id="achievement-description">Descripción del logro</p>
+        </div>
+        
+        <!-- Notificación de Bonos -->
+        <div id="bonus-notification" class="bonus-notification" style="display: none;">
+            <h2 id="bonus-title">⚡ BONUS</h2>
+            <p id="bonus-description">Descripción del bonus</p>
+        </div>
+        
         <div id="screen-preloader" class="screen active"> <div class="screen-content-wrapper"> <h1 class="title">CARGANDO SISTEMA</h1> <p class="subtitle">Presione comenzar para calibrar la pantalla.</p> <button id="start-fullscreen-btn" class="btn">Comenzar</button> </div> </div>
         <div id="screen-title" class="screen"> <div id="title-screen-wrapper" class="screen-content-wrapper" style="justify-content: space-between; padding-bottom: 10vh; height: 100%;"> <div> <h1 class="title">MISIÓN SUPERMERCADO</h1> <p class="subtitle">Calcula el total. Salva el mundo.</p> </div> <button id="start-game-btn" class="btn pop-in">Iniciar Simulación</button> </div> </div>
         <div id="screen-player-select" class="screen"> <div class="screen-content-wrapper" style="max-width: 800px; justify-content: flex-start; gap: 15px; height: 100%; padding: 20px;"> <h2 class="title">SELECCIONAR JUGADOR</h2> <div id="player-list-container" class="display-panel" style="padding: 10px;"></div> <div class="player-select-actions"> <button id="confirm-player-btn" class="btn disabled">Seleccionar Misión</button> <button id="show-create-player-btn" class="btn btn-secondary">[+ Agregar Jugador]</button> </div> </div> </div>
         <div id="screen-create-player" class="screen"> <div class="screen-content-wrapper" style="max-width: 800px; justify-content: center; gap: 15px; height: 100%; padding: 20px;"> <h2 class="title">CREAR NUEVO JUGADOR</h2> <div id="new-player-input" class="display-panel"></div> <div id="virtual-keyboard-container"></div> <button id="cancel-create-player-btn" class="btn btn-secondary" style="background-color: var(--color-danger); color: var(--color-text); border: none;">[ Volver ]</button> </div> </div>
-        <div id="screen-level-select" class="screen"> <div class="screen-content-wrapper" style="max-width: 900px;"> <h2 class="title">Seleccionar Misión</h2> <div id="level-select-grid"></div> </div> </div>
+        <div id="screen-level-select" class="screen"> 
+            <div class="screen-content-wrapper" style="max-width: 900px;"> 
+                <h2 class="title">Seleccionar Misión</h2> 
+                <div style="display: flex; gap: 12px; margin-bottom: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button id="show-achievements-btn" class="btn btn-secondary" style="min-width: 180px; padding: 12px 30px; font-size: 1.1rem;">🏆 Logros</button>
+                    <button id="show-records-btn" class="btn btn-secondary" style="min-width: 180px; padding: 12px 30px; font-size: 1.1rem;">📊 Récords</button>
+                </div>
+                <div id="level-select-grid"></div> 
+            </div> 
+        </div>
         <div id="screen-game" class="screen">
             <div id="game-hud">
                 <div id="hud-left">
@@ -1357,6 +1620,39 @@
         </div>
 
         <div id="force-fullscreen-modal"> <h2 class="title">MODO PANTALLA COMPLETA REQUERIDO</h2> <p>Para una experiencia óptima, el juego debe ejecutarse en pantalla completa.</p> <button id="reenter-fullscreen-btn" class="btn">Reactivar Pantalla Completa</button> </div>
+        
+        <!-- Modal de Logros -->
+        <div id="achievements-modal" class="achievements-modal">
+            <div class="achievements-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="title" style="margin: 0;">🏆 Logros</h2>
+                    <button onclick="hideAchievementsModal()" class="btn btn-secondary" style="padding: 8px 16px;">✖ Cerrar</button>
+                </div>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+        
+        <!-- Modal de Récords -->
+        <div id="records-modal" class="records-modal">
+            <div class="records-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="title" style="margin: 0;">📊 Tabla de Récords</h2>
+                    <button onclick="hideRecordsModal()" class="btn btn-secondary" style="padding: 8px 16px;">✖ Cerrar</button>
+                </div>
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Nivel</th>
+                            <th>Puntos</th>
+                            <th>Estrellas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-tbody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -1428,7 +1724,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showForceFullscreenModal() { if (DOM.forceFullscreenModal) { console.log("Mostrando modal para forzar pantalla completa."); DOM.forceFullscreenModal.style.display = 'flex'; } else { console.error("Modal #force-fullscreen-modal no encontrado."); } }
     function hideForceFullscreenModal() { if (DOM.forceFullscreenModal) { DOM.forceFullscreenModal.style.display = 'none'; } }
     function checkFullscreen() { var isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement; if (!isFullscreen && DOM.forceFullscreenModal.style.display !== 'flex' && (gameState.activeScreenId === 'game' || gameState.activeScreenId === 'levelSelect' || gameState.activeScreenId === 'playerSelect' )) { console.log("Salida de pantalla completa detectada."); showForceFullscreenModal(); } else if (isFullscreen && DOM.forceFullscreenModal.style.display === 'flex') { hideForceFullscreenModal(); } }
-    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [], totalPoints: 0 }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; } savePlayers(); } if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; var pointsHTML = ''; if (index <= unlockedLevel && playerData.totalPoints > 0) { pointsHTML = '<div style="font-size: 0.9rem; color: var(--color-primary); margin-top: 5px; font-weight: 600;">⭐ ' + playerData.totalPoints + ' pts</div>'; } if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; pointsHTML = ''; } else { 
+    function populateLevelSelect() { DOM.levelSelectGrid.innerHTML = ''; if (!gameState.currentPlayerName) { console.error("Error: No hay jugador seleccionado."); showScreen('playerSelect'); return; } var playerData = gameState.players[gameState.currentPlayerName]; var unlockedLevel = 0; if (playerData && typeof playerData.unlockedLevel === 'number') { unlockedLevel = playerData.unlockedLevel; } else { console.warn("Datos de jugador inválidos para:", gameState.currentPlayerName, ". Usando 0."); if (!playerData) { playerData = { unlockedLevel: 0, stars: [], totalPoints: 0, levelPoints: {} }; gameState.players[gameState.currentPlayerName] = playerData; } else { playerData.unlockedLevel = 0; if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; if (!playerData.levelPoints) playerData.levelPoints = {}; } savePlayers(); } if (!playerData.stars) playerData.stars = []; if (!playerData.totalPoints) playerData.totalPoints = 0; if (!playerData.levelPoints) playerData.levelPoints = {}; console.log(`Mostrando niveles para ${gameState.currentPlayerName}. Desbloqueados hasta índice: ${unlockedLevel}`); LEVEL_CONFIG.forEach(function(level, index) { var levelBtn = document.createElement('button'); levelBtn.className = 'level-btn'; var icon = level.icon; var levelNumber = index + 1; var starsHTML = '<div class="level-stars-container">'; var starsEarned = playerData.stars[index] || 0; if (index <= unlockedLevel) { for (var s = 1; s <= 3; s++) { starsHTML += (s <= starsEarned) ? '<span>★</span>' : '<span class="star-empty">★</span>'; } } starsHTML += '</div>'; var pointsHTML = ''; if (index <= unlockedLevel) { var levelPoints = (playerData.levelPoints && playerData.levelPoints[index]) ? playerData.levelPoints[index] : 0; if (levelPoints > 0) { pointsHTML = '<div class="level-score">⭐ ' + levelPoints + '/1000</div>'; } } if (index > unlockedLevel) { levelBtn.classList.add('locked'); icon = '🔒'; starsHTML = '<div class="level-stars-container"></div>'; pointsHTML = ''; } else { 
         // BUG CORREGIDO: Usar IIFE para capturar el índice correctamente en el closure
         (function(levelIndex) {
             levelBtn.dataset.levelIndex = levelIndex;
@@ -1438,6 +1734,140 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })(index);
     } levelBtn.innerHTML = ' <span class="level-number">' + levelNumber + '</span> <div class="level-icon">' + icon + '</div> <div class="level-title">' + level.name + '</div> ' + starsHTML + pointsHTML; DOM.levelSelectGrid.appendChild(levelBtn); }); }
+    
+    // --- FUNCIONES DE LOGROS Y RÉCORDS --- 
+    // CORREGIDO: Funciones globales para que funcionen con onclick en los botones
+    window.showAchievementsModal = function() {
+        var modal = document.getElementById('achievements-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            renderAchievements();
+        }
+    }
+    
+    window.hideAchievementsModal = function() {
+        var modal = document.getElementById('achievements-modal');
+        if (modal) modal.style.display = 'none';
+    }
+    
+    window.showRecordsModal = function() {
+        var modal = document.getElementById('records-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            renderRecords();
+        }
+    }
+    
+    window.hideRecordsModal = function() {
+        var modal = document.getElementById('records-modal');
+        if (modal) modal.style.display = 'none';
+    }
+    
+    function renderAchievements() {
+        var container = document.getElementById('achievements-list');
+        if (!container) return;
+        
+        var achievements = [
+            { id: 'perfecto', icon: '🏆', name: 'Perfecto', desc: 'Completar un nivel sin perder vidas', unlocked: false },
+            { id: 'velocista', icon: '⚡', name: 'Velocista', desc: '5 respuestas correctas en menos de 3 segundos', unlocked: false },
+            { id: 'campeon', icon: '💯', name: 'Campeón Mental', desc: 'Alcanzar 1000 puntos en un nivel', unlocked: false },
+            { id: 'racha', icon: '🔥', name: 'Racha Imparable', desc: '10 respuestas correctas consecutivas', unlocked: false },
+            { id: 'maestro', icon: '👑', name: 'Maestro Total', desc: 'Completar todos los niveles', unlocked: false },
+            { id: 'escalador', icon: '🎯', name: 'Escalador', desc: 'Desbloquear 5 niveles', unlocked: false }
+        ];
+        
+        var playerData = gameState.players[gameState.currentPlayerName];
+        console.log("📊 Renderizando logros para:", gameState.currentPlayerName);
+        console.log("📊 Datos del jugador:", playerData);
+        console.log("📊 Logros del jugador:", playerData ? playerData.achievements : 'N/A');
+        
+        if (playerData && playerData.achievements) {
+            achievements.forEach(function(ach) {
+                if (playerData.achievements[ach.id]) {
+                    ach.unlocked = true;
+                    console.log("✅ Logro desbloqueado encontrado:", ach.id, ach.name);
+                }
+            });
+        } else {
+            console.log("⚠️ No se encontraron logros para el jugador");
+        }
+        
+        var html = '';
+        achievements.forEach(function(ach) {
+            html += '<div class="achievement-item ' + (ach.unlocked ? 'unlocked' : 'locked') + '">' +
+                    '<div class="achievement-icon">' + ach.icon + '</div>' +
+                    '<div class="achievement-info">' +
+                    '<h4>' + ach.name + '</h4>' +
+                    '<p>' + ach.desc + '</p>' +
+                    '</div>' +
+                    '</div>';
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    // CORREGIDO: Función para mostrar notificaciones de logros
+    function showAchievementNotification(title, description) {
+        var notification = document.getElementById('achievement-notification');
+        if (!notification) return;
+        
+        var titleEl = document.getElementById('achievement-title');
+        var descEl = document.getElementById('achievement-description');
+        
+        if (titleEl) titleEl.textContent = title;
+        if (descEl) descEl.textContent = description;
+        
+        notification.classList.add('show');
+        
+        setTimeout(function() {
+            notification.classList.remove('show');
+        }, 4000);
+    }
+    
+    function renderRecords() {
+        var tbody = document.getElementById('records-tbody');
+        if (!tbody) return;
+        
+        var records = [];
+        Object.keys(gameState.players).forEach(function(playerName) {
+            var player = gameState.players[playerName];
+            if (player.levelPoints) {
+                Object.keys(player.levelPoints).forEach(function(levelIndex) {
+                    var points = player.levelPoints[levelIndex];
+                    var levelName = LEVEL_CONFIG[levelIndex] ? LEVEL_CONFIG[levelIndex].name : 'Nivel ' + (parseInt(levelIndex) + 1);
+                    var stars = (player.stars && player.stars[levelIndex]) ? player.stars[levelIndex] : 0;
+                    records.push({
+                        player: playerName,
+                        level: levelName,
+                        points: points,
+                        stars: stars,
+                        date: new Date().toLocaleDateString()
+                    });
+                });
+            }
+        });
+        
+        records.sort(function(a, b) { return b.points - a.points; });
+        records = records.slice(0, 10);
+        
+        var html = '';
+        records.forEach(function(record, index) {
+            var starsHTML = '★'.repeat(record.stars) + '☆'.repeat(3 - record.stars);
+            html += '<tr>' +
+                    '<td><span class="record-rank">#' + (index + 1) + '</span></td>' +
+                    '<td>' + record.player + '</td>' +
+                    '<td>' + record.level + '</td>' +
+                    '<td>' + record.points + '</td>' +
+                    '<td style="color: var(--color-warning);">' + starsHTML + '</td>' +
+                    '</tr>';
+        });
+        
+        if (html === '') {
+            html = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--color-text-secondary);">Aún no hay récords. ¡Completa niveles para crear tu historial!</td></tr>';
+        }
+        
+        tbody.innerHTML = html;
+    }
 
     // --- 4. LÓGICA PRINCIPAL DEL JUEGO ---
     function startGame(levelIndex) { 
@@ -1469,22 +1899,33 @@ document.addEventListener('DOMContentLoaded', function() {
         nextRound(); 
     }
     function nextRound() { 
+        console.log("=== NUEVA RONDA ===");
         gameState.currentAnswer = ''; 
         updateAnswerDisplay(); 
+        
+        // CRÍTICO: Generar problema (esto actualiza gameState.paymentAmount)
         var problem = generateProblem(); 
         gameState.correctAnswer = problem.total; 
         gameState.lastProblemItems = problem.items; 
+        
+        console.log("Ronda generada - Total: " + gameState.totalCost + " BS, Pago: " + gameState.paymentAmount + " BS, Respuesta correcta: " + gameState.correctAnswer + " BS");
+        
         renderProblem(problem.items); 
         updateHUD(); 
         updateSpecialItemsSummary(); 
         
-        // CRÍTICO: Forzar actualización visual del pago ANTES del modal
+        // CRÍTICO: Forzar actualización visual del pago SOLO si hay pago
         if (gameState.paymentAmount > 0 && DOM.paymentDisplay) {
             DOM.paymentDisplay.style.display = 'flex';
             DOM.paymentDisplay.style.opacity = '1';
             DOM.paymentDisplay.style.visibility = 'visible';
             // Forzar reflow para asegurar que el navegador procese el cambio
             void DOM.paymentDisplay.offsetHeight;
+        } else {
+            // Asegurar que el pago esté oculto si no hay pago
+            DOM.paymentDisplay.style.display = 'none';
+            DOM.paymentDisplay.style.opacity = '0';
+            DOM.paymentDisplay.style.visibility = 'hidden';
         }
         
         // Pequeño delay para asegurar que el pago se renderiza antes del modal
@@ -1556,6 +1997,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- 5. GENERACIÓN DE PROBLEMAS Y CÁLCULOS ---
     function generatePayment(totalCost, levelIndex) {
         if (levelIndex < 2) {
+            // CORREGIDO: Limpiar variables de estado al ocultar pago
+            gameState.paymentAmount = 0;
+            gameState.paymentStringHTML = "";
             DOM.paymentDisplay.style.display = 'none';
             DOM.paymentDisplay.style.visibility = 'hidden';
             DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
@@ -1566,6 +2010,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var bills = [10, 20, 50, 100, 200];
         if (levelIndex >= 2 && levelIndex <= 4) {
             if (Math.random() < 0.5) {
+                // CORREGIDO: Limpiar variables de estado al ocultar pago
+                gameState.paymentAmount = 0;
+                gameState.paymentStringHTML = "";
                 DOM.paymentDisplay.style.display = 'none';
                 DOM.paymentDisplay.style.visibility = 'hidden';
                 DOM.answerPromptLabel.textContent = 'CALCULAR TOTAL:';
@@ -1575,12 +2022,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (bills[i] > totalCost) {
                     paymentAmount = bills[i];
                     paymentHTML = '<div class="bill bill-' + bills[i] + '">' + bills[i] + '</div>';
+                    console.log("Pago seleccionado: " + bills[i] + " BS para total: " + totalCost + " BS");
                     break;
                 }
             }
             if (paymentAmount === 0) {
                 paymentAmount = Math.ceil(totalCost / 100) * 100;
                 paymentHTML = '<div class="bill bill-100">' + paymentAmount + '</div>';
+                console.log("Pago calculado (múltiplo de 100): " + paymentAmount + " BS para total: " + totalCost + " BS");
             }
         }
         else {
@@ -1615,14 +2064,18 @@ document.addEventListener('DOMContentLoaded', function() {
                  }).join('');
             }
         }
+        // CRÍTICO: Actualizar variables de estado PRIMERO
+        gameState.paymentAmount = paymentAmount;
+        gameState.paymentStringHTML = paymentHTML;
+        
         // CRÍTICO: Asegurar máxima visibilidad del pago
         DOM.paymentDisplay.style.display = 'flex';
         DOM.paymentDisplay.style.visibility = 'visible';
         DOM.paymentDisplay.style.opacity = '1';
         DOM.answerPromptLabel.textContent = 'CALCULAR VUELTO:';
         
-        // Actualizar contenido del pago
-        DOM.paymentBillsContainer.innerHTML = paymentHTML + ' Bs.';
+        // Actualizar contenido del pago - CORREGIDO: Bs. como parte del span del billete
+        DOM.paymentBillsContainer.innerHTML = paymentHTML.replace('</div>', ' Bs.</div>');
         
         // Forzar reflow para asegurar renderizado
         void DOM.paymentDisplay.offsetHeight;
@@ -1632,8 +2085,7 @@ document.addEventListener('DOMContentLoaded', function() {
         void DOM.paymentDisplay.offsetWidth;
         DOM.paymentDisplay.classList.add('pulse-payment-anim');
         
-        gameState.paymentAmount = paymentAmount;
-        gameState.paymentStringHTML = paymentHTML;
+        console.log("✓ Pago configurado: " + paymentAmount + " BS (Vuelto esperado: " + (paymentAmount - totalCost) + " BS)");
         return { amount: paymentAmount, html: paymentHTML };
     }
 
@@ -1951,9 +2403,10 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.currentAnswer = '';
         updateAnswerDisplay(); // Esto también deshabilita el botón Enter visualmente
 
-        // NUEVO: Agregar puntos por respuesta correcta
-        gameState.points += 100;
-        console.log("Puntos ganados: +100. Total: " + gameState.points);
+        // MODIFICADO: Agregar puntos con límite de 1000 por nivel
+        var puntosGanados = Math.min(100, 1000 - gameState.points);
+        gameState.points = Math.min(gameState.points + puntosGanados, 1000);
+        console.log("Puntos ganados: +" + puntosGanados + ". Total nivel: " + gameState.points + "/1000");
 
         showRoundFeedback(true);
         gameState.wins++;
@@ -2075,18 +2528,18 @@ document.addEventListener('DOMContentLoaded', function() {
             alertsHTML += '<div class="alert-section"><div class="alert-title">Alertas de Producto</div>' + modsHTML + '</div>';
         }
 
-        // Agregar guía de ayuda al inicio
+        // Agregar guía de ayuda al inicio - COMPACTADA
         var helpHTML = '';
         if (gameState.wins === 0) {
-            helpHTML = '<div class="alert-section" style="background-color: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-top: 10px;">' +
-                       '<div class="alert-title" style="color: var(--color-success);">📖 GUÍA RÁPIDA</div>' +
-                       '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.95rem; margin-top: 10px;">' +
-                       '<div style="color: var(--color-error);">🆓 <strong>GRATIS</strong> = No paga</div>' +
-                       '<div style="color: var(--color-danger);">💔 <strong>DAÑADO</strong> = No paga</div>' +
-                       '<div style="color: var(--color-canje);">🔄 <strong>CANJE</strong> = Resta del total</div>' +
-                       '<div style="color: var(--color-green);">💲 <strong>DESC.</strong> = Descuento aplicado</div>' +
-                       '<div style="color: var(--color-accent);">🎁 <strong>2x1</strong> = Pagas 1, llevas 2</div>' +
-                       '<div style="color: var(--color-blue);">🎉 <strong>3x2</strong> = Pagas 2, llevas 3</div>' +
+            helpHTML = '<div class="alert-section" style="background-color: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-top: 8px;">' +
+                       '<div class="alert-title" style="color: var(--color-success); font-size: 0.85rem;">📖 GUÍA RÁPIDA</div>' +
+                       '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; margin-top: 8px;">' +
+                       '<div style="color: var(--color-error);">🆓 GRATIS = $0</div>' +
+                       '<div style="color: var(--color-danger);">💔 DAÑADO = $0</div>' +
+                       '<div style="color: var(--color-canje);">🔄 CANJE = Resta</div>' +
+                       '<div style="color: var(--color-green);">💲 DESC. = Rebaja</div>' +
+                       '<div style="color: var(--color-accent);">🎁 2x1 = Paga 1</div>' +
+                       '<div style="color: var(--color-blue);">🎉 3x2 = Paga 2</div>' +
                        '</div>' +
                        '</div>';
         }
@@ -2135,17 +2588,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     playerData.stars[currentLevelIndex] = stars;
                     console.log(`Nuevo récord de ${stars} estrellas para Nivel ${currentLevelIndex}`);
                 }
-                // CORREGIDO: Los puntos solo se suman al total al completar el nivel exitosamente
+                
+                // CORREGIDO: Inicializar sistema de logros al completar nivel
+                if (!playerData.achievements) {
+                    playerData.achievements = {};
+                    console.log("Sistema de logros inicializado para", gameState.currentPlayerName);
+                }
+                
+                // CORREGIDO: Desbloquear logro "Perfecto" (completar nivel sin perder vidas)
+                if (stars === 3 && !playerData.achievements.perfecto) {
+                    playerData.achievements.perfecto = true;
+                    showAchievementNotification('🏆 ¡LOGRO DESBLOQUEADO!', 'Perfecto - Completar un nivel sin perder vidas');
+                    console.log("✅ Logro desbloqueado: Perfecto");
+                }
+                
+                // CORREGIDO: Desbloquear logro "Campeón Mental" (1000 puntos en un nivel)
+                if (gameState.points >= 1000 && !playerData.achievements.campeon) {
+                    playerData.achievements.campeon = true;
+                    showAchievementNotification('💯 ¡LOGRO DESBLOQUEADO!', 'Campeón Mental - Alcanzar 1000 puntos en un nivel');
+                    console.log("✅ Logro desbloqueado: Campeón Mental");
+                }
+                
+                // CORREGIDO: Desbloquear logro "Maestro Total" (todos los niveles completados)
+                var allLevelsCompleted = true;
+                for (var i = 0; i < LEVEL_CONFIG.length; i++) {
+                    if (!playerData.stars[i]) {
+                        allLevelsCompleted = false;
+                        break;
+                    }
+                }
+                if (allLevelsCompleted && !playerData.achievements.maestro) {
+                    playerData.achievements.maestro = true;
+                    showAchievementNotification('👑 ¡LOGRO DESBLOQUEADO!', 'Maestro Total - Completar todos los niveles');
+                    console.log("✅ Logro desbloqueado: Maestro Total");
+                }
+                
+                // CORREGIDO: Desbloquear logro "Escalador" (desbloquear 5 niveles)
+                if (playerData.unlockedLevel >= 5 && !playerData.achievements.escalador) {
+                    playerData.achievements.escalador = true;
+                    showAchievementNotification('🎯 ¡LOGRO DESBLOQUEADO!', 'Escalador - Desbloquear 5 niveles');
+                    console.log("✅ Logro desbloqueado: Escalador");
+                }
+                // CORREGIDO: Sistema de puntos por nivel (máximo 1000 por nivel)
+                if (!playerData.levelPoints) playerData.levelPoints = {};
                 if (!playerData.totalPoints) playerData.totalPoints = 0;
-                var pointsBeforeLevel = playerData.totalPoints; // Guardar puntos anteriores
-                playerData.totalPoints += gameState.points;
-                console.log(`Nivel completado! Puntos de este nivel: ${gameState.points}. Total acumulado: ${playerData.totalPoints}`);
-                // BUG CORREGIDO: Mostrar claramente puntos del nivel vs total acumulado
-                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p><p style='font-size: 2.2rem; margin-top: 15px; color: var(--color-success); font-weight: 800;'>⭐ +" + gameState.points + " PUNTOS</p><p style='font-size: 1.1rem; margin-top: 8px; color: var(--color-text-secondary);'>Total Acumulado: " + playerData.totalPoints + " pts</p><p style='font-size: 0.9rem; margin-top: 5px; color: var(--color-text-secondary);'>(Antes: " + pointsBeforeLevel + " pts)</p>";
+                
+                // Guardar puntos del nivel actual (máximo 1000)
+                var previousLevelPoints = playerData.levelPoints[currentLevelIndex] || 0;
+                var newLevelPoints = gameState.points;
+                
+                // Solo actualizar si los nuevos puntos son mejores
+                if (newLevelPoints > previousLevelPoints) {
+                    playerData.levelPoints[currentLevelIndex] = newLevelPoints;
+                    // Recalcular total sumando todos los niveles
+                    playerData.totalPoints = Object.values(playerData.levelPoints).reduce(function(sum, pts) { return sum + pts; }, 0);
+                    console.log(`Nivel ${currentLevelIndex} completado! Puntos nivel: ${newLevelPoints}/1000 (anterior: ${previousLevelPoints}). Total acumulado: ${playerData.totalPoints}`);
+                }
+                
+                // CORREGIDO: Mostrar SOLO puntos del nivel actual (máximo 1000)
+                DOM.modalFeedback.innerHTML = "<p style='font-size: 2.5rem; margin: -10px 0 10px 0; color: var(--color-primary);'>" + '★'.repeat(stars) + '☆'.repeat(3 - stars) + "</p><p>Cálculos verificados. ¡Sistema estable!</p><p style='font-size: 2.2rem; margin-top: 15px; color: var(--color-success); font-weight: 800;'>⭐ " + newLevelPoints + "/1000 PUNTOS</p><p style='font-size: 1rem; margin-top: 8px; color: var(--color-text-secondary);'>Puntos de este nivel (Máx: 1000 pts/nivel)</p>" + (newLevelPoints > previousLevelPoints ? "<p style='font-size: 0.85rem; margin-top: 5px; color: var(--color-primary);'>¡Nuevo récord! (Anterior: " + previousLevelPoints + " pts)</p>" : "");
                 if (playerData && currentLevelIndex === playerData.unlockedLevel && currentLevelIndex < LEVEL_CONFIG.length - 1) {
                     playerData.unlockedLevel = playerData.unlockedLevel + 1;
                     console.log(`Nivel ${playerData.unlockedLevel} desbloqueado para ${gameState.currentPlayerName}`);
                 }
+                
+                // CRÍTICO: Guardar DESPUÉS de todos los cambios
+                console.log("💾 Guardando progreso y logros:", playerData.achievements);
                 savePlayers();
             } else {
                 DOM.modalTitle.textContent = "MISIÓN FALLIDA";
@@ -2165,8 +2673,8 @@ document.addEventListener('DOMContentLoaded', function() {
                      feedbackGridHTML += '<span>TOTAL CORRECTO:</span><span class="answer-value correct">' + correctAnswerDisplay + '</span>';
                 }
                 feedbackGridHTML += '</div>';
-                // CORREGIDO: En derrota, los puntos se muestran pero NO se suman al total del jugador
-                DOM.modalFeedback.innerHTML = ' <p>Se han detectado inconsistencias críticas.</p> ' + feedbackGridHTML + ' ' + explanationHTML + ' <p style="font-size: 1.5rem; margin-top: 15px; color: var(--color-error);">⭐ ' + gameState.points + ' PUNTOS</p><p style="font-size: 0.9rem; color: var(--color-text-secondary);">(Los puntos solo se suman al completar el nivel)</p>';
+                // CORREGIDO: En derrota, mostrar puntos del nivel sin sumar al total
+                DOM.modalFeedback.innerHTML = ' <p>Se han detectado inconsistencias críticas.</p> ' + feedbackGridHTML + ' ' + explanationHTML + ' <p style="font-size: 1.5rem; margin-top: 15px; color: var(--color-error);">⭐ ' + gameState.points + '/1000 PUNTOS</p><p style="font-size: 0.85rem; color: var(--color-text-secondary);">(Los puntos solo se guardan al completar el nivel)</p>';
             }
             showModal();
         } catch (error) {
@@ -2178,6 +2686,24 @@ document.addEventListener('DOMContentLoaded', function() {
     try { console.log("Asignando event listeners..."); document.getElementById('start-fullscreen-btn').addEventListener('click', function() { console.log("Start Fullscreen button clicked"); enterFullscreen(); showScreen('playerSelect'); }); DOM.confirmPlayerBtn.addEventListener('click', function() { console.log("Confirm Player button clicked"); if (!gameState.currentPlayerName) return; showScreen('levelSelect'); }); DOM.showCreatePlayerBtn.addEventListener('click', function() { console.log("Show Create Player button clicked"); showScreen('createPlayer'); }); DOM.cancelCreatePlayerBtn.addEventListener('click', function() { console.log("Cancel Create Player button clicked"); showScreen('playerSelect'); }); DOM.virtualKeyboard.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleKeyboardInput(key); } }); DOM.numpadGrid.addEventListener('click', function(e) { if (e.target.matches('.key')) { var key = e.target.dataset.key; e.target.classList.add('key-flash'); setTimeout(function() { e.target.classList.remove('key-flash'); }, 200); handleNumpadInput(key); } }); DOM.retryBtn.addEventListener('click', function() { console.log("Retry button clicked"); hideModal(); startGame(gameState.levelIndex); }); DOM.backToMenuBtn.addEventListener('click', function() { console.log("Back to Menu button clicked"); hideModal(); showScreen('levelSelect'); }); DOM.reenterFullscreenBtn.addEventListener('click', function() { console.log("Re-enter fullscreen button clicked"); enterFullscreen(); }); document.addEventListener('fullscreenchange', checkFullscreen); document.addEventListener('webkitfullscreenchange', checkFullscreen); document.addEventListener('mozfullscreenchange', checkFullscreen); document.addEventListener('MSFullscreenChange', checkFullscreen);
         DOM.roundFeedback.addEventListener('click', handleFeedbackDismiss);
         DOM.preRoundModal.addEventListener('click', hidePreRoundModal);
+        
+        // Event listeners para logros y récords
+        var showAchievementsBtn = document.getElementById('show-achievements-btn');
+        if (showAchievementsBtn) {
+            showAchievementsBtn.addEventListener('click', function() {
+                console.log("Show Achievements button clicked");
+                showAchievementsModal();
+            });
+        }
+        
+        var showRecordsBtn = document.getElementById('show-records-btn');
+        if (showRecordsBtn) {
+            showRecordsBtn.addEventListener('click', function() {
+                console.log("Show Records button clicked");
+                showRecordsModal();
+            });
+        }
+        
         console.log("Event listeners asignados."); } catch (error) { console.error("Error al asignar event listeners:", error); }
 
     // --- 8. HUEVO DE PASCUA ---
